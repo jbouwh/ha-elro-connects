@@ -27,7 +27,7 @@ Platform | Description
 
 [integration_blueprint]: https://github.com/jbouwh/ha-elro/connects
 [commits-shield]: https://img.shields.io/github/commit-activity/y/jbouwh/ha-elro/connects.svg?style=for-the-badge
-[commits]: https://github.com/jbouwh/ha-elro/connects/commits/main
+[commits]: https://github.com/jbouwh/ha-elro-connects/commits/main
 [hacs]: https://hacs.xyz
 [hacsbadge]: https://img.shields.io/badge/HACS-Custom-orange.svg?style=for-the-badge
 [exampleimg]: example.png
