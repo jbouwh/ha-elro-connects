@@ -35,7 +35,7 @@ Platform | Description
 [forum]: https://community.home-assistant.io/
 [license]: https://github.com/jbouwh/ha-elro/connects/blob/main/LICENSE
 [license-shield]: https://img.shields.io/github/license/jbouwh/ha-elro/connects.svg?style=for-the-badge
-[maintenance-shield]: https://img.shields.io/badge/maintainer-Joakim%20Sørensen%20%40ludeeus-blue.svg?style=for-the-badge
+[maintenance-shield]: https://img.shields.io/badge/maintainer-Jan%20Bouwhuis%20%40jbouwh-blue.svg?style=for-the-badge
 [releases-shield]: https://img.shields.io/github/release/jbouwh/ha-elro/connects.svg?style=for-the-badge
 [releases]: https://github.com/jbouwh/ha-elro/connects/releases
 [user_profile]: https://github.com/jbouwh
