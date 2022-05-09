@@ -1,7 +1,6 @@
 # ha-elro-connects
 
 [![GitHub Release][releases-shield]][releases]
-[![GitHub Activity][commits-shield]][commits]
 [![License][license-shield]](LICENSE)
 
 [![hacs][hacsbadge]][hacs]
@@ -49,8 +48,6 @@ custom_components/elro_connects/manifest.json
 ***
 
 [elro_connects]: https://github.com/jbouwh/ha-elro-connects
-[commits-shield]: https://img.shields.io/badge/commits-red.svg?style=for-the-badge
-[commits]: https://github.com/jbouwh/ha-elro-connects/commits/main
 [hacs]: https://github.com/custom-components/hacs
 [hacsbadge]: https://img.shields.io/badge/HACS-Custom-orange.svg?style=for-the-badge
 [forum-shield]: https://img.shields.io/badge/community-forum-brightgreen.svg?style=for-the-badge
