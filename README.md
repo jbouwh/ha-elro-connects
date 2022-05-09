@@ -49,6 +49,7 @@ custom_components/elro_connects/manifest.json
 ***
 
 [elro_connects]: https://github.com/jbouwh/ha-elro-connects
+[commits-shield]: https://img.shields.io/badge/community-forum-red.svg?style=for-the-badge
 [commits]: https://github.com/jbouwh/ha-elro-connects/commits/main
 [hacs]: https://github.com/custom-components/hacs
 [hacsbadge]: https://img.shields.io/badge/HACS-Custom-orange.svg?style=for-the-badge
