@@ -1,0 +1,30 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Apparaat is al ingesteld"
+        },
+        "error": {
+            "cannot_connect": "Maken van de verbinding mislukt",
+            "unknown": "Onverwachte fout"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "connector_id": "Connector ID",
+                    "host": "Hostnaam of IP adres",
+                    "port": "Poort"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "host": "Hostnaam of IP adres",
+                    "port": "Poort"
+                }
+            }
+        }
+    }
+}
