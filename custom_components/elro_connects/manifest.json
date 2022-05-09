@@ -5,5 +5,6 @@
   "documentation": "https://github.com/jbouwh/ha-elro-connects",
   "requirements": ["lib-elro-connects==0.4.1"],
   "codeowners": ["@jbouwh"],
-  "iot_class": "local_polling"
+  "iot_class": "local_polling",
+  "version": "0.1.0",
 }
