@@ -11,9 +11,8 @@
 
 Platform | Description
 -- | --
+`sensor` | Adds a `device state` sensor, a `battery level` sensor and a `signal` sensor (disabled by default) for each device.
 `siren` | Represents Elro Connects alarms as a siren. Turn the siren `ON` to test it. Turn it `OFF` to silence the (test) alarm.
-
-Other platforms (sensor e.g. sensor for battery level and signal strength  are to be added later)
 
 {% if not installed %}
 

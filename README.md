@@ -12,9 +12,8 @@
 
 Platform | Description
 -- | --
+`sensor` | Adds a `device state` sensor, a `battery level` sensor and a `signal` sensor (disabled by default) for each device.
 `siren` | Represents Elro Connects alarms as a siren. Turn the siren `ON` to test it. Turn it `OFF` to silence the (test) alarm.
-
-Other platforms (sensor e.g. sensor for battery level and signal strength  are to be added later)
 
 ## Installation
 
@@ -33,6 +32,7 @@ custom_components/elro_connects/translations/en.json
 custom_components/elro_connects/translations/nl.json
 custom_components/elro_connects/__init__.py
 custom_components/elro_connects/api.py
+custom_components/elro_connects/sensor.py
 custom_components/elro_connects/siren.py
 custom_components/elro_connects/config_flow.py
 custom_components/elro_connects/const.py
