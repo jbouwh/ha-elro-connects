@@ -3,6 +3,7 @@
   "name": "Elro Connects",
   "config_flow": true,
   "documentation": "https://github.com/jbouwh/ha-elro-connects",
+  "issue_tracker": "https://github.com/jbouwh/ha-elro-connects/issues",
   "requirements": ["lib-elro-connects==0.4.1"],
   "codeowners": ["@jbouwh"],
   "iot_class": "local_polling",
