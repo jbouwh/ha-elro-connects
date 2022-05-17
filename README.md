@@ -54,5 +54,5 @@ custom_components/elro_connects/manifest.json
 [forum]: https://community.home-assistant.io/
 [license-shield]: https://img.shields.io/github/license/custom-components/blueprint.svg?style=for-the-badge
 [maintenance-shield]: https://img.shields.io/badge/maintainer-Jan%20Bouwhuis-blue.svg?style=for-the-badge
-[releases-shield]: https://img.shields.io/github/v/release/jbouwh/ha-elro-connects?include_prereleases
+[releases-shield]: https://img.shields.io/github/v/release/jbouwh/ha-elro-connects?include_prereleases&style=for-the-badge
 [releases]: https://github.com/jbouwh/ha-elro-connects/releases
