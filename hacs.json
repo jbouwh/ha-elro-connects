@@ -1,6 +1,5 @@
 {
   "name": "Elro Connects",
   "hacs": "1.6.0",
-  "domains": ["siren"],
   "homeassistant": "2022.5.0"
 }
