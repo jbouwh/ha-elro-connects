@@ -43,6 +43,9 @@ custom_components/elro_connects/manifest.json
 ## Configuration is done in the UI
 
 <!---->
+***IMPORTANT NOTICE***
+
+It seem the API security for the K1 connector has been improved and the access key is no longer supplied. This breaks this integration. As soon as there is a work a rond to deal with this, an update will be suppied.
 
 
 ***
