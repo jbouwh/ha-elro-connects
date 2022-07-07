@@ -1,2 +1,2 @@
 pytest-homeassistant-custom-component==0.4.0
-lib-elro-connects==0.4.1
+lib-elro-connects==0.4.5
