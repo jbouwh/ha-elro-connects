@@ -5,7 +5,6 @@ from elro.api import K1
 import pytest
 
 from homeassistant import config_entries
-from homeassistant.components.elro_connects.const import CONF_CONNECTOR_ID, DOMAIN
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_HOST, CONF_PORT
 from homeassistant.core import HomeAssistant
@@ -15,6 +14,8 @@ from homeassistant.data_entry_flow import (
     RESULT_TYPE_FORM,
 )
 from homeassistant.setup import async_setup_component
+
+from custom_components.elro_connects.const import CONF_CONNECTOR_ID, DOMAIN
 
 
 async def test_form(hass: HomeAssistant, mock_k1_api: dict[AsyncMock]) -> None:
@@ -26,7 +27,7 @@ async def test_form(hass: HomeAssistant, mock_k1_api: dict[AsyncMock]) -> None:
     assert result["errors"] is None
 
     with patch(
-        "homeassistant.components.elro_connects.async_setup_entry",
+        "custom_components.elro_connects.async_setup_entry",
         return_value=True,
     ) as mock_setup_entry:
         result2 = await hass.config_entries.flow.async_configure(
@@ -94,7 +95,7 @@ async def test_already_setup(hass: HomeAssistant, mock_k1_api: dict[AsyncMock]) 
     assert result["errors"] is None
 
     with patch(
-        "homeassistant.components.elro_connects.async_setup_entry",
+        "custom_components.elro_connects.async_setup_entry",
         return_value=True,
     ):
         result2 = await hass.config_entries.flow.async_configure(
@@ -131,7 +132,7 @@ async def test_update_options(
 
     # Change interval, IP address and port
     with patch(
-        "homeassistant.components.elro_connects.async_setup_entry",
+        "custom_components.elro_connects.async_setup_entry",
         return_value=True,
     ):
         result = await hass.config_entries.options.async_configure(
@@ -173,7 +174,7 @@ async def test_update_options_cannot_connect_handling(
     # Change interval, IP address and port
     mock_k1_api["connect"].side_effect = side_effect
     with patch(
-        "homeassistant.components.elro_connects.async_setup_entry",
+        "custom_components.elro_connects.async_setup_entry",
         return_value=True,
     ):
         result = await hass.config_entries.options.async_configure(

@@ -4,28 +4,37 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 
-from homeassistant.components.elro_connects.const import CONF_CONNECTOR_ID, DOMAIN
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_HOST, CONF_PORT
 from homeassistant.core import HomeAssistant
 
-from tests.common import MockConfigEntry
+from pytest_homeassistant_custom_component.common import MockConfigEntry
+
+from custom_components.elro_connects.const import (
+    CONF_CONNECTOR_ID,
+    DOMAIN,
+)
+
+
+@pytest.fixture(autouse=True)
+def auto_enable_custom_integrations(enable_custom_integrations):
+    yield
 
 
 @pytest.fixture
 def mock_k1_connector() -> dict[AsyncMock]:
     """Mock the Elro K1 connector class."""
     with patch(
-        "homeassistant.components.elro_connects.device.ElroConnectsK1.async_connect",
+        "custom_components.elro_connects.device.ElroConnectsK1.async_connect",
         AsyncMock(),
     ) as mock_connect, patch(
-        "homeassistant.components.elro_connects.device.ElroConnectsK1.async_disconnect",
+        "custom_components.elro_connects.device.ElroConnectsK1.async_disconnect",
         AsyncMock(),
     ) as mock_disconnect, patch(
-        "homeassistant.components.elro_connects.device.ElroConnectsK1.async_configure",
+        "custom_components.elro_connects.device.ElroConnectsK1.async_configure",
         AsyncMock(),
     ) as mock_configure, patch(
-        "homeassistant.components.elro_connects.device.ElroConnectsK1.async_process_command",
+        "custom_components.elro_connects.device.ElroConnectsK1.async_process_command",
         AsyncMock(return_value={}),
     ) as mock_result:
         yield {

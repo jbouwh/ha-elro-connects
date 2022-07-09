@@ -7,7 +7,6 @@ from elro.command import Command
 import pytest
 
 from homeassistant.components import siren
-from homeassistant.components.elro_connects.const import DOMAIN
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     ATTR_ENTITY_ID,
@@ -20,6 +19,7 @@ from homeassistant.const import (
 from homeassistant.core import HomeAssistant
 from homeassistant.setup import async_setup_component
 
+from custom_components.elro_connects.const import DOMAIN
 from .test_common import MOCK_DEVICE_STATUS_DATA
 
 
@@ -68,7 +68,7 @@ async def test_setup_integration_with_siren_platform(
 ) -> None:
     """Test we can setup the integration with the siren platform."""
     mock_k1_connector["result"].return_value = MOCK_DEVICE_STATUS_DATA
-    assert await async_setup_component(hass, DOMAIN, {})
+    await hass.config_entries.async_setup(mock_entry.entry_id)
     await hass.async_block_till_done()
 
     # Check entity setup from connector data
