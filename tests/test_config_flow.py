@@ -4,6 +4,7 @@ from unittest.mock import AsyncMock, patch
 from elro.api import K1
 import pytest
 
+from custom_components.elro_connects.const import CONF_CONNECTOR_ID, DOMAIN
 from homeassistant import config_entries
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_HOST, CONF_PORT
@@ -14,8 +15,6 @@ from homeassistant.data_entry_flow import (
     RESULT_TYPE_FORM,
 )
 from homeassistant.setup import async_setup_component
-
-from custom_components.elro_connects.const import CONF_CONNECTOR_ID, DOMAIN
 
 
 async def test_form(hass: HomeAssistant, mock_k1_api: dict[AsyncMock]) -> None:

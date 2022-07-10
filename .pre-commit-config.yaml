@@ -26,6 +26,7 @@ repos:
     rev: 4.0.1
     hooks:
       - id: flake8
+        # E501 - line length (black will handle most of the issues, and what it can't - should be ingored
         additional_dependencies:
           - pycodestyle==2.8.0
           - pyflakes==2.4.0

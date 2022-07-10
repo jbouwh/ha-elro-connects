@@ -6,16 +6,14 @@ from unittest.mock import AsyncMock
 
 from elro.api import K1
 import pytest
+from pytest_homeassistant_custom_component.common import async_fire_time_changed
 
+from custom_components.elro_connects.const import DOMAIN
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.setup import async_setup_component
 from homeassistant.util import dt
 
-
-from pytest_homeassistant_custom_component.common import async_fire_time_changed
-
-from custom_components.elro_connects.const import DOMAIN
 from .test_common import MOCK_DEVICE_STATUS_DATA
 
 
