@@ -1,0 +1,40 @@
+# This workflow will install dependencies, create coverage tests
+# and run Pytest with coverage reporting
+name: pytest-coverage
+# yamllint disable-line rule:truthy
+on:
+  pull_request:
+    branches:
+      - "*"
+jobs:
+  tests_and_coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+      - name: Build coverage file
+        run: |
+          pytest --cache-clear --cov=custom_components --junitxml=pytest.xml tests/ > pytest-coverage.txt
+      - name: Pytest coverage comment
+        id: coverageComment
+        uses: MishaKav/pytest-coverage-comment@main
+        with:
+          github-token: ${{ secrets.actions_token }}
+          pytest-coverage-path: ./pytest-coverage.txt
+          junitxml-path: ./pytest.xml
+      - name: Check the output coverage
+        run: |
+          echo "Coverage Percentage - ${{ steps.coverageComment.outputs.coverage }}"
+      - name: Check coverage tolerance
+        if: ${{ steps.coverageComment.outputs.coverage < 0.99 }}
+        uses: actions/github-script@v3
+        with:
+          script: |
+            core.setFailed('Coverage test below tolerance')

@@ -1,2 +1,4 @@
+pre-commit
+lib-elro-connects==0.4.5
 homeassistant
-lib-elro-connects
+pytest-homeassistant-custom-component

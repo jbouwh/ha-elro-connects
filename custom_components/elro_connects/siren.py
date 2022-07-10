@@ -4,12 +4,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 import logging
 
-from elro.command import (
-    SILENCE_ALARM,
-    TEST_ALARM,
-    TEST_ALARM_ALT,
-    CommandAttributes,
-)
+from elro.command import SILENCE_ALARM, TEST_ALARM, TEST_ALARM_ALT, CommandAttributes
 from elro.device import (
     ALARM_CO,
     ALARM_FIRE,
