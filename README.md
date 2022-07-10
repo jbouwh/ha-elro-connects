@@ -15,6 +15,8 @@ Platform | Description
 `sensor` | Adds a `device state` sensor, a `battery level` sensor and a `signal` sensor (disabled by default) for each device.
 `siren` | Represents Elro Connects alarms as a siren. Turn the siren `ON` to test it. Turn it `OFF` to silence the (test) alarm.
 
+The siren platform (for enabling a test alarm) was tested and is supported for Fire, Heat, CO and Water alarms.
+
 ## Installation
 
 1. Using the tool of choice open the directory (folder) for your HA configuration (where you find `configuration.yaml`).
