@@ -19,6 +19,17 @@ The `siren` platform (for enabling a test alarm) was tested and is supported for
 
 ## Installation
 
+### Using HACS
+
+1. Install the [Home Assistant Community Store (HACS)](https://hacs.xyz/docs/setup/download).
+2. Add Elro Connects as custom repository. See [the HACS FAQ](https://hacs.xyz/docs/faq/custom_repositories) and add `https://github.com/jbouwh/ha-elro-connects` as repository.
+3. Select `integration` as category.
+4. After this you should be possible to add, download and install Elro Connects as a custom integration via HACS.
+5. When the installation via HACS is done, restart Home Assistant.
+6. In the HA UI go to "Configuration" -> "Integrations" click "+" and search for "Elro Connects"
+
+### Manual
+
 1. Using the tool of choice open the directory (folder) for your HA configuration (where you find `configuration.yaml`).
 2. If you do not have a `custom_components` directory (folder) there, you need to create it.
 3. In the `custom_components` directory (folder) create a new folder called `elro_connects`.
