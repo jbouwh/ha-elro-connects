@@ -18,6 +18,20 @@ def auto_enable_custom_integrations(enable_custom_integrations):
 
 
 @pytest.fixture
+def mock_get() -> AsyncMock:
+    """Mock aiohttp get and post requests."""
+    with patch("aiohttp.ClientSession.get") as mock_session_get:
+        yield mock_session_get
+
+
+@pytest.fixture
+def mock_post() -> AsyncMock:
+    """Mock aiohttp get and post requests."""
+    with patch("aiohttp.ClientSession.post") as mock_session_post:
+        yield mock_session_post
+
+
+@pytest.fixture
 def mock_k1_connector() -> dict[AsyncMock]:
     """Mock the Elro K1 connector class."""
     with patch(
