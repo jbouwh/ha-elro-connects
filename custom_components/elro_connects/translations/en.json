@@ -10,9 +10,12 @@
         "step": {
             "user": {
                 "data": {
-                    "connector_id": "Connector ID",
                     "host": "Hostname or IP address",
-                    "port": "Port"
+                    "port": "Port",
+                    "username": "Username",
+                    "password": "Password",
+                    "connector_id": "Connector ID",
+                    "api_key": "API key"
                 }
             }
         }
@@ -21,8 +24,12 @@
         "step": {
             "init": {
                 "data": {
-                    "host": "Host",
-                    "port": "Port"
+                    "host": "Hostname or IP address",
+                    "port": "Port",
+                    "username": "Username",
+                    "password": "Password",
+                    "connector_id": "Connector ID",
+                    "api_key": "API key"
                 }
             }
         }

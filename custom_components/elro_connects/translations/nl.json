@@ -10,9 +10,12 @@
         "step": {
             "user": {
                 "data": {
-                    "connector_id": "Connector ID",
                     "host": "Hostnaam of IP adres",
-                    "port": "Poort"
+                    "port": "Poort",
+                    "username": "Gebruikersnaam",
+                    "password": "Wachtwoord",
+                    "connector_id": "Connector ID",
+                    "api_key": "API key"
                 }
             }
         }
@@ -22,8 +25,12 @@
             "init": {
                 "data": {
                     "host": "Hostnaam of IP adres",
-                    "port": "Poort"
-                }
+                    "port": "Poort",
+                    "username": "Gebruikersnaam",
+                    "password": "Wachtwoord",
+                    "connector_id": "Connector ID",
+                    "api_key": "API key"
+               }
             }
         }
     }

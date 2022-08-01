@@ -139,6 +139,7 @@ async def test_update_options(
             user_input={
                 CONF_HOST: "1.1.1.2",
                 CONF_PORT: 1024,
+                CONF_CONNECTOR_ID: "ST_deadbeef0000",
             },
         )
     assert result["type"] == RESULT_TYPE_CREATE_ENTRY
@@ -170,7 +171,7 @@ async def test_update_options_cannot_connect_handling(
     assert result["type"] == RESULT_TYPE_FORM
     assert result["step_id"] == "init"
 
-    # Change interval, IP address and port
+    # Change IP address and port
     mock_k1_api["connect"].side_effect = side_effect
     with patch(
         "custom_components.elro_connects.async_setup_entry",
@@ -181,6 +182,7 @@ async def test_update_options_cannot_connect_handling(
             user_input={
                 CONF_HOST: "1.1.1.2",
                 CONF_PORT: 1024,
+                CONF_CONNECTOR_ID: "ST_deadbeef0000",
             },
         )
     assert result["type"] == RESULT_TYPE_FORM
