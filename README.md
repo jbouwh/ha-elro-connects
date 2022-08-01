@@ -54,9 +54,9 @@ Using your HA configuration directory (folder) as a starting point you should no
 
 #### Configuring the integration
 
-1. You need the IP-address and your Elro Connects cloud credentials (`username` and `password`) to setup the integration. This will get the `connector_id` and `api_key` for local access of your connector. After the setup has finished setup, the cloud credentials will not be used during operation. Skip this step if you want to do a manual setup.
-2. An alternative is a manual setup. For this you need the `connector_id` which can be obtained from the Elro Connects app. Go to the `home` tab and click on the settings wheel. Select `current connector`. A list will be shown with your connectors. The ID starts with `ST_xxx...`.
-3. The API key is currently not needed because it is provided by the connector locally. This behavior might change in the future
+1. You need the IP-address and your Elro Connects cloud credentials (`username` and `password`) to setup the integration. This will get the `connector_id` and `api_key` for local access of your connector. After the setup has finished setup, the cloud credentials will not be used during operation.
+2. An alternative is a manual setup. For this you need to fill in the `connector_id`, leave `username` and `password` fields open. which can be obtained from the Elro Connects app. Go to the `home` tab and click on the settings wheel. Select `current connector`. A list will be shown with your connectors. The ID starts with `ST_xxx...`.
+3. The API key is probably not needed as long as it is provided by the connector locally. This behavior might change in the future.
 
 
 ```text
