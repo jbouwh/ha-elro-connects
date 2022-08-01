@@ -16,7 +16,7 @@ from elro.device import (
 from elro.utils import update_state_data
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import ATTR_NAME, CONF_HOST, CONF_PORT
+from homeassistant.const import ATTR_NAME, CONF_API_KEY, CONF_HOST, CONF_PORT
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.entity import DeviceInfo, EntityDescription
@@ -80,7 +80,9 @@ class ElroConnectsK1(K1):
         self, hass: HomeAssistant, entry: ConfigEntry
     ) -> None:
         """Process updated settings."""
-        await self.async_configure(entry.data[CONF_HOST], entry.data[CONF_PORT])
+        await self.async_configure(
+            entry.data[CONF_HOST], entry.data[CONF_PORT], entry.data.get(CONF_API_KEY)
+        )
 
     @property
     def data(self) -> dict[int, dict]:
