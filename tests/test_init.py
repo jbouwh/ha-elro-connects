@@ -110,6 +110,6 @@ async def test_configure_platforms_dynamically(
     async_fire_time_changed(hass, time)
     await hass.async_block_till_done()
 
-    assert hass.states.get("siren.beganegrond").state == "unknown"
+    assert hass.states.get("siren.beganegrond").state == "off"
     assert hass.states.get("siren.eerste_etage") is not None
     assert hass.states.get("siren.zolder") is not None

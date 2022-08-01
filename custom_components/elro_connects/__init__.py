@@ -6,7 +6,7 @@ from datetime import timedelta
 import logging
 
 from elro.api import K1
-from elro.device import ATTR_DEVICE_STATE, STATE_OFFLINE, STATE_UNKNOWN
+from elro.device import ATTR_DEVICE_STATE, STATE_UNKNOWN
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import SERVICE_RELOAD, Platform
@@ -31,9 +31,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         nonlocal current_device_set
         # get state from coordinator cash in case the current state is unknown
         coordinator_update: dict[int, dict] = copy.deepcopy(coordinator.data or {})
-        # set initial state to offline
+        # set initial state to unknown
         for device_id, state_base in coordinator_update.items():
-            state_base[ATTR_DEVICE_STATE] = STATE_OFFLINE
+            state_base[ATTR_DEVICE_STATE] = STATE_UNKNOWN
         try:
             await hass.async_create_task(elro_connects_api.async_update())
             device_update = copy.deepcopy(elro_connects_api.data)
@@ -45,10 +45,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                     # new device, or known state
                     coordinator_update[device_id] = device_data
                 elif device_data[ATTR_DEVICE_STATE] == STATE_UNKNOWN:
-                    # update device state only, other data is not valid
-                    coordinator_update[device_id][ATTR_DEVICE_STATE] = device_data[
-                        ATTR_DEVICE_STATE
-                    ]
+                    # do not process unknown state updates
+                    continue
                 else:
                     # update full state
                     coordinator_update[device_id] = device_data
