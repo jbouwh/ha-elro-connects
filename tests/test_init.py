@@ -8,13 +8,29 @@ from elro.api import K1
 import pytest
 from pytest_homeassistant_custom_component.common import async_fire_time_changed
 
+from custom_components.elro_connects import async_remove_config_entry_device
 from custom_components.elro_connects.const import DOMAIN
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers import device_registry as dr
 from homeassistant.setup import async_setup_component
 from homeassistant.util import dt
 
 from .test_common import MOCK_DEVICE_STATUS_DATA
+
+
+async def help_remove_device(hass, ws_client, device_id, config_entry_id):
+    """Remove config entry from a device."""
+    await ws_client.send_json(
+        {
+            "id": 5,
+            "type": "config/device_registry/remove_config_entry",
+            "config_entry_id": config_entry_id,
+            "device_id": device_id,
+        }
+    )
+    response = await ws_client.receive_json()
+    assert response["success"]
 
 
 async def test_setup_integration_no_data(
@@ -113,3 +129,52 @@ async def test_configure_platforms_dynamically(
     assert hass.states.get("siren.beganegrond").state == "unknown"
     assert hass.states.get("siren.eerste_etage") is not None
     assert hass.states.get("siren.zolder") is not None
+
+
+async def test_remove_device_from_config_entry(
+    hass: HomeAssistant,
+    mock_k1_connector: dict[AsyncMock],
+    mock_entry: ConfigEntry,
+) -> None:
+    """Test the removing a device would work."""
+    # Initial status holds device info for device [1,2,4]
+    initial_status_data = copy.deepcopy(MOCK_DEVICE_STATUS_DATA)
+    # Updated status holds device info for device [1,2]
+    updated_status_data = copy.deepcopy(MOCK_DEVICE_STATUS_DATA)
+    updated_status_data.pop(4)
+
+    # setup integration with 3 siren entities
+    mock_k1_connector["result"].return_value = initial_status_data
+    assert await async_setup_component(hass, DOMAIN, {})
+    await hass.async_block_till_done()
+
+    # Simulate deactivation of siren 4
+    mock_k1_connector["result"].return_value = updated_status_data
+    time = dt.now() + timedelta(seconds=30)
+    async_fire_time_changed(hass, time)
+    # await coordinator.async_request_refresh()
+    await hass.async_block_till_done()
+    await hass.async_block_till_done()
+
+    connector_id = hass.data[DOMAIN][mock_entry.entry_id].connector_id
+    device_registry = dr.async_get(hass)
+    # Test removing the device for siren 4 will work
+    device_entry = device_registry.async_get_device(
+        identifiers={(DOMAIN, f"{connector_id}_4")}
+    )
+    assert device_entry
+    assert await async_remove_config_entry_device(hass, mock_entry, device_entry)
+
+    # Test removing the device for siren 2 will not work because it is in use
+    device_entry = device_registry.async_get_device(
+        identifiers={(DOMAIN, f"{connector_id}_2")}
+    )
+    assert device_entry
+    assert not await async_remove_config_entry_device(hass, mock_entry, device_entry)
+
+    # Test removing the the K1 connector device will not work
+    device_entry = device_registry.async_get_device(
+        identifiers={(DOMAIN, f"{connector_id}")}
+    )
+    assert device_entry
+    assert not await async_remove_config_entry_device(hass, mock_entry, device_entry)
