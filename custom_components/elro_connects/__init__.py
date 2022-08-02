@@ -11,6 +11,7 @@ from elro.device import ATTR_DEVICE_STATE, STATE_UNKNOWN
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import SERVICE_RELOAD, Platform
 from homeassistant.core import HomeAssistant, ServiceCall
+from homeassistant.helpers.device_registry import DeviceEntry
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .const import DEFAULT_INTERVAL, DOMAIN
@@ -39,7 +40,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             device_update = copy.deepcopy(elro_connects_api.data)
             for device_id, device_data in device_update.items():
                 if ATTR_DEVICE_STATE not in device_data:
-                    # Skip entries without device state
+                    # Unlink entry without device state
                     continue
                 if device_id not in coordinator_update:
                     # new device, or known state
@@ -109,3 +110,18 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         hass.data[DOMAIN].pop(entry.entry_id)
 
     return unload_ok
+
+
+async def async_remove_config_entry_device(
+    hass: HomeAssistant, entry: ConfigEntry, device_entry: DeviceEntry
+) -> bool:
+    """Allow manual removal of a device if not in use."""
+    elro_connects_api: ElroConnectsK1 = hass.data[DOMAIN][entry.entry_id]
+    device_unique_id: str = device_entry.identifiers.copy().pop()[1]
+    device_id_str = device_unique_id[len(elro_connects_api.connector_id) + 1 :]
+    if not device_id_str:
+        return False
+    device_id = int(device_id_str)
+    if device_id in elro_connects_api.data:
+        return False
+    return True
