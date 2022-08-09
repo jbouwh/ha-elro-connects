@@ -152,7 +152,7 @@ async def test_remove_device_from_config_entry(
     mock_k1_connector["result"].return_value = updated_status_data
     time = dt.now() + timedelta(seconds=30)
     async_fire_time_changed(hass, time)
-    # await coordinator.async_request_refresh()
+    # Wait for the update to be processed
     await hass.async_block_till_done()
     await hass.async_block_till_done()
 
@@ -178,3 +178,68 @@ async def test_remove_device_from_config_entry(
     )
     assert device_entry
     assert not await async_remove_config_entry_device(hass, mock_entry, device_entry)
+
+
+async def test_update_device_name(
+    hass: HomeAssistant,
+    mock_k1_connector: dict[AsyncMock],
+    mock_entry: ConfigEntry,
+) -> None:
+    """Test updating the name of the device through the K1 connector."""
+
+    # Initial status holds device info for device [1,2,4]
+    initial_status_data = copy.deepcopy(MOCK_DEVICE_STATUS_DATA)
+    mock_k1_connector["result"].return_value = initial_status_data
+    assert await async_setup_component(hass, DOMAIN, {})
+    await hass.async_block_till_done()
+
+    connector_id = hass.data[DOMAIN][mock_entry.entry_id].connector_id
+    device_registry = dr.async_get(hass)
+    # Test updating the device name for siren 4 will work
+    device_entry = device_registry.async_get_device(
+        identifiers={(DOMAIN, f"{connector_id}_4")}
+    )
+    assert device_entry
+
+    # update the name
+    mock_k1_connector["result"].reset_mock()
+    device_registry.async_update_device(
+        device_id=device_entry.id, name_by_user="Some long new name"
+    )
+    await hass.async_block_till_done()
+
+    # Check the new name was set (max length 15)
+    assert mock_k1_connector["result"].call_count == 1
+    assert mock_k1_connector["result"].mock_calls[0][2] == {
+        "device_ID": 4,
+        "device_name": "Some long new n",
+    }
+
+    # Check the name was not set if the device is not in the coordinator
+    updated_status_data = copy.deepcopy(MOCK_DEVICE_STATUS_DATA)
+    updated_status_data.pop(4)
+    mock_k1_connector["result"].return_value = updated_status_data
+    time = dt.now() + timedelta(seconds=30)
+    async_fire_time_changed(hass, time)
+    # Wait for the update to be processed
+    await hass.async_block_till_done()
+    await hass.async_block_till_done()
+    mock_k1_connector["result"].reset_mock()
+    device_registry.async_update_device(
+        device_id=device_entry.id, name_by_user="Name update for non existent device"
+    )
+    await hass.async_block_till_done()
+    assert mock_k1_connector["result"].call_count == 0
+
+    # update the K1 connector name
+    device_entry = device_registry.async_get_device(
+        identifiers={(DOMAIN, f"{connector_id}")}
+    )
+    assert device_entry
+    mock_k1_connector["result"].reset_mock()
+    device_registry.async_update_device(
+        device_id=device_entry.id, name_by_user="Some long new name"
+    )
+    await hass.async_block_till_done()
+
+    assert mock_k1_connector["result"].call_count == 0
