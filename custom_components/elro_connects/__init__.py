@@ -1,20 +1,14 @@
 """The Elro Connects integration."""
 from __future__ import annotations
 
-import copy
-from datetime import timedelta
 import logging
 
-from elro.api import K1
-from elro.device import ATTR_DEVICE_STATE, STATE_UNKNOWN
-
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import SERVICE_RELOAD, Platform
-from homeassistant.core import HomeAssistant, ServiceCall
+from homeassistant.const import Platform
+from homeassistant.core import HomeAssistant
 from homeassistant.helpers.device_registry import DeviceEntry
-from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
-from .const import DEFAULT_INTERVAL, DOMAIN
+from .const import DOMAIN
 from .device import ElroConnectsK1
 
 _LOGGER = logging.getLogger(__name__)
@@ -25,78 +19,16 @@ PLATFORMS: list[Platform] = [Platform.SENSOR, Platform.SIREN]
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Elro Connects from a config entry."""
 
-    current_device_set: set | None = None
+    elro_connects_api = ElroConnectsK1(hass, _LOGGER, entry)
 
-    async def _async_update_data() -> dict[int, dict]:
-        """Update data via API."""
-        nonlocal current_device_set
-        # get state from coordinator cash in case the current state is unknown
-        coordinator_update: dict[int, dict] = copy.deepcopy(coordinator.data or {})
-        # set initial state to unknown
-        for device_id, state_base in coordinator_update.items():
-            state_base[ATTR_DEVICE_STATE] = STATE_UNKNOWN
-        try:
-            await elro_connects_api.async_update()
-            device_update = copy.deepcopy(elro_connects_api.data)
-            for device_id, device_data in device_update.items():
-                if ATTR_DEVICE_STATE not in device_data:
-                    # Unlink entry without device state
-                    continue
-                if device_id not in coordinator_update:
-                    # new device, or known state
-                    coordinator_update[device_id] = device_data
-                elif device_data[ATTR_DEVICE_STATE] == STATE_UNKNOWN:
-                    # do not process unknown state updates
-                    continue
-                else:
-                    # update full state
-                    coordinator_update[device_id] = device_data
-
-        except K1.K1ConnectionError as err:
-            raise UpdateFailed(err) from err
-        new_set = set(elro_connects_api.data.keys())
-        if current_device_set is None:
-            current_device_set = new_set
-        if new_set - current_device_set:
-            current_device_set = new_set
-            # New devices discovered, trigger a reload
-            await hass.services.async_call(
-                DOMAIN,
-                SERVICE_RELOAD,
-                {},
-                blocking=False,
-            )
-        return coordinator_update
-
-    async def async_reload(call: ServiceCall) -> None:
-        """Reload the integration."""
-        await async_unload_entry(hass, entry)
-        await async_setup_entry(hass, entry)
-
-    coordinator = DataUpdateCoordinator(
-        hass,
-        _LOGGER,
-        name=DOMAIN.title(),
-        update_method=_async_update_data,
-        update_interval=timedelta(seconds=DEFAULT_INTERVAL),
-    )
-    elro_connects_api = ElroConnectsK1(
-        coordinator,
-        entry,
-    )
-
-    await coordinator.async_config_entry_first_refresh()
-
-    hass.data[DOMAIN] = {}
+    hass.data.setdefault(DOMAIN, {})
     hass.data[DOMAIN][entry.entry_id] = elro_connects_api
 
-    hass.config_entries.async_setup_platforms(entry, PLATFORMS)
+    await elro_connects_api.async_config_entry_first_refresh()
+    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
     entry.async_on_unload(
         entry.add_update_listener(elro_connects_api.async_update_settings)
-    )
-    hass.helpers.service.async_register_admin_service(
-        DOMAIN, SERVICE_RELOAD, async_reload
     )
 
     return True
@@ -122,6 +54,10 @@ async def async_remove_config_entry_device(
     if not device_id_str:
         return False
     device_id = int(device_id_str)
-    if device_id in elro_connects_api.data:
+    # Do not remove if the device_id is in the connector_data
+    if (
+        elro_connects_api.connector_data
+        and device_id in elro_connects_api.connector_data
+    ):
         return False
     return True

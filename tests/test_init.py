@@ -180,6 +180,31 @@ async def test_remove_device_from_config_entry(
     assert not await async_remove_config_entry_device(hass, mock_entry, device_entry)
 
 
+async def test_unloading_config_entry(
+    hass: HomeAssistant,
+    mock_k1_connector: dict[AsyncMock],
+    mock_entry: ConfigEntry,
+) -> None:
+    """Test unloading the config entry."""
+    # Initial status holds device info for device [1,2,4]
+    initial_status_data = copy.deepcopy(MOCK_DEVICE_STATUS_DATA)
+    # setup integration with 3 siren entities
+    mock_k1_connector["result"].return_value = initial_status_data
+    assert await async_setup_component(hass, DOMAIN, {})
+    await hass.async_block_till_done()
+    assert hass.states.get("siren.beganegrond") is not None
+    assert hass.states.get("siren.eerste_etage") is not None
+    assert hass.states.get("siren.zolder") is not None
+    assert hass.states.get("siren.beganegrond").state == "off"
+    assert hass.states.get("siren.eerste_etage").state == "on"
+    assert hass.states.get("siren.zolder").state == "off"
+    # Test unload
+    assert await mock_entry.async_unload(hass)
+    assert hass.states.get("siren.beganegrond").state == "unavailable"
+    assert hass.states.get("siren.eerste_etage").state == "unavailable"
+    assert hass.states.get("siren.zolder").state == "unavailable"
+
+
 async def test_update_device_name(
     hass: HomeAssistant,
     mock_k1_connector: dict[AsyncMock],
