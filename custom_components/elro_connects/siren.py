@@ -12,7 +12,6 @@ from elro.device import (
     ALARM_SMOKE,
     ALARM_WATER,
     ATTR_DEVICE_STATE,
-    ATTR_DEVICE_TYPE,
     STATE_SILENCE,
     STATE_TEST_ALARM,
     STATES_OFFLINE,
@@ -25,8 +24,8 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import DOMAIN
 from .device import ElroConnectsEntity, ElroConnectsK1
+from .helpers import async_set_up_discovery_helper
 
 
 @dataclass
@@ -89,20 +88,15 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up the sensor platform."""
-    elro_connects_api: ElroConnectsK1 = hass.data[DOMAIN][config_entry.entry_id]
-    device_status: dict[int, dict] = elro_connects_api.coordinator.data
+    current: set[int] = set()
 
-    async_add_entities(
-        [
-            ElroConnectsSiren(
-                elro_connects_api,
-                config_entry,
-                device_id,
-                SIREN_DEVICE_TYPES[attributes[ATTR_DEVICE_TYPE]],
-            )
-            for device_id, attributes in device_status.items()
-            if attributes[ATTR_DEVICE_TYPE] in SIREN_DEVICE_TYPES
-        ]
+    async_set_up_discovery_helper(
+        hass,
+        ElroConnectsSiren,
+        config_entry,
+        current,
+        SIREN_DEVICE_TYPES,
+        async_add_entities,
     )
 
 

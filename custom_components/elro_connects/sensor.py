@@ -23,8 +23,8 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.util.percentage import ranged_value_to_percentage
 
-from .const import DOMAIN
 from .device import ElroConnectsEntity, ElroConnectsK1
+from .helpers import async_set_up_discovery_helper
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -70,21 +70,15 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up the sensor platform."""
-    elro_connects_api: ElroConnectsK1 = hass.data[DOMAIN][config_entry.entry_id]
-    device_status: dict[int, dict] = elro_connects_api.coordinator.data
+    current: set[int] = set()
 
-    async_add_entities(
-        [
-            ElroConnectsSensor(
-                elro_connects_api,
-                config_entry,
-                device_id,
-                SENSOR_TYPES[attribute],
-            )
-            for device_id, attributes in device_status.items()
-            for attribute in attributes
-            if attribute in SENSOR_TYPES
-        ]
+    async_set_up_discovery_helper(
+        hass,
+        ElroConnectsSensor,
+        config_entry,
+        current,
+        SENSOR_TYPES,
+        async_add_entities,
     )
 
 
