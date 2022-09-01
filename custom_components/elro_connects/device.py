@@ -30,7 +30,10 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import ATTR_NAME, CONF_API_KEY, CONF_HOST, CONF_PORT
 from homeassistant.core import Event, HomeAssistant, callback
 from homeassistant.helpers import device_registry as dr
-from homeassistant.helpers.device_registry import EVENT_DEVICE_REGISTRY_UPDATED
+from homeassistant.helpers.device_registry import (
+    EVENT_DEVICE_REGISTRY_UPDATED,
+    format_mac,
+)
 from homeassistant.helpers.dispatcher import async_dispatcher_send
 from homeassistant.helpers.entity import DeviceInfo, EntityDescription
 from homeassistant.helpers.update_coordinator import (
@@ -247,10 +250,14 @@ class ElroConnectsEntity(CoordinatorEntity):
         """Return info for device registry."""
         # connector
         device_registry = dr.async_get(self.hass)
+        mac_address = format_mac(self._connector_id[3:])
         device_registry.async_get_or_create(
             model="K1 (SF40GA)",
             config_entry_id=self._entry.entry_id,
-            identifiers={(DOMAIN, self._connector_id)},
+            identifiers={
+                (DOMAIN, self._connector_id),
+                (dr.CONNECTION_NETWORK_MAC, mac_address),
+            },
             manufacturer="Elro",
             name=f"Elro Connects K1 {self._connector_id}",
         )
