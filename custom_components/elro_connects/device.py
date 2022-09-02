@@ -138,10 +138,14 @@ class ElroConnectsK1(DataUpdateCoordinator, K1):
         device_registry = dr.async_get(self.hass)
         device_entry = device_registry.async_get(event.data["device_id"])
         device_unique_id: str = device_entry.identifiers.copy().pop()[1]
-        device_id_str = device_unique_id[len(self.connector_id) + 1 :]
-        if self._entry.entry_id not in device_entry.config_entries or not device_id_str:
+        mac_address = format_mac(self.connector_id[3:])
+        if (
+            (dr.CONNECTION_NETWORK_MAC, mac_address) in device_entry.identifiers
+            or self._entry.entry_id not in device_entry.config_entries
+        ):
             # Not a valid device name or not a related entry
             return
+        device_id_str = device_unique_id[len(self.connector_id) + 1 :]
         device_id = int(device_id_str)
         if not self.connector_data or device_id not in self.connector_data:
             # the device is not in the connector data hence we cannot update it
@@ -219,7 +223,6 @@ class ElroConnectsEntity(CoordinatorEntity):
         """Initialize the Elro connects entity."""
         super().__init__(elro_connects_api)
 
-        # TODO: Initiële data can de coordinator is nog niet beschikbaar op dit punt
         self.data: dict = elro_connects_api.connector_data[device_id]
 
         self._connector_id = elro_connects_api.connector_id
@@ -255,7 +258,6 @@ class ElroConnectsEntity(CoordinatorEntity):
             model="K1 (SF40GA)",
             config_entry_id=self._entry.entry_id,
             identifiers={
-                (DOMAIN, self._connector_id),
                 (dr.CONNECTION_NETWORK_MAC, mac_address),
             },
             manufacturer="Elro",
@@ -271,6 +273,6 @@ class ElroConnectsEntity(CoordinatorEntity):
             else device_type,
             name=self.name,
             # Link to K1 connector
-            via_device=(DOMAIN, self._connector_id),
+            via_device=(dr.CONNECTION_NETWORK_MAC, mac_address),
         )
         return device_info
