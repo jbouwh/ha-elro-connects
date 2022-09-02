@@ -260,7 +260,7 @@ async def test_update_device_name(
 
     # update the K1 connector name
     device_entry = device_registry.async_get_device(
-        identifiers={(DOMAIN, f"{connector_id}")}
+        identifiers={(dr.CONNECTION_NETWORK_MAC, f"{format_mac(connector_id[3:])}")}
     )
     assert device_entry
     mock_k1_connector["result"].reset_mock()
