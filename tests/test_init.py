@@ -13,6 +13,7 @@ from custom_components.elro_connects.const import DOMAIN
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import device_registry as dr
+from homeassistant.helpers.device_registry import format_mac
 from homeassistant.setup import async_setup_component
 from homeassistant.util import dt
 
@@ -173,8 +174,9 @@ async def test_remove_device_from_config_entry(
     assert not await async_remove_config_entry_device(hass, mock_entry, device_entry)
 
     # Test removing the the K1 connector device will not work
+    mac_address = format_mac(connector_id[3:])
     device_entry = device_registry.async_get_device(
-        identifiers={(DOMAIN, f"{connector_id}")}
+        identifiers={(dr.CONNECTION_NETWORK_MAC, mac_address)}
     )
     assert device_entry
     assert not await async_remove_config_entry_device(hass, mock_entry, device_entry)

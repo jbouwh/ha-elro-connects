@@ -6,7 +6,7 @@ import logging
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.device_registry import DeviceEntry
+from homeassistant.helpers.device_registry import DeviceEntry, format_mac
 
 from .const import DOMAIN
 from .device import ElroConnectsK1
@@ -50,9 +50,10 @@ async def async_remove_config_entry_device(
     """Allow manual removal of a device if not in use."""
     elro_connects_api: ElroConnectsK1 = hass.data[DOMAIN][entry.entry_id]
     device_unique_id: str = device_entry.identifiers.copy().pop()[1]
-    device_id_str = device_unique_id[len(elro_connects_api.connector_id) + 1 :]
-    if not device_id_str:
+    mac_address = format_mac(elro_connects_api.connector_id[3:])
+    if mac_address == device_unique_id:
         return False
+    device_id_str = device_unique_id[len(elro_connects_api.connector_id) + 1 :]
     device_id = int(device_id_str)
     # Do not remove if the device_id is in the connector_data
     if (
