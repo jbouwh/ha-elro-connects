@@ -1,0 +1,37 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Gerät ist bereits konfiguriert"
+        },
+        "error": {
+            "cannot_connect": "Verbindung nicht möglich",
+            "unknown": "Unerwarteter Fehler"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "Hostname oder IP-Adresse",
+                    "port": "IP-Port",
+                    "username": "Nutzername",
+                    "password": "Passwort",
+                    "connector_id": "Konnektor-ID",
+                    "api_key": "API-Schlüssel"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "host": "Hostname oder IP-Adresse",
+                    "port": "IP-Port",
+                    "username": "Nutzername",
+                    "password": "Passwort",
+                    "connector_id": "Konnektor-ID",
+                    "api_key": "API-Schlüssel"
+                }
+            }
+        }
+    }
+}
