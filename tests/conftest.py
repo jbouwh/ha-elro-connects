@@ -82,6 +82,9 @@ def mock_k1_api(hass: HomeAssistant) -> dict[AsyncMock]:
     ) as mock_configure, patch(
         "elro.api.K1.async_process_command",
         AsyncMock(return_value={}),
+    ) as mock_result, patch(
+        "elro.auth.ElroConnectsSession._async_get_domain",
+        AsyncMock(return_value="hekr.me"),
     ) as mock_result:
         yield {
             "connect": mock_connect,
