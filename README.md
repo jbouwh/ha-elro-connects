@@ -11,6 +11,8 @@
 # Elro Connects
 The Elro Connects integration will allow users to integrate their Elro Connects fire, heat, CO, water, or smoke alarms as a siren entity into Home Assistant. The alarms can be tested (and silenced) through the siren turn on (and turn off) services. The integration discovers entities (automatically) through an Elro Connects K1 connector plug. The entity names assigned in the Elro Connects app will be synced with Home Assistant.
 
+> There is also a K2 connector available, but this L1 connector has not been tested and will most likely not work with this software.
+
 The integration supports the Elro Connects K1 connector (SF40GA) mainly sold in Germany, the Netherlands, Belgium and France. The manufactor of this connector is Siterwell, and its prodycs are also sold under the name FamilyWell Smart Security EcoSystem (gateway product GS188A). This integration support the legacy gateway, not the new generation that is working via Tuya using a zigbee gateway.
 The integration is not tested with the Siterwell branded devices, but some user reports indicate this is working too.
 
