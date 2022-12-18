@@ -1,11 +1,18 @@
 [![GitHub Release][releases-shield]][releases]
-[![GitHub Activity][commits-shield]][commits]
-[![License][license-shield]][license]
+[![License][license-shield]][LICENCE]
 
 [![hacs][hacsbadge]][hacs]
-[![Project Maintenance][maintenance-shield]][user_profile]
+![Project Maintenance][maintenance-shield]
 
 [![Community Forum][forum-shield]][forum]
+
+# Elro Connects K1
+The Elro Connects integration will allow users to integrate their Elro Connects fire, heat, CO, water, or smoke alarms as a siren entity into Home Assistant. The alarms can be tested (and silenced) through the siren turn on (and turn off) services. The integration discovers entities (automatically) through an Elro Connects K1 connector plug. The entity names assigned in the Elro Connects app will be synced with Home Assistant.
+
+> There is also a K2 connector available, but this K2 connector will not work with this software.
+
+The integration only supports the Elro Connects K1 connector (SF40GA) mainly sold in Germany, the Netherlands, Belgium and France. The manufactor of this connector is Siterwell, and its prodycs are also sold under the name FamilyWell Smart Security EcoSystem (gateway product GS188A). This integration support the legacy gateway, not the new generation that is working via Tuya using a zigbee gateway.
+The integration is not tested with the Siterwell branded devices, but some user reports indicate this is working too.
 
 **This component will set up the following platforms.**
 
@@ -27,6 +34,8 @@ The `device_state` sensor can have of the following states:
 Note that the sensors are polled about every 15 seconds. So it might take some time before an alarm state will be propagated. If an unknown state is found that is not supported yet, the hexadecimal code will be assigned as state. Please open an issue [here](https://github.com/jbouwh/lib-elro-connects/issues/new) if a new state needs to be supported.
 
 The `siren` platform (for enabling a test alarm) was tested and is supported for Fire, Heat, CO and Water alarms.
+Other device might only support a `device_state`, `signal_strength` and `battery` sensor. Note that the `device_state` and
+`signal_strength`sensors are not enabled by default.
 
 {% if not installed %}
 
@@ -50,13 +59,14 @@ The `siren` platform (for enabling a test alarm) was tested and is supported for
 [commits-shield]: https://img.shields.io/github/commit-activity/y/jbouwh/ha-elro-connects.svg?style=for-the-badge
 [commits]: https://github.com/jbouwh/ha-elro-connects/commits/main
 [hacs]: https://hacs.xyz
-[hacsbadge]: https://img.shields.io/badge/HACS-Custom-orange.svg?style=for-the-badge
+[hacsbadge]: https://img.shields.io/badge/HACS-Default-orange.svg?style=for-the-badge
 [exampleimg]: example.png
 [forum-shield]: https://img.shields.io/badge/community-forum-brightgreen.svg?style=for-the-badge
 [forum]: https://community.home-assistant.io/
 [license]: https://github.com/jbouwh/ha-elro/connects/blob/main/LICENSE
-[license-shield]: https://img.shields.io/github/license/jbouwh/ha-elro/connects.svg?style=for-the-badge
-[maintenance-shield]: https://img.shields.io/badge/maintainer-Jan%20Bouwhuis%20%40jbouwh-blue.svg?style=for-the-badge
+[license-shield]: https://img.shields.io/github/license/jbouwh/ha-elro-connects.svg?style=for-the-badge
+
+[maintenance-shield]: https://img.shields.io/badge/maintainer-Jan%20Bouwhuis-blue.svg?style=for-the-badge
 [releases-shield]: https://img.shields.io/github/release/jbouwh/ha-elro/connects.svg?style=for-the-badge
-[releases]: https://github.com/jbouwh/ha-elro/connects/releases
+[releases]: https://github.com/jbouwh/ha-elro-connects/releases
 [user_profile]: https://github.com/jbouwh
