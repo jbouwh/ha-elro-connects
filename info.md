@@ -1,5 +1,5 @@
 [![GitHub Release][releases-shield]][releases]
-[![License][license-shield]][LICENCE]
+[![License][license-shield]](LICENSE)
 
 [![hacs][hacsbadge]][hacs]
 ![Project Maintenance][maintenance-shield]
@@ -56,17 +56,12 @@ Other device might only support a `device_state`, `signal_strength` and `battery
 ***
 
 [integration_blueprint]: https://github.com/jbouwh/ha-elro/connects
-[commits-shield]: https://img.shields.io/github/commit-activity/y/jbouwh/ha-elro-connects.svg?style=for-the-badge
-[commits]: https://github.com/jbouwh/ha-elro-connects/commits/main
-[hacs]: https://hacs.xyz
-[hacsbadge]: https://img.shields.io/badge/HACS-Default-orange.svg?style=for-the-badge
-[exampleimg]: example.png
+[elro_connects]: https://github.com/jbouwh/ha-elro-connects
+[hacs]: https://github.com/custom-components/hacs
+[hacsbadge]: https://img.shields.io/badge/HACS-Custom-orange.svg?style=for-the-badge
 [forum-shield]: https://img.shields.io/badge/community-forum-brightgreen.svg?style=for-the-badge
 [forum]: https://community.home-assistant.io/
-[license]: https://github.com/jbouwh/ha-elro/connects/blob/main/LICENSE
-[license-shield]: https://img.shields.io/github/license/jbouwh/ha-elro-connects.svg?style=for-the-badge
-
+[license-shield]: https://img.shields.io/github/license/custom-components/blueprint.svg?style=for-the-badge
 [maintenance-shield]: https://img.shields.io/badge/maintainer-Jan%20Bouwhuis-blue.svg?style=for-the-badge
-[releases-shield]: https://img.shields.io/github/release/jbouwh/ha-elro/connects.svg?style=for-the-badge
+[releases-shield]: https://img.shields.io/github/v/release/jbouwh/ha-elro-connects?include_prereleases&style=for-the-badge
 [releases]: https://github.com/jbouwh/ha-elro-connects/releases
-[user_profile]: https://github.com/jbouwh
