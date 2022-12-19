@@ -49,7 +49,8 @@
     "ms-python.vscode-pylance",
     "visualstudioexptteam.vscodeintellicode",
     "redhat.vscode-yaml",
-    "esbenp.prettier-vscode"
+    "esbenp.prettier-vscode",
+    "GitHub.vscode-pull-request-github"
   ],
 
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
