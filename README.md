@@ -35,6 +35,8 @@ The `device_state` sensor can have of the following states:
 
 Note that the sensors are polled about every 15 seconds. So it might take some time before an alarm state will be propagated. If an unknown state is found that is not supported yet, the hexadecimal code will be assigned as state. Please open an issue [here](https://github.com/jbouwh/lib-elro-connects/issues/new) if a new state needs to be supported.
 
+If the name of the device is changed in HA, it is also updated in the Elro Connects app. Note the name has a 15 character length limit.
+
 The `siren` platform (for enabling a test alarm) was tested and is supported for Fire, Heat, CO and Water alarms.
 
 ## Installation
