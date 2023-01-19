@@ -60,7 +60,7 @@ Other device might only support a `device_state`, `signal_strength` and `battery
 [integration_blueprint]: https://github.com/jbouwh/ha-elro/connects
 [elro_connects]: https://github.com/jbouwh/ha-elro-connects
 [hacs]: https://github.com/custom-components/hacs
-[hacsbadge]: https://img.shields.io/badge/HACS-Custom-orange.svg?style=for-the-badge
+[hacsbadge]: https://img.shields.io/badge/HACS-Default-orange.svg?style=for-the-badge
 [forum-shield]: https://img.shields.io/badge/community-forum-brightgreen.svg?style=for-the-badge
 [forum]: https://community.home-assistant.io/
 [license-shield]: https://img.shields.io/github/license/custom-components/blueprint.svg?style=for-the-badge
