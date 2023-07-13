@@ -24,6 +24,6 @@ fnvhash==0.1.0
 
 lru-dict==1.1.8
 
-lib-elro-connects==0.5.4
+lib-elro-connects==0.5.4-1
 
 pytest-homeassistant-custom-component==0.11.10

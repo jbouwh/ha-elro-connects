@@ -6,6 +6,6 @@
   "documentation": "https://github.com/jbouwh/ha-elro-connects",
   "iot_class": "local_polling",
   "issue_tracker": "https://github.com/jbouwh/ha-elro-connects/issues",
-  "requirements": ["lib-elro-connects==0.5.4"],
+  "requirements": ["lib-elro-connects==0.5.4-1"],
   "version": "0.1.13"
 }
