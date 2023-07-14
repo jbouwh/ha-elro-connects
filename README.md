@@ -13,7 +13,7 @@ The Elro Connects integration will allow users to integrate their Elro Connects 
 
 > There is also a K2 connector available, but this K2 connector will not work with this software.
 
-The integration only supports the Elro Connects K1 connector (SF40GA) mainly sold in Germany, the Netherlands, Belgium and France. The manufactor of this connector is Siterwell, and its prodycs are also sold under the name FamilyWell Smart Security EcoSystem (gateway product GS188A). This integration support the legacy gateway, not the new generation that is working via Tuya using a zigbee gateway.
+The integration only supports the Elro Connects K1 connector (SF40GA) mainly sold in Germany, the Netherlands, Belgium and France. The manufactor of this connector is Siterwell, and its products are also sold under the name FamilyWell Smart Security EcoSystem (gateway product GS188A). This integration support the legacy gateway, not the new generation that is working via Tuya using a zigbee gateway.
 The integration is not tested with the Siterwell branded devices, but some user reports indicate this is working too.
 
 **This component will set up the following platforms.**
