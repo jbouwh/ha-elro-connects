@@ -104,9 +104,9 @@ async def test_configure_platforms_dynamically(
     mock_k1_connector["result"].return_value = initial_status_data
     assert await async_setup_component(hass, DOMAIN, {})
     await hass.async_block_till_done()
-    assert hass.states.get("siren.beganegrond") is not None
-    assert hass.states.get("siren.eerste_etage") is not None
-    assert hass.states.get("siren.zolder") is None
+    assert hass.states.get("siren.beganegrond_fire_alarm") is not None
+    assert hass.states.get("siren.eerste_etage_fire_alarm") is not None
+    assert hass.states.get("siren.zolder_fire_alarm") is None
 
     # Simulate a dynamic discovery update resulting in 3 siren entities
     mock_k1_connector["result"].return_value = updated_status_data
@@ -115,9 +115,9 @@ async def test_configure_platforms_dynamically(
     # await coordinator.async_request_refresh()
     await hass.async_block_till_done()
 
-    assert hass.states.get("siren.beganegrond") is not None
-    assert hass.states.get("siren.eerste_etage") is not None
-    assert hass.states.get("siren.zolder") is not None
+    assert hass.states.get("siren.beganegrond_fire_alarm") is not None
+    assert hass.states.get("siren.eerste_etage_fire_alarm") is not None
+    assert hass.states.get("siren.zolder_fire_alarm") is not None
 
     # Remove device 1 from api data, entity should appear offline with an unknown state
     updated_status_data.pop(1)
@@ -127,9 +127,9 @@ async def test_configure_platforms_dynamically(
     async_fire_time_changed(hass, time)
     await hass.async_block_till_done()
 
-    assert hass.states.get("siren.beganegrond").state == "off"
-    assert hass.states.get("siren.eerste_etage") is not None
-    assert hass.states.get("siren.zolder") is not None
+    assert hass.states.get("siren.beganegrond_fire_alarm").state == "off"
+    assert hass.states.get("siren.eerste_etage_fire_alarm") is not None
+    assert hass.states.get("siren.zolder_fire_alarm") is not None
 
 
 async def test_remove_device_from_config_entry(
@@ -194,17 +194,17 @@ async def test_unloading_config_entry(
     mock_k1_connector["result"].return_value = initial_status_data
     assert await async_setup_component(hass, DOMAIN, {})
     await hass.async_block_till_done()
-    assert hass.states.get("siren.beganegrond") is not None
-    assert hass.states.get("siren.eerste_etage") is not None
-    assert hass.states.get("siren.zolder") is not None
-    assert hass.states.get("siren.beganegrond").state == "off"
-    assert hass.states.get("siren.eerste_etage").state == "on"
-    assert hass.states.get("siren.zolder").state == "off"
+    assert hass.states.get("siren.beganegrond_fire_alarm") is not None
+    assert hass.states.get("siren.eerste_etage_fire_alarm") is not None
+    assert hass.states.get("siren.zolder_fire_alarm") is not None
+    assert hass.states.get("siren.beganegrond_fire_alarm").state == "off"
+    assert hass.states.get("siren.eerste_etage_fire_alarm").state == "on"
+    assert hass.states.get("siren.zolder_fire_alarm").state == "off"
     # Test unload
     assert await mock_entry.async_unload(hass)
-    assert hass.states.get("siren.beganegrond").state == "unavailable"
-    assert hass.states.get("siren.eerste_etage").state == "unavailable"
-    assert hass.states.get("siren.zolder").state == "unavailable"
+    assert hass.states.get("siren.beganegrond_fire_alarm").state == "unavailable"
+    assert hass.states.get("siren.eerste_etage_fire_alarm").state == "unavailable"
+    assert hass.states.get("siren.zolder_fire_alarm").state == "unavailable"
 
 
 async def test_update_device_name(

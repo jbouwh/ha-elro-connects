@@ -33,5 +33,45 @@
                 }
             }
         }
+    },
+    "entity": {
+        "sensor": {
+            "device_state": {
+                "name": "Device state",
+                "state": {
+                    "NORMAL": "Normal",
+                    "ALARM": "Alarm",
+                    "FIRE ALARM": "Fire alarm",
+                    "TEST ALARM": "Test alarm",
+                    "FAULT": "Fault",
+                    "SILENCE": "Silence",
+                    "UNKNOWN": "Unknown",
+                    "OFFLINE": "Offline"
+                }
+            },
+            "battery": {
+                "name": "Battery"
+            },
+            "signal": {
+                "name": "Signal"
+            }
+        },
+        "siren": {
+            "alarm_co": {
+                "name": "Carbon Monoxide Alarm"
+            },
+            "alarm_fire": {
+                "name": "Fire Alarm"
+            },
+            "alarm_heat": {
+                "name": "Heat Alarm"
+            },
+            "alarm_smoke": {
+                "name": "Smoke Alarm"
+            },
+            "alarm_water": {
+                "name": "Water Alarm"
+            }
+        }
     }
 }

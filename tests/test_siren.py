@@ -27,29 +27,29 @@ from .test_common import MOCK_DEVICE_STATUS_DATA
     "entity_id,name,state,icon,device_class",
     [
         (
-            "siren.beganegrond",
-            "Beganegrond",
+            "siren.beganegrond_fire_alarm",
+            "Beganegrond Fire Alarm",
             STATE_OFF,
             "mdi:fire-alert",
             "smoke",
         ),
         (
-            "siren.eerste_etage",
-            "Eerste etage",
+            "siren.eerste_etage_fire_alarm",
+            "Eerste etage Fire Alarm",
             STATE_ON,
             "mdi:fire-alert",
             "smoke",
         ),
         (
-            "siren.zolder",
-            "Zolder",
+            "siren.zolder_fire_alarm",
+            "Zolder Fire Alarm",
             STATE_OFF,
             "mdi:fire-alert",
             "smoke",
         ),
         (
-            "siren.corner",
-            "Corner",
+            "siren.corner_carbon_monoxide_alarm",
+            "Corner Carbon Monoxide Alarm",
             STATE_UNKNOWN,
             "mdi:molecule-co",
             "carbon_monoxide",
@@ -87,7 +87,7 @@ async def test_alarm_testing(
     mock_entry: ConfigEntry,
 ) -> None:
     """Test we can start a test alarm and silence it."""
-    entity_id = "siren.beganegrond"
+    entity_id = "siren.beganegrond_fire_alarm"
     mock_k1_connector["result"].return_value = MOCK_DEVICE_STATUS_DATA
     assert await async_setup_component(hass, DOMAIN, {})
     await hass.async_block_till_done()

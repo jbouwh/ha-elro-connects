@@ -33,5 +33,45 @@
                 }
             }
         }
+    },
+    "entity": {
+        "sensor": {
+            "device_state": {
+                "name": "Device state",
+                "state": {
+                    "NORMAL": "Звичайний",
+                    "ALARM": "Будильник",
+                    "FIRE ALARM": "Пожежна тривога",
+                    "TEST ALARM": "Тестовий тривога",
+                    "FAULT": "Несправність",
+                    "SILENCE": "Тиша",
+                    "UNKNOWN": "Невідомо",
+                    "OFFLINE": "Офлайн"
+                }
+            },
+            "battery": {
+                "name": "Акумулятор"
+            },
+            "signal": {
+                "name": "Сигнал"
+            }
+        },
+        "siren": {
+            "alarm_co": {
+                "name": "Сигналізація чадного газу"
+            },
+            "alarm_fire": {
+                "name": "Пожежна тривога"
+            },
+            "alarm_heat": {
+                "name": "Теплова сигналізація"
+            },
+            "alarm_smoke": {
+                "name": "Димова сигналізація"
+            },
+            "alarm_water": {
+                "name": "Сигналізація води"
+            }
+        }
     }
 }

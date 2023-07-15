@@ -33,5 +33,45 @@
                }
             }
         }
+    },
+    "entity": {
+        "sensor": {
+            "device_state": {
+                "name": "Device state",
+                "state": {
+                    "NORMAL": "Normal",
+                    "ALARM": "Alarme",
+                    "FIRE ALARM": "Alarme incendie",
+                    "TEST ALARM": "Tester l'alarme",
+                    "FAULT": "Défaut",
+                    "SILENCE": "Silence",
+                    "UNKNOWN": "Inconnu",
+                    "OFFLINE": "Hors ligne"
+                }
+            },
+            "battery": {
+                "name": "Batterie"
+            },
+            "signal": {
+                "name": "Signal"
+            }
+        },
+        "siren": {
+            "alarm_co": {
+                "name": "Avertisseur de monoxyde de carbone"
+            },
+            "alarm_fire": {
+                "name": "Alarme incendie"
+            },
+            "alarm_heat": {
+                "name": "Alarme de chaleur"
+            },
+            "alarm_smoke": {
+                "name": "Détecteur de fumé"
+            },
+            "alarm_water": {
+                "name": "Alarme d'eau"
+            }
+        }
     }
 }

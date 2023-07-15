@@ -213,6 +213,8 @@ class ElroConnectsK1(DataUpdateCoordinator, K1):
 class ElroConnectsEntity(CoordinatorEntity):
     """Defines a base entity for Elro Connects devices."""
 
+    _attr_has_entity_name = True
+
     def __init__(
         self,
         elro_connects_api: ElroConnectsK1,
@@ -232,15 +234,6 @@ class ElroConnectsEntity(CoordinatorEntity):
         self._attr_icon = description.icon
         self._attr_unique_id = f"{self._connector_id}-{device_id}-{description.key}"
         self.entity_description = description
-
-    @property
-    def name(self) -> str:
-        """Return the name of the entity."""
-        return (
-            self.data[ATTR_NAME]
-            if ATTR_NAME in self.data
-            else self.entity_description.name
-        )
 
     @callback
     def _handle_coordinator_update(self):
@@ -271,7 +264,7 @@ class ElroConnectsEntity(CoordinatorEntity):
             model=DEVICE_MODELS[device_type]
             if device_type in DEVICE_MODELS
             else device_type,
-            name=self.name,
+            name=self.data.get(ATTR_NAME, None),
             # Link to K1 connector
             via_device=(dr.CONNECTION_NETWORK_MAC, mac_address),
         )

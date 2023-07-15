@@ -11,17 +11,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Python 3.9
+      - name: Set up Python 3.11
         uses: actions/setup-python@v2
         with:
-          python-version: 3.9
+          python-version: 3.11
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -e .
       - name: Build coverage file
         run: |
-          pytest --cache-clear --cov=custom_components --junitxml=pytest.xml tests/ > pytest-coverage.txt
+          pytest --cache-clear --asyncio-mode=auto --cov=custom_components --junitxml=pytest.xml tests/ > pytest-coverage.txt
       - name: Pytest coverage comment
         id: coverageComment
         uses: MishaKav/pytest-coverage-comment@main
