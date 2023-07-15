@@ -21,7 +21,7 @@ jobs:
           pip install -e .
       - name: Build coverage file
         run: |
-          pytest --cache-clear --cov=custom_components --junitxml=pytest.xml tests/ > pytest-coverage.txt
+          pytest --cache-clear --asyncio-mode=auto --cov=custom_components --junitxml=pytest.xml tests/ > pytest-coverage.txt
       - name: Pytest coverage comment
         id: coverageComment
         uses: MishaKav/pytest-coverage-comment@main
