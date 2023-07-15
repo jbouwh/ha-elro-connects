@@ -33,5 +33,45 @@
                }
             }
         }
+    },
+    "entity": {
+        "sensor": {
+            "device_state": {
+                "name": "Status",
+                "state": {
+                    "NORMAL": "Normaal",
+                    "ALARM": "Alarm",
+                    "FIRE ALARM": "Brandalarm",
+                    "TEST ALARM": "Testalarm",
+                    "FAULT": "Fout",
+                    "SILENCE": "Stilte",
+                    "UNKNOWN": "Onbekend",
+                    "OFFLINE": "Offline"
+                }
+            },
+            "battery": {
+                "name": "Batterij"
+            },
+            "signal": {
+                "name": "Signaal"
+            }
+        },
+        "siren": {
+            "alarm_co": {
+                "name": "Koolmonoxidealarm"
+            },
+            "alarm_fire": {
+                "name": "Brandalarm"
+            },
+            "alarm_heat": {
+                "name": "Hittealarm"
+            },
+            "alarm_smoke": {
+                "name": "Rookalarm"
+            },
+            "alarm_water": {
+                "name": "Wateralarm"
+            }
+        }
     }
 }

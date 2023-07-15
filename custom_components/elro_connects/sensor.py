@@ -7,7 +7,6 @@ import logging
 from elro.device import (
     ATTR_BATTERY_LEVEL,
     ATTR_DEVICE_STATE,
-    ATTR_DEVICE_TYPE,
     ATTR_SIGNAL,
     STATES_OFFLINE,
 )
@@ -18,7 +17,7 @@ from homeassistant.components.sensor import (
     SensorStateClass,
 )
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import ATTR_NAME, PERCENTAGE
+from homeassistant.const import PERCENTAGE
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.util.percentage import ranged_value_to_percentage
@@ -39,17 +38,17 @@ class ElroSensorDescription(SensorEntityDescription):
 SENSOR_TYPES = {
     ATTR_BATTERY_LEVEL: ElroSensorDescription(
         key=ATTR_BATTERY_LEVEL,
+        translation_key=ATTR_BATTERY_LEVEL,
         device_class="battery",
         state_class=SensorStateClass.MEASUREMENT,
-        name="battery level",
         native_unit_of_measurement=PERCENTAGE,
         maximum_value=100,
     ),
     ATTR_SIGNAL: ElroSensorDescription(
         key=ATTR_SIGNAL,
+        translation_key=ATTR_SIGNAL,
         device_class="power_factor",
         state_class=SensorStateClass.MEASUREMENT,
-        name="signal",
         native_unit_of_measurement=PERCENTAGE,
         icon="mdi:signal",
         maximum_value=4,
@@ -57,7 +56,7 @@ SENSOR_TYPES = {
     ),
     ATTR_DEVICE_STATE: ElroSensorDescription(
         key=ATTR_DEVICE_STATE,
-        name="device state",
+        translation_key=ATTR_DEVICE_STATE,
         icon="mdi:state-machine",
         maximum_value=None,
     ),
@@ -118,12 +117,3 @@ class ElroConnectsSensor(ElroConnectsEntity, SensorEntity):
         else:
             value = raw_value
         return value if max_value is None or raw_value <= max_value else None
-
-    @property
-    def name(self) -> str:
-        """Return the name of the sensor."""
-        return (
-            f"{self.data[ATTR_NAME]} {self.entity_description.key}"
-            if ATTR_NAME in self.data
-            else f"{self.data[ATTR_DEVICE_TYPE]} {self.entity_description.key}"
-        )
