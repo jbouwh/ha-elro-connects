@@ -1,5 +1,5 @@
 # yamllint disable rule:truthy
-name: Validate with hassfest
+name: Hassfest and HACS validation
 
 on:
   push:
