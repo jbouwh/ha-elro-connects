@@ -41,8 +41,8 @@
                 "state": {
                     "normal": "Normal",
                     "alarm": "Alarm",
-                    "fire alarm": "Feueralarm",
-                    "test alarm": "Testalarm",
+                    "fire_alarm": "Feueralarm",
+                    "test_alarm": "Testalarm",
                     "fault": "Fehler",
                     "silence": "Stille",
                     "unknown": "Unbekannt",

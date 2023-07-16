@@ -26,8 +26,8 @@ Platform | Description
 The `device_state` sensor can have of the following states:
 - `fault`
 - `silence`
-- `test alarm`
-- `fire alarm`
+- `test_alarm`
+- `fire_alarm`
 - `alarm`
 - `normal`
 - `unknown`

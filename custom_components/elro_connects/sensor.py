@@ -21,6 +21,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import PERCENTAGE
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.util import slugify
 from homeassistant.util.percentage import ranged_value_to_percentage
 
 from .device import ElroConnectsEntity, ElroConnectsK1
@@ -117,5 +118,5 @@ class ElroConnectsSensor(ElroConnectsEntity, SensorEntity):
         if max_value := self.entity_description.maximum_value:
             value = ranged_value_to_percentage((1, max_value), raw_value)
         else:
-            value = str(raw_value).lower()
+            value = slugify(raw_value)
         return value if max_value is None or raw_value <= max_value else None
