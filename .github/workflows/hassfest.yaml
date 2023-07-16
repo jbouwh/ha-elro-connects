@@ -1,15 +1,24 @@
 # yamllint disable rule:truthy
-name: Validate with hassfest
+name: Hassfest and HACS validation
 
 on:
-  push:
   pull_request:
+    branches:
+      - "*"
   schedule:
     - cron: "0 0 * * *"
 
 jobs:
   validate:
     runs-on: "ubuntu-latest"
+    name: Validate
     steps:
       - uses: "actions/checkout@v2"
-      - uses: home-assistant/actions/hassfest@master
+
+      - name: HACS validation
+        uses: "hacs/action@main"
+        with:
+          category: "integration"
+
+      - name: Hassfest validation
+        uses: "home-assistant/actions/hassfest@master"
