@@ -2,7 +2,6 @@
 name: Hassfest and HACS validation
 
 on:
-  push:
   pull_request:
     branches:
       - "*"
