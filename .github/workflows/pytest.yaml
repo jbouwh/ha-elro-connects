@@ -1,6 +1,6 @@
 # This workflow will install dependencies, create coverage tests
 # and run Pytest with coverage reporting
-name: pytest-coverage
+name: Pytest and coverage
 # yamllint disable-line rule:truthy
 on:
   pull_request:
