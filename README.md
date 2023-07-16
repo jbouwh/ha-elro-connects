@@ -24,14 +24,14 @@ Platform | Description
 `siren` | Represents Elro Connects alarms as a siren. Turn the siren `ON` to test it. Turn it `OFF` to silence the (test) alarm.
 
 The `device_state` sensor can have of the following states:
-- `FAULT`
-- `SILENCE`
-- `TEST ALARM`
-- `FIRE ALARM`
-- `ALARM`
-- `NORMAL`
-- `UNKNOWN`
-- `OFFLINE`
+- `fault`
+- `silence`
+- `test alarm`
+- `fire alarm`
+- `alarm`
+- `normal`
+- `unknown`
+- `offline`
 
 Note that the sensors are polled about every 15 seconds. So it might take some time before an alarm state will be propagated. If an unknown state is found that is not supported yet, the hexadecimal code will be assigned as state. Please open an issue [here](https://github.com/jbouwh/lib-elro-connects/issues/new) if a new state needs to be supported.
 
