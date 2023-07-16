@@ -12,6 +12,7 @@ from elro.device import (
 )
 
 from homeassistant.components.sensor import (
+    SensorDeviceClass,
     SensorEntity,
     SensorEntityDescription,
     SensorStateClass,
@@ -38,16 +39,16 @@ class ElroSensorDescription(SensorEntityDescription):
 SENSOR_TYPES = {
     ATTR_BATTERY_LEVEL: ElroSensorDescription(
         key=ATTR_BATTERY_LEVEL,
-        translation_key=ATTR_BATTERY_LEVEL,
-        device_class="battery",
+        translation_key="battery",
+        device_class=SensorDeviceClass.BATTERY,
         state_class=SensorStateClass.MEASUREMENT,
         native_unit_of_measurement=PERCENTAGE,
         maximum_value=100,
     ),
     ATTR_SIGNAL: ElroSensorDescription(
         key=ATTR_SIGNAL,
-        translation_key=ATTR_SIGNAL,
-        device_class="power_factor",
+        translation_key="signal",
+        device_class=SensorDeviceClass.POWER_FACTOR,
         state_class=SensorStateClass.MEASUREMENT,
         native_unit_of_measurement=PERCENTAGE,
         icon="mdi:signal",
@@ -56,7 +57,8 @@ SENSOR_TYPES = {
     ),
     ATTR_DEVICE_STATE: ElroSensorDescription(
         key=ATTR_DEVICE_STATE,
-        translation_key=ATTR_DEVICE_STATE,
+        translation_key="device_state",
+        device_class=SensorDeviceClass.ENUM,
         icon="mdi:state-machine",
         maximum_value=None,
     ),
@@ -115,5 +117,5 @@ class ElroConnectsSensor(ElroConnectsEntity, SensorEntity):
         if max_value := self.entity_description.maximum_value:
             value = ranged_value_to_percentage((1, max_value), raw_value)
         else:
-            value = raw_value
+            value = str(raw_value).lower()
         return value if max_value is None or raw_value <= max_value else None

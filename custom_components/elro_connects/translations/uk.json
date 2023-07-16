@@ -39,14 +39,14 @@
             "device_state": {
                 "name": "Device state",
                 "state": {
-                    "NORMAL": "Звичайний",
-                    "ALARM": "Будильник",
-                    "FIRE ALARM": "Пожежна тривога",
-                    "TEST ALARM": "Тестовий тривога",
-                    "FAULT": "Несправність",
-                    "SILENCE": "Тиша",
-                    "UNKNOWN": "Невідомо",
-                    "OFFLINE": "Офлайн"
+                    "normal": "Звичайний",
+                    "alarm": "Будильник",
+                    "fire alarm": "Пожежна тривога",
+                    "test alarm": "Тестовий тривога",
+                    "fault": "Несправність",
+                    "silence": "Тиша",
+                    "unknown": "Невідомо",
+                    "offline": "Офлайн"
                 }
             },
             "battery": {

@@ -39,14 +39,14 @@
             "device_state": {
                 "name": "Device state",
                 "state": {
-                    "NORMAL": "Normal",
-                    "ALARM": "Alarm",
-                    "FIRE ALARM": "Fire alarm",
-                    "TEST ALARM": "Test alarm",
-                    "FAULT": "Fault",
-                    "SILENCE": "Silence",
-                    "UNKNOWN": "Unknown",
-                    "OFFLINE": "Offline"
+                    "normal": "Normal",
+                    "alarm": "Alarm",
+                    "fire alarm": "Fire alarm",
+                    "test alarm": "Test alarm",
+                    "fault": "Fault",
+                    "silence": "Silence",
+                    "unknown": "Unknown",
+                    "offline": "Offline"
                 }
             },
             "battery": {
