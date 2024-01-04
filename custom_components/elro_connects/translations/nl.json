@@ -72,6 +72,11 @@
             "alarm_water": {
                 "name": "Wateralarm"
             }
+        },
+        "switch": {
+            "socket": {
+              "name": "Stopcontact"
+            }
         }
     }
 }

@@ -12,6 +12,8 @@ MOCK_DEVICE_STATUS_DATA = {
             "device_name": "0013",
             "device_status": "0364AAFF",
         },
+        "device_value": "0xff",
+        "device_value_data": 255,
         "name": "Beganegrond",
     },
     2: {
@@ -25,6 +27,8 @@ MOCK_DEVICE_STATUS_DATA = {
             "device_name": "0013",
             "device_status": "044B55FF",
         },
+        "device_value": "0xff",
+        "device_value_data": 255,
         "name": "Eerste etage",
     },
     4: {
@@ -38,6 +42,8 @@ MOCK_DEVICE_STATUS_DATA = {
             "device_name": "0013",
             "device_status": "0105FEFF",
         },
+        "device_value": "0xff",
+        "device_value_data": 255,
         "name": "Zolder",
     },
     5: {
@@ -51,10 +57,42 @@ MOCK_DEVICE_STATUS_DATA = {
             "device_name": "2008",
             "device_status": "FFFFFFFF",
         },
+        "device_value": "0xff",
+        "device_value_data": 255,
         "name": "Corner",
     },
     6: {
         "name": "Device with unknown state",
+    },
+    7: {
+        "device_type": "SOCKET",
+        "signal": 255,
+        "battery": 255,
+        "device_state": "NORMAL",
+        "device_status_data": {
+            "cmdId": 19,
+            "device_ID": 5,
+            "device_name": "1200",
+            "device_status": "04FF0100",
+        },
+        "device_value": "off",
+        "device_value_data": 1,
+        "name": "Wall switch off",
+    },
+    8: {
+        "device_type": "SOCKET",
+        "signal": 255,
+        "battery": 255,
+        "device_state": "NORMAL",
+        "device_status_data": {
+            "cmdId": 19,
+            "device_ID": 5,
+            "device_name": "1200",
+            "device_status": "04FF0101",
+        },
+        "device_value": "on",
+        "device_value_data": 1,
+        "name": "Wall switch on",
     },
 }
 
