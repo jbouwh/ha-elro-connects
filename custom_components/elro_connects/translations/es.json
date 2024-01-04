@@ -72,6 +72,11 @@
             "alarm_water": {
                 "name": "Alarma de agua"
             }
+        },
+        "switch": {
+            "socket": {
+              "name": "Toma de pared"
+            }
         }
     }
 }

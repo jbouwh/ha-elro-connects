@@ -11,6 +11,7 @@ from pytest_homeassistant_custom_component.common import async_fire_time_changed
 from custom_components.elro_connects import async_remove_config_entry_device
 from custom_components.elro_connects.const import DOMAIN
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import STATE_OFF, STATE_ON
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.device_registry import format_mac
@@ -107,6 +108,8 @@ async def test_configure_platforms_dynamically(
     assert hass.states.get("siren.beganegrond_fire_alarm") is not None
     assert hass.states.get("siren.eerste_etage_fire_alarm") is not None
     assert hass.states.get("siren.zolder_fire_alarm") is None
+    assert hass.states.get("switch.wall_switch_off_socket") is not None
+    assert hass.states.get("switch.wall_switch_on_socket") is not None
 
     # Simulate a dynamic discovery update resulting in 3 siren entities
     mock_k1_connector["result"].return_value = updated_status_data
@@ -118,6 +121,8 @@ async def test_configure_platforms_dynamically(
     assert hass.states.get("siren.beganegrond_fire_alarm") is not None
     assert hass.states.get("siren.eerste_etage_fire_alarm") is not None
     assert hass.states.get("siren.zolder_fire_alarm") is not None
+    assert hass.states.get("switch.wall_switch_off_socket") is not None
+    assert hass.states.get("switch.wall_switch_on_socket") is not None
 
     # Remove device 1 from api data, entity should appear offline with an unknown state
     updated_status_data.pop(1)
@@ -130,6 +135,8 @@ async def test_configure_platforms_dynamically(
     assert hass.states.get("siren.beganegrond_fire_alarm").state == "off"
     assert hass.states.get("siren.eerste_etage_fire_alarm") is not None
     assert hass.states.get("siren.zolder_fire_alarm") is not None
+    assert hass.states.get("switch.wall_switch_off_socket").state == STATE_OFF
+    assert hass.states.get("switch.wall_switch_on_socket").state == STATE_ON
 
 
 async def test_remove_device_from_config_entry(

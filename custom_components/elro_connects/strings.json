@@ -72,6 +72,11 @@
       "alarm_water": {
         "name": "Water Alarm"
       }
+    },
+    "switch": {
+      "socket": {
+        "name": "Socket"
+      }
     }
   }
 }

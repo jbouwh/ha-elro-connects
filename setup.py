@@ -6,12 +6,12 @@ from setuptools import find_packages, setup
 requirements = [
     "sqlalchemy",
 ]
-with open("requirements_test.txt") as f:
+with open("requirements_test.txt", encoding="utf-8") as f:
     for line in f:
         if "txt" not in line and "#" not in line:
             requirements.append(line)
 
-with open("version") as f:
+with open("version", encoding="utf-8") as f:
     __version__ = f.read()
 
 setup(
@@ -26,13 +26,12 @@ setup(
     author_email="jan@jbsoft.nl",
     description="Add Elro Connects alarm devices to Home Assistant",
     classifiers=[
-        "Development Status :: 3 - Alpha",
+        "Development Status :: 4 - Beta",
         "Framework :: Pytest",
-        "Intended Audience :: Developers",
+        "Intended Audience :: Information Technology",
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3.9",
-        "Topic :: Software Development :: Testing",
     ],
     entry_points={
         "pytest11": ["homeassistant = pytest_homeassistant_custom_component.plugins"]
