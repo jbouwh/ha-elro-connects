@@ -46,7 +46,11 @@
                     "fault": "Falha",
                     "silence": "Silêncio",
                     "unknown": "Desconhecido",
-                    "offline": "Offline"
+                    "offline": "Offline",
+                    "open": "Aberto",
+                    "closed": "Fechado",
+                    "low_battery": "Bateria fraca",
+                    "temperature_alarm": "Alarme de temperatura"
                 }
             },
             "battery": {

@@ -46,7 +46,11 @@
                     "fault": "Fout",
                     "silence": "Stilte",
                     "unknown": "Onbekend",
-                    "offline": "Offline"
+                    "offline": "Offline",
+                    "open": "Open",
+                    "closed": "Gesloten",
+                    "low_battery": "Batterij bijna leeg",
+                    "temperature_alarm": "Temperatuuralarm"
                 }
             },
             "battery": {

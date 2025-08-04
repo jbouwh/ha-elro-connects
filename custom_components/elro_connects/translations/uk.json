@@ -46,7 +46,11 @@
                     "fault": "Несправність",
                     "silence": "Тиша",
                     "unknown": "Невідомо",
-                    "offline": "Офлайн"
+                    "offline": "Офлайн",
+                    "open": "Відкрито",
+                    "closed": "Закрито",
+                    "low_battery": "Низький заряд батареї",
+                    "temperature_alarm": "Температурний сигнал"
                 }
             },
             "battery": {
