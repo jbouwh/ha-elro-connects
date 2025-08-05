@@ -1,4 +1,5 @@
 """Helper functions for Elro Connects."""
+
 from __future__ import annotations
 
 from elro.device import ATTR_DEVICE_TYPE
