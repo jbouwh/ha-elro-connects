@@ -1,20 +1,52 @@
-# See here for image contents: https://github.com/microsoft/vscode-dev-containers/tree/v0.177.0/containers/python-3/.devcontainer/base.Dockerfile
+FROM mcr.microsoft.com/devcontainers/python:1-3.12
 
-FROM mcr.microsoft.com/vscode/devcontainers/python:0-3.11
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
-# [Option] Install Node.js
-ARG INSTALL_NODE="true"
-ARG NODE_VERSION="lts/*"
-RUN if [ "${INSTALL_NODE}" = "true" ]; then su vscode -c "umask 0002 && . /usr/local/share/nvm/nvm.sh && nvm install ${NODE_VERSION} 2>&1"; fi
+# Uninstall pre-installed formatting and linting tools
+# They would conflict with our pinned versions
+RUN \
+    pipx uninstall pydocstyle \
+    && pipx uninstall pycodestyle \
+    && pipx uninstall mypy \
+    && pipx uninstall pylint
 
-# [Optional] If your pip requirements rarely change, uncomment this section to add them to the image.
-# COPY requirements.txt /tmp/pip-tmp/
-# RUN pip3 --disable-pip-version-check --no-cache-dir install -r /tmp/pip-tmp/requirements.txt \
-#    && rm -rf /tmp/pip-tmp
+RUN \
+    curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
+    && apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        # Additional library needed by some tests and accordingly by VScode Tests Discovery
+        bluez \
+        ffmpeg \
+        libudev-dev \
+        libavformat-dev \
+        libavcodec-dev \
+        libavdevice-dev \
+        libavutil-dev \
+        libgammu-dev \
+        libswscale-dev \
+        libswresample-dev \
+        libavfilter-dev \
+        libpcap-dev \
+        libturbojpeg0 \
+        libyaml-dev \
+        libxml2 \
+        git \
+        cmake \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-# [Optional] Uncomment this section to install additional OS packages.
-# RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-#     && apt-get -y install --no-install-recommends <your-package-list-here>
+# Install uv
+RUN pip3 install uv
 
-# [Optional] Uncomment this line to install global node packages.
-# RUN su vscode -c "source /usr/local/share/nvm/nvm.sh && npm install -g <your-package-here>" 2>&1
+WORKDIR /usr/src
+
+USER vscode
+ENV VIRTUAL_ENV="/home/vscode/.local/ic-venv"
+RUN uv venv $VIRTUAL_ENV
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+
+WORKDIR /workspaces/ha-elro-connects
+
+# Set the default shell to bash instead of sh
+ENV SHELL /bin/bash
+RUN source $VIRTUAL_ENV/bin/activate

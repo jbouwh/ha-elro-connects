@@ -1,4 +1,5 @@
 """The Elro Connects switch platform."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass

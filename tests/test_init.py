@@ -10,7 +10,7 @@ from pytest_homeassistant_custom_component.common import async_fire_time_changed
 
 from custom_components.elro_connects import async_remove_config_entry_device
 from custom_components.elro_connects.const import DOMAIN
-from homeassistant.config_entries import ConfigEntry
+from homeassistant.config_entries import ConfigEntry, ConfigEntryState
 from homeassistant.const import STATE_OFF, STATE_ON
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import device_registry as dr
@@ -56,7 +56,7 @@ async def test_setup_integration_update_fail(
     assert await async_setup_component(hass, DOMAIN, {})
     await hass.async_block_till_done()
     assert (
-        "elro_connects integration not ready yet: K1 connection error; Retrying in background"
+        "elro_connects integration not ready yet: K1 connection error; Retrying"
         in caplog.text
     )
 
@@ -200,7 +200,7 @@ async def test_unloading_config_entry(
     # setup integration with 3 siren entities
     mock_k1_connector["result"].return_value = initial_status_data
     assert await async_setup_component(hass, DOMAIN, {})
-    await hass.async_block_till_done()
+    await hass.async_block_till_done(wait_background_tasks=True)
     assert hass.states.get("siren.beganegrond_fire_alarm") is not None
     assert hass.states.get("siren.eerste_etage_fire_alarm") is not None
     assert hass.states.get("siren.zolder_fire_alarm") is not None
@@ -208,7 +208,10 @@ async def test_unloading_config_entry(
     assert hass.states.get("siren.eerste_etage_fire_alarm").state == "on"
     assert hass.states.get("siren.zolder_fire_alarm").state == "off"
     # Test unload
-    assert await mock_entry.async_unload(hass)
+    assert await hass.config_entries.async_unload(mock_entry.entry_id)
+    config_entry_state = mock_entry.state
+    assert config_entry_state is ConfigEntryState.NOT_LOADED
+    await hass.async_block_till_done(wait_background_tasks=True)
     assert hass.states.get("siren.beganegrond_fire_alarm").state == "unavailable"
     assert hass.states.get("siren.eerste_etage_fire_alarm").state == "unavailable"
     assert hass.states.get("siren.zolder_fire_alarm").state == "unavailable"

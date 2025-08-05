@@ -1,4 +1,5 @@
 """Elro Connects K1 device communication."""
+
 from __future__ import annotations
 
 import asyncio
@@ -155,9 +156,11 @@ class ElroConnectsK1(DataUpdateCoordinator, K1):
             await self.async_command(
                 SET_DEVICE_NAME,
                 device_ID=device_id,
-                device_name=device_entry.name_by_user[:15]
-                if len(device_entry.name_by_user) > 15
-                else device_entry.name_by_user,
+                device_name=(
+                    device_entry.name_by_user[:15]
+                    if len(device_entry.name_by_user) > 15
+                    else device_entry.name_by_user
+                ),
             )
 
     async def _async_fetch_connector_data(self) -> None:
@@ -261,9 +264,11 @@ class ElroConnectsEntity(CoordinatorEntity):
         device_info = DeviceInfo(
             identifiers={(DOMAIN, f"{self._connector_id}_{self._device_id}")},
             manufacturer="Elro",
-            model=DEVICE_MODELS[device_type]
-            if device_type in DEVICE_MODELS
-            else device_type,
+            model=(
+                DEVICE_MODELS[device_type]
+                if device_type in DEVICE_MODELS
+                else device_type
+            ),
             name=self.data.get(ATTR_NAME, None),
             # Link to K1 connector
             via_device=(dr.CONNECTION_NETWORK_MAC, mac_address),
