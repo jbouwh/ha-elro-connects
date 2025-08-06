@@ -21,6 +21,7 @@ from elro.device import (
     ALARM_HEAT,
     ALARM_SMOKE,
     ALARM_WATER,
+    DOOR_WINDOW_SENSOR,
     ATTR_DEVICE_STATE,
     ATTR_DEVICE_TYPE,
     STATE_UNKNOWN,
@@ -53,6 +54,7 @@ DEVICE_MODELS = {
     ALARM_HEAT: "Heat alarm",
     ALARM_SMOKE: "Smoke alarm",
     ALARM_WATER: "Water alarm",
+    DOOR_WINDOW_SENSOR: "Door/window sensor",
 }
 
 
