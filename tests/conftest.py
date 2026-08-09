@@ -3,12 +3,12 @@
 from unittest.mock import AsyncMock, patch
 
 import pytest
-from pytest_homeassistant_custom_component.common import MockConfigEntry
-
-from custom_components.elro_connects.const import CONF_CONNECTOR_ID, DOMAIN
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_HOST, CONF_PORT
 from homeassistant.core import HomeAssistant
+from pytest_homeassistant_custom_component.common import MockConfigEntry
+
+from custom_components.elro_connects.const import CONF_CONNECTOR_ID, DOMAIN
 
 
 @pytest.fixture(autouse=True)
@@ -34,19 +34,24 @@ def mock_post() -> AsyncMock:
 @pytest.fixture
 def mock_k1_connector() -> dict[AsyncMock]:
     """Mock the Elro K1 connector class."""
-    with patch(
-        "custom_components.elro_connects.device.ElroConnectsK1.async_connect",
-        AsyncMock(),
-    ) as mock_connect, patch(
-        "custom_components.elro_connects.device.ElroConnectsK1.async_disconnect",
-        AsyncMock(),
-    ) as mock_disconnect, patch(
-        "custom_components.elro_connects.device.ElroConnectsK1.async_configure",
-        AsyncMock(),
-    ) as mock_configure, patch(
-        "custom_components.elro_connects.device.ElroConnectsK1.async_process_command",
-        AsyncMock(return_value={}),
-    ) as mock_result:
+    with (
+        patch(
+            "custom_components.elro_connects.device.ElroConnectsK1.async_connect",
+            AsyncMock(),
+        ) as mock_connect,
+        patch(
+            "custom_components.elro_connects.device.ElroConnectsK1.async_disconnect",
+            AsyncMock(),
+        ) as mock_disconnect,
+        patch(
+            "custom_components.elro_connects.device.ElroConnectsK1.async_configure",
+            AsyncMock(),
+        ) as mock_configure,
+        patch(
+            "custom_components.elro_connects.device.ElroConnectsK1.async_process_command",
+            AsyncMock(return_value={}),
+        ) as mock_result,
+    ):
         yield {
             "connect": mock_connect,
             "disconnect": mock_disconnect,
@@ -73,19 +78,28 @@ def mock_entry(hass: HomeAssistant) -> ConfigEntry:
 @pytest.fixture
 def mock_k1_api(hass: HomeAssistant) -> dict[AsyncMock]:
     """Mock the Elro K1 API."""
-    with patch("elro.api.K1.async_connect", AsyncMock(),) as mock_connect, patch(
-        "elro.api.K1.async_disconnect",
-        AsyncMock(),
-    ) as mock_disconnect, patch(
-        "elro.api.K1.async_configure",
-        AsyncMock(),
-    ) as mock_configure, patch(
-        "elro.api.K1.async_process_command",
-        AsyncMock(return_value={}),
-    ) as mock_result, patch(
-        "elro.auth.ElroConnectsSession._async_get_domain",
-        AsyncMock(return_value="hekr.me"),
-    ) as mock_result:
+    with (
+        patch(
+            "elro.api.K1.async_connect",
+            AsyncMock(),
+        ) as mock_connect,
+        patch(
+            "elro.api.K1.async_disconnect",
+            AsyncMock(),
+        ) as mock_disconnect,
+        patch(
+            "elro.api.K1.async_configure",
+            AsyncMock(),
+        ) as mock_configure,
+        patch(
+            "elro.api.K1.async_process_command",
+            AsyncMock(return_value={}),
+        ) as mock_result,
+        patch(
+            "elro.auth.ElroConnectsSession._async_get_domain",
+            AsyncMock(return_value="hekr.me"),
+        ) as mock_result,
+    ):
         yield {
             "connect": mock_connect,
             "disconnect": mock_disconnect,
