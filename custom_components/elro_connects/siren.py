@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 import logging
+from dataclasses import dataclass
 
 from elro.command import SILENCE_ALARM, TEST_ALARM, TEST_ALARM_ALT, CommandAttributes
 from elro.device import (
@@ -18,9 +18,11 @@ from elro.device import (
     STATES_OFFLINE,
     STATES_ON,
 )
-
-from homeassistant.components.siren import SirenEntity, SirenEntityDescription
-from homeassistant.components.siren.const import SirenEntityFeature
+from homeassistant.components.siren import (
+    SirenEntity,
+    SirenEntityDescription,
+    SirenEntityFeature,
+)
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -43,7 +45,6 @@ SIREN_DEVICE_TYPES = {
     ALARM_CO: ElroSirenEntityDescription(
         key=ALARM_CO,
         translation_key="alarm_co",
-        device_class="carbon_monoxide",
         icon="mdi:molecule-co",
         test_alarm=TEST_ALARM_ALT,
         silence_alarm=SILENCE_ALARM,
@@ -51,7 +52,6 @@ SIREN_DEVICE_TYPES = {
     ALARM_FIRE: ElroSirenEntityDescription(
         key=ALARM_FIRE,
         translation_key="alarm_fire",
-        device_class="smoke",
         icon="mdi:fire-alert",
         test_alarm=TEST_ALARM,
         silence_alarm=SILENCE_ALARM,
@@ -59,7 +59,6 @@ SIREN_DEVICE_TYPES = {
     ALARM_HEAT: ElroSirenEntityDescription(
         key=ALARM_HEAT,
         translation_key="alarm_heat",
-        device_class="heat",
         icon="mdi:fire-alert",
         test_alarm=TEST_ALARM_ALT,
         silence_alarm=SILENCE_ALARM,
@@ -67,7 +66,6 @@ SIREN_DEVICE_TYPES = {
     ALARM_SMOKE: ElroSirenEntityDescription(
         key=ALARM_SMOKE,
         translation_key="alarm_smoke",
-        device_class="smoke",
         icon="mdi:smoke",
         test_alarm=TEST_ALARM,
         silence_alarm=SILENCE_ALARM,
@@ -75,7 +73,6 @@ SIREN_DEVICE_TYPES = {
     ALARM_WATER: ElroSirenEntityDescription(
         key=ALARM_WATER,
         translation_key="alarm_water",
-        device_class="moisture",
         icon="mdi:water-alert",
         test_alarm=TEST_ALARM_ALT,
         silence_alarm=SILENCE_ALARM,
