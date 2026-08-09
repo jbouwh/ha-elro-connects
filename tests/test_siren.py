@@ -1,12 +1,11 @@
 """Test the Elro Connects siren platform."""
+
 from __future__ import annotations
 
 from unittest.mock import AsyncMock
 
-from elro.command import Command
 import pytest
-
-from custom_components.elro_connects.const import DOMAIN
+from elro.command import Command
 from homeassistant.components import siren
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
@@ -19,6 +18,8 @@ from homeassistant.const import (
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.setup import async_setup_component
+
+from custom_components.elro_connects.const import DOMAIN
 
 from .test_common import MOCK_DEVICE_STATUS_DATA
 

@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-import os
-
 from setuptools import find_packages, setup
 
 requirements = [
@@ -19,7 +16,7 @@ setup(
     name="ha-elro-connects",
     version=__version__,
     packages=find_packages(),
-    python_requires=">=3.9",
+    python_requires=">=3.14",
     install_requires=requirements,
     license="MIT license",
     url="https://github.com/jbouwh/ha-elro-connects",
@@ -31,7 +28,7 @@ setup(
         "Intended Audience :: Information Technology",
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.14",
     ],
     entry_points={
         "pytest11": ["homeassistant = pytest_homeassistant_custom_component.plugins"]

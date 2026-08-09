@@ -5,10 +5,10 @@ from __future__ import annotations
 import logging
 from typing import Any
 
+import homeassistant.helpers.config_validation as cv
+import voluptuous as vol
 from elro.api import K1
 from elro.auth import ElroConnectsConnector, ElroConnectsSession
-import voluptuous as vol
-
 from homeassistant import config_entries
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
@@ -21,7 +21,6 @@ from homeassistant.const import (
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.exceptions import HomeAssistantError
-import homeassistant.helpers.config_validation as cv
 
 from .const import CONF_CONNECTOR_ID, DEFAULT_PORT, DOMAIN
 
@@ -146,7 +145,7 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
 
     def __init__(self, config_entry: ConfigEntry) -> None:
         """Initialize options flow."""
-        self.config_entry = config_entry
+        self._config_entry = config_entry
 
     async def async_step_init(
         self, user_input: dict[str, Any] | None = None

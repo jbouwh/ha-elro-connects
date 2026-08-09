@@ -1,10 +1,9 @@
 """Test the Elro Connects config flow."""
+
 from unittest.mock import AsyncMock, patch
 
-from elro.api import K1
 import pytest
-
-from custom_components.elro_connects.const import CONF_CONNECTOR_ID, DOMAIN
+from elro.api import K1
 from homeassistant import config_entries
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
@@ -15,12 +14,10 @@ from homeassistant.const import (
     CONF_USERNAME,
 )
 from homeassistant.core import HomeAssistant
-from homeassistant.data_entry_flow import (
-    RESULT_TYPE_ABORT,
-    RESULT_TYPE_CREATE_ENTRY,
-    RESULT_TYPE_FORM,
-)
+from homeassistant.data_entry_flow import FlowResultType
 from homeassistant.setup import async_setup_component
+
+from custom_components.elro_connects.const import CONF_CONNECTOR_ID, DOMAIN
 
 from .test_common import (
     MOCK_AUTH_RESPONSE,
@@ -35,7 +32,7 @@ async def test_form(hass: HomeAssistant, mock_k1_api: dict[AsyncMock]) -> None:
     result = await hass.config_entries.flow.async_init(
         DOMAIN, context={"source": config_entries.SOURCE_USER}
     )
-    assert result["type"] == RESULT_TYPE_FORM
+    assert result["type"] == FlowResultType.FORM
     assert result["errors"] is None
 
     with patch(
@@ -52,7 +49,7 @@ async def test_form(hass: HomeAssistant, mock_k1_api: dict[AsyncMock]) -> None:
         )
         await hass.async_block_till_done()
 
-    assert result2["type"] == RESULT_TYPE_CREATE_ENTRY
+    assert result2["type"] == FlowResultType.CREATE_ENTRY
     assert result2["title"] == "Elro Connects K1 Connector"
     assert result2["data"] == {
         CONF_HOST: "1.1.1.1",
@@ -79,7 +76,7 @@ async def test_form_with_cloud(
     result = await hass.config_entries.flow.async_init(
         DOMAIN, context={"source": config_entries.SOURCE_USER}
     )
-    assert result["type"] == RESULT_TYPE_FORM
+    assert result["type"] == FlowResultType.FORM
     assert result["errors"] is None
 
     with patch(
@@ -97,7 +94,7 @@ async def test_form_with_cloud(
         )
         await hass.async_block_till_done()
 
-    assert result2["type"] == RESULT_TYPE_CREATE_ENTRY
+    assert result2["type"] == FlowResultType.CREATE_ENTRY
     assert result2["title"] == "Elro Connects K1 Connector"
     assert result2["data"] == {
         CONF_HOST: "1.1.1.1",
@@ -121,7 +118,7 @@ async def test_form_with_cloud_error(
     result = await hass.config_entries.flow.async_init(
         DOMAIN, context={"source": config_entries.SOURCE_USER}
     )
-    assert result["type"] == RESULT_TYPE_FORM
+    assert result["type"] == FlowResultType.FORM
     assert result["errors"] is None
 
     with patch(
@@ -139,7 +136,7 @@ async def test_form_with_cloud_error(
         )
         await hass.async_block_till_done()
 
-    assert result2["type"] == RESULT_TYPE_FORM
+    assert result2["type"] == FlowResultType.FORM
 
 
 @pytest.mark.parametrize(
@@ -169,7 +166,7 @@ async def test_form_cannot_connect(
         },
     )
 
-    assert result2["type"] == RESULT_TYPE_FORM
+    assert result2["type"] == FlowResultType.FORM
     assert result2["errors"] == {"base": error}
 
 
@@ -183,7 +180,7 @@ async def test_already_setup(hass: HomeAssistant, mock_k1_api: dict[AsyncMock]) 
     result = await hass.config_entries.flow.async_init(
         DOMAIN, context={"source": config_entries.SOURCE_USER}
     )
-    assert result["type"] == RESULT_TYPE_FORM
+    assert result["type"] == FlowResultType.FORM
     assert result["errors"] is None
 
     with patch(
@@ -200,7 +197,7 @@ async def test_already_setup(hass: HomeAssistant, mock_k1_api: dict[AsyncMock]) 
         )
         await hass.async_block_till_done()
 
-    assert result2["type"] == RESULT_TYPE_ABORT
+    assert result2["type"] == FlowResultType.ABORT
 
 
 async def test_update_options(
@@ -219,7 +216,7 @@ async def test_update_options(
     # Start config flow
 
     result = await hass.config_entries.options.async_init(config_entry.entry_id)
-    assert result["type"] == RESULT_TYPE_FORM
+    assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == "init"
 
     # Change interval, IP address and port
@@ -235,7 +232,7 @@ async def test_update_options(
                 CONF_CONNECTOR_ID: "ST_deadbeef0000",
             },
         )
-    assert result["type"] == RESULT_TYPE_CREATE_ENTRY
+    assert result["type"] == FlowResultType.CREATE_ENTRY
 
     assert config_entry.data.get(CONF_HOST) == "1.1.1.2"
     assert config_entry.data.get(CONF_CONNECTOR_ID) == "ST_deadbeef0000"
@@ -267,10 +264,10 @@ async def test_update_options_from_cloud(
     # Start config flow
 
     result = await hass.config_entries.options.async_init(config_entry.entry_id)
-    assert result["type"] == RESULT_TYPE_FORM
+    assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == "init"
 
-    # Change IP address and port, fetch api_key from the cloud
+    # Change IP address and port, fetch api_key FORM the cloud
     with patch(
         "custom_components.elro_connects.async_setup_entry",
         return_value=True,
@@ -285,7 +282,7 @@ async def test_update_options_from_cloud(
                 CONF_CONNECTOR_ID: "ST_deadbeef0000",
             },
         )
-    assert result["type"] == RESULT_TYPE_CREATE_ENTRY
+    assert result["type"] == FlowResultType.CREATE_ENTRY
 
     assert config_entry.data.get(CONF_HOST) == "1.1.1.2"
     assert config_entry.data.get(CONF_CONNECTOR_ID) == "ST_deadbeef0000"
@@ -312,7 +309,7 @@ async def test_update_options_cannot_connect_handling(
     # Start config flow
 
     result = await hass.config_entries.options.async_init(config_entry.entry_id)
-    assert result["type"] == RESULT_TYPE_FORM
+    assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == "init"
 
     # Change IP address and port
@@ -329,4 +326,4 @@ async def test_update_options_cannot_connect_handling(
                 CONF_CONNECTOR_ID: "ST_deadbeef0000",
             },
         )
-    assert result["type"] == RESULT_TYPE_FORM
+    assert result["type"] == FlowResultType.FORM
