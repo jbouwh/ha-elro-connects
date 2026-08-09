@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 import logging
+from dataclasses import dataclass
 
 from elro.device import (
     ATTR_BATTERY_LEVEL,
@@ -11,7 +11,6 @@ from elro.device import (
     ATTR_SIGNAL,
     STATES_OFFLINE,
 )
-
 from homeassistant.components.sensor import (
     SensorDeviceClass,
     SensorEntity,
@@ -19,7 +18,7 @@ from homeassistant.components.sensor import (
     SensorStateClass,
 )
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import PERCENTAGE
+from homeassistant.const import UnitOfRatio
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.util import slugify
@@ -44,7 +43,7 @@ SENSOR_TYPES = {
         translation_key="battery",
         device_class=SensorDeviceClass.BATTERY,
         state_class=SensorStateClass.MEASUREMENT,
-        native_unit_of_measurement=PERCENTAGE,
+        native_unit_of_measurement=UnitOfRatio.PERCENTAGE,
         maximum_value=100,
     ),
     ATTR_SIGNAL: ElroSensorDescription(
@@ -52,7 +51,7 @@ SENSOR_TYPES = {
         translation_key="signal",
         device_class=SensorDeviceClass.POWER_FACTOR,
         state_class=SensorStateClass.MEASUREMENT,
-        native_unit_of_measurement=PERCENTAGE,
+        native_unit_of_measurement=UnitOfRatio.PERCENTAGE,
         icon="mdi:signal",
         maximum_value=4,
         entity_registry_enabled_default=False,
