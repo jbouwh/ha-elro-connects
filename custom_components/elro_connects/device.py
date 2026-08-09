@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import asyncio
 import copy
-from datetime import timedelta
 import logging
+from datetime import timedelta
 from typing import Any
 
 from elro.api import K1
@@ -26,7 +26,6 @@ from elro.device import (
     STATE_UNKNOWN,
 )
 from elro.utils import update_state_data
-
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import ATTR_NAME, CONF_API_KEY, CONF_HOST, CONF_PORT
 from homeassistant.core import Event, HomeAssistant, callback
@@ -250,7 +249,7 @@ class ElroConnectsEntity(CoordinatorEntity):
         # connector
         device_registry = dr.async_get(self.hass)
         mac_address = format_mac(self._connector_id[3:])
-        device_registry.async_get_or_create(
+        k1_device = device_registry.async_get_or_create(
             model="K1 (SF40GA)",
             config_entry_id=self._entry.entry_id,
             identifiers={
@@ -264,13 +263,9 @@ class ElroConnectsEntity(CoordinatorEntity):
         device_info = DeviceInfo(
             identifiers={(DOMAIN, f"{self._connector_id}_{self._device_id}")},
             manufacturer="Elro",
-            model=(
-                DEVICE_MODELS[device_type]
-                if device_type in DEVICE_MODELS
-                else device_type
-            ),
+            model=DEVICE_MODELS.get(device_type, device_type),
             name=self.data.get(ATTR_NAME, None),
             # Link to K1 connector
-            via_device=(dr.CONNECTION_NETWORK_MAC, mac_address),
+            via_device_id=k1_device.id,
         )
         return device_info

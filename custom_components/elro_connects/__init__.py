@@ -14,7 +14,7 @@ from .device import ElroConnectsK1
 
 _LOGGER = logging.getLogger(__name__)
 
-PLATFORMS: list[Platform] = [Platform.SENSOR, Platform.SIREN, Platform.SWITCH]
+_PLATFORMS: list[Platform] = [Platform.SENSOR, Platform.SIREN, Platform.SWITCH]
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
@@ -26,7 +26,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     hass.data[DOMAIN][entry.entry_id] = elro_connects_api
 
     await elro_connects_api.async_config_entry_first_refresh()
-    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+    await hass.config_entries.async_forward_entry_setups(entry, _PLATFORMS)
 
     entry.async_on_unload(
         entry.add_update_listener(elro_connects_api.async_update_settings)
@@ -38,7 +38,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload a config entry."""
     elro_connects_api: ElroConnectsK1 = hass.data[DOMAIN][entry.entry_id]
-    if unload_ok := await hass.config_entries.async_unload_platforms(entry, PLATFORMS):
+    if unload_ok := await hass.config_entries.async_unload_platforms(entry, _PLATFORMS):
         await elro_connects_api.async_disconnect()
         hass.data[DOMAIN].pop(entry.entry_id)
 
@@ -57,9 +57,7 @@ async def async_remove_config_entry_device(
     device_id_str = device_unique_id[len(elro_connects_api.connector_id) + 1 :]
     device_id = int(device_id_str)
     # Do not remove if the device_id is in the connector_data
-    if (
+    return not (
         elro_connects_api.connector_data
         and device_id in elro_connects_api.connector_data
-    ):
-        return False
-    return True
+    )
