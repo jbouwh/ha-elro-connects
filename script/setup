@@ -28,7 +28,7 @@ fi
 
 source $VIRTUAL_ENV/bin/activate
 
-script/bootstrap
+/bin/bash script/bootstrap
 
 pre-commit install
 
