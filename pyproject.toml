@@ -124,6 +124,10 @@ max-line-length-suggestions = 72
 testpaths = [
     "tests",
 ]
+pythonpath = ["custom_components"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+
 norecursedirs = [
     ".git",
     "testing_config",
