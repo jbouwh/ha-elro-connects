@@ -2,11 +2,16 @@
   "domain": "elro_connects",
   "name": "Elro Connects",
   "codeowners": ["@jbouwh"],
+  "categories": [
+    "security_safety.alarm_systems",
+    "security_safety.smoke_co_alarms",
+    "sensors.door_window"
+  ],
   "config_flow": true,
   "documentation": "https://github.com/jbouwh/ha-elro-connects",
   "integration_type": "hub",
   "iot_class": "local_polling",
   "issue_tracker": "https://github.com/jbouwh/ha-elro-connects/issues",
   "requirements": ["lib-elro-connects==0.6.2.0"],
-  "version": "v0.2.6"
+  "version": "v0.2.7"
 }
