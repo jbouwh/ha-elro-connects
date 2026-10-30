@@ -1,5 +1,7 @@
 """Helpers for testing the Elro Connects integration."""
 
+from elro.utils import get_device_states
+
 MOCK_DEVICE_STATUS_DATA = {
     1: {
         "device_type": "FIRE_ALARM",
@@ -94,38 +96,32 @@ MOCK_DEVICE_STATUS_DATA = {
         "device_value_data": 1,
         "name": "Wall switch on",
     },
-    9: {
-        "device_type": "DOOR_WINDOW_SENSOR",
-        "signal": 4,
-        "battery": 94,
-        "device_state": "OPEN",
-        "device_status_data": {
-            "cmdId": 19,
-            "device_ID": 9,
-            "device_name": "0101",
-            "device_status": "045E66FF",
-        },
-        "device_value": "0xff",
-        "device_value_data": 255,
-        "name": "Voordeur",
-    },
-    10: {
-        "device_type": "DOOR_WINDOW_SENSOR",
-        "signal": 3,
-        "battery": 21,
-        "device_state": "CLOSED",
-        "device_status_data": {
-            "cmdId": 19,
-            "device_ID": 10,
-            "device_name": "0101",
-            "device_status": "0315AAFF",
-        },
-        "device_value": "0xff",
-        "device_value_data": 255,
-        "name": "Raam",
-    },
 }
 
+
+# Devices parsed by the library from the raw status, as reported by the connector
+_RAW_DEVICES = {
+    # device ID: (device type code, device status, name)
+    9: ("0101", "045E66FF", "Voordeur"),  # door/window sensor, open
+    10: ("0101", "0315AAFF", "Raam"),  # door/window sensor, closed
+    11: ("0102", "04501537", "Badkamer"),  # temperature sensor, 21 °C and 55 %
+    12: ("0102", "04506564", "Kelder"),  # temperature sensor, invalid measurement
+}
+for _device_id, _device_data in get_device_states(
+    [
+        {
+            "cmdId": 19,
+            "device_ID": device_id,
+            "device_name": device_name,
+            "device_status": device_status,
+        }
+        for device_id, (device_name, device_status, _) in _RAW_DEVICES.items()
+    ]
+).items():
+    MOCK_DEVICE_STATUS_DATA[_device_id] = {
+        **_device_data,
+        "name": _RAW_DEVICES[_device_id][2],
+    }
 
 MOCK_AUTH_RESPONSE = {
     "access_token": "eyasdfklasdfjalskdfjlasdggffghdfghdf.edsfgsdhJHDkdaskjdksdfyJ1aWQiOiI3OTQ5NjdfghdfghdfghdfghdfghdfghdghfghhgfhhfghfgdhfdgfghdfghzOCwianRpIjoiYTBkNzQxMTctZDQxNi00ZmUwLWI2YWEtNTMxOGUzY2QxYWM3Iiwicm9sZXMiOltdfSAg.B9ESpw7LFzHRFWxrtF44iX3CDNuQcYYAP0BQSZwN_nqOCETsa1xFq961klvPhkfHYilhJWDTqZygNyfYQJUwvg==",
