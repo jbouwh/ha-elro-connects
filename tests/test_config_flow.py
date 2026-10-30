@@ -1,5 +1,7 @@
 """Test the Elro Connects config flow."""
 
+import json
+from pathlib import Path
 from unittest.mock import AsyncMock, patch
 
 from elro.api import K1
@@ -17,6 +19,7 @@ from homeassistant.data_entry_flow import FlowResultType
 from homeassistant.setup import async_setup_component
 import pytest
 
+from custom_components.elro_connects.config_flow import ELRO_CONNECTS_DATA_SCHEMA
 from custom_components.elro_connects.const import CONF_CONNECTOR_ID, DOMAIN
 
 from .test_common import (
@@ -327,3 +330,17 @@ async def test_update_options_cannot_connect_handling(
             },
         )
     assert result["type"] == FlowResultType.FORM
+
+
+@pytest.mark.parametrize(
+    "translations", ["strings.json", "translations/en.json", "translations/nl.json"]
+)
+def test_data_descriptions(translations: str) -> None:
+    """Test every field of the config and options flow has a description."""
+    path = Path(__file__).parent.parent / "custom_components" / DOMAIN / translations
+    strings = json.loads(path.read_text(encoding="utf-8"))
+    fields = {str(key) for key in ELRO_CONNECTS_DATA_SCHEMA.schema}
+    for section, step in (("config", "user"), ("options", "init")):
+        step_strings = strings[section]["step"][step]
+        assert set(step_strings["data"]) == fields
+        assert set(step_strings["data_description"]) == fields
