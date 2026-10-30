@@ -36,30 +36,36 @@ class ElroSensorDescription(SensorEntityDescription):
 
 
 SENSOR_TYPES = {
-    ATTR_BATTERY_LEVEL: ElroSensorDescription(
-        key=ATTR_BATTERY_LEVEL,
-        translation_key="battery",
-        device_class=SensorDeviceClass.BATTERY,
-        state_class=SensorStateClass.MEASUREMENT,
-        native_unit_of_measurement=UnitOfRatio.PERCENTAGE,
-        maximum_value=100,
+    ATTR_BATTERY_LEVEL: (
+        ElroSensorDescription(
+            key=ATTR_BATTERY_LEVEL,
+            translation_key="battery",
+            device_class=SensorDeviceClass.BATTERY,
+            state_class=SensorStateClass.MEASUREMENT,
+            native_unit_of_measurement=UnitOfRatio.PERCENTAGE,
+            maximum_value=100,
+        ),
     ),
-    ATTR_SIGNAL: ElroSensorDescription(
-        key=ATTR_SIGNAL,
-        translation_key="signal",
-        device_class=SensorDeviceClass.POWER_FACTOR,
-        state_class=SensorStateClass.MEASUREMENT,
-        native_unit_of_measurement=UnitOfRatio.PERCENTAGE,
-        icon="mdi:signal",
-        maximum_value=4,
-        entity_registry_enabled_default=False,
+    ATTR_SIGNAL: (
+        ElroSensorDescription(
+            key=ATTR_SIGNAL,
+            translation_key="signal",
+            device_class=SensorDeviceClass.POWER_FACTOR,
+            state_class=SensorStateClass.MEASUREMENT,
+            native_unit_of_measurement=UnitOfRatio.PERCENTAGE,
+            icon="mdi:signal",
+            maximum_value=4,
+            entity_registry_enabled_default=False,
+        ),
     ),
-    ATTR_DEVICE_STATE: ElroSensorDescription(
-        key=ATTR_DEVICE_STATE,
-        translation_key="device_state",
-        device_class=SensorDeviceClass.ENUM,
-        icon="mdi:state-machine",
-        maximum_value=None,
+    ATTR_DEVICE_STATE: (
+        ElroSensorDescription(
+            key=ATTR_DEVICE_STATE,
+            translation_key="device_state",
+            device_class=SensorDeviceClass.ENUM,
+            icon="mdi:state-machine",
+            maximum_value=None,
+        ),
     ),
 }
 
@@ -70,13 +76,10 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up the sensor platform."""
-    current: set[int] = set()
-
     async_set_up_discovery_helper(
         hass,
         ElroConnectsSensor,
         config_entry,
-        current,
         SENSOR_TYPES,
         async_add_entities,
     )

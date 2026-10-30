@@ -36,12 +36,14 @@ class ElroSwitchEntityDescription(SwitchEntityDescription):
 _LOGGER = logging.getLogger(__name__)
 
 SWITCH_DEVICE_TYPES = {
-    SOCKET: ElroSwitchEntityDescription(
-        key=SOCKET,
-        translation_key="socket",
-        device_class=SwitchDeviceClass.OUTLET,
-        turn_on=SOCKET_ON,
-        turn_off=SOCKET_OFF,
+    SOCKET: (
+        ElroSwitchEntityDescription(
+            key=SOCKET,
+            translation_key="socket",
+            device_class=SwitchDeviceClass.OUTLET,
+            turn_on=SOCKET_ON,
+            turn_off=SOCKET_OFF,
+        ),
     ),
 }
 
@@ -52,13 +54,10 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up the sensor platform."""
-    current: set[int] = set()
-
     async_set_up_discovery_helper(
         hass,
         ElroConnectsSwitch,
         config_entry,
-        current,
         SWITCH_DEVICE_TYPES,
         async_add_entities,
     )
