@@ -14,7 +14,7 @@ rules:
     comment: The integration does not register custom actions.
   docs-high-level-description: done
   docs-installation-instructions: done
-  docs-removal-instructions: todo
+  docs-removal-instructions: done
   entity-event-setup:
     status: exempt
     comment: Entities do not subscribe to events.
@@ -71,8 +71,12 @@ rules:
     status: exempt
     comment: There are no repairable issues.
   stale-devices:
-    status: todo
-    comment: Devices that are no longer reported by the connector should be removed automatically.
+    status: exempt
+    comment: |
+      The K1 connector sends each device in a separate UDP message, so a device
+      can be missing from a single update. To avoid removing devices that are
+      still there, stale devices are not removed automatically. A device that
+      is no longer reported by the connector can be deleted from the UI.
 
   # Platinum
   async-dependency: done

@@ -105,6 +105,18 @@ custom_components/elro_connects/manifest.json
 ...
 ```
 
+## Removing devices
+
+Devices are not removed automatically. The K1 connector sends each device in a separate UDP message, so a device can be missing from a single update without being removed from the connector. When a device is removed from the connector in the Elro Connects app, it can be deleted in Home Assistant: open the device page, select the menu (⋮) and select `Delete`. This is only possible when the connector no longer reports the device.
+
+## Removing the integration
+
+This integration follows standard integration removal, no extra steps are required.
+
+1. Go to `Settings` -> `Devices & services` and select the `Elro Connects` integration.
+2. Select the menu (⋮) of the integration entry and select `Delete`.
+3. If the integration was installed with HACS, it can be removed in HACS as well, and Home Assistant needs a restart.
+
 ## Configuration is done in the UI
 
 <!---->
