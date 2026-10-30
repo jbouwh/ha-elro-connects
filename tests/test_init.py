@@ -373,3 +373,39 @@ async def test_migrate_from_future_version(
     entry.add_to_hass(hass)
     assert not await hass.config_entries.async_setup(entry.entry_id)
     assert entry.state is ConfigEntryState.MIGRATION_ERROR
+
+
+async def test_update_device_name_ignored(
+    hass: HomeAssistant,
+    device_registry: dr.DeviceRegistry,
+    mock_k1_connector: dict[AsyncMock],
+    mock_entry: ConfigEntry,
+) -> None:
+    """Test a reset name or an unknown device does not update the connector."""
+    mock_k1_connector["result"].return_value = MOCK_DEVICE_STATUS_DATA
+    assert await async_setup_component(hass, DOMAIN, {})
+    await hass.async_block_till_done()
+    device_entry = device_registry.async_get_device(
+        identifiers={(DOMAIN, "ST_deadbeef0000_4")}
+    )
+    assert device_entry
+    device_registry.async_update_device(device_entry.id, name_by_user="New name")
+    await hass.async_block_till_done()
+
+    # Resetting the name to the default does not change the name in the connector
+    mock_k1_connector["result"].reset_mock()
+    device_registry.async_update_device(device_entry.id, name_by_user=None)
+    await hass.async_block_till_done()
+    assert mock_k1_connector["result"].call_count == 0
+
+    # An update event of a device that no longer exists is ignored
+    hass.bus.async_fire(
+        dr.EVENT_DEVICE_REGISTRY_UPDATED,
+        {
+            "action": "update",
+            "device_id": "unknown",
+            "changes": {"name_by_user": "Old name"},
+        },
+    )
+    await hass.async_block_till_done()
+    assert mock_k1_connector["result"].call_count == 0

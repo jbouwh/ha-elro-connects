@@ -18,7 +18,7 @@ from homeassistant.helpers.entity import EntityDescription
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import ALARM_GAS, DOMAIN
-from .coordinator import ElroConnectsCoordinator
+from .coordinator import DeviceData, ElroConnectsCoordinator
 
 DEVICE_MODELS = {
     ALARM_CO: "CO alarm",
@@ -45,7 +45,7 @@ class ElroConnectsEntity(CoordinatorEntity[ElroConnectsCoordinator]):
         """Initialize the Elro connects entity."""
         super().__init__(coordinator)
 
-        self.data: dict = coordinator.connector_data[device_id]
+        self.data: DeviceData = coordinator.connector_data[device_id]
 
         self._connector_id = coordinator.connector_id
         self._device_id = device_id

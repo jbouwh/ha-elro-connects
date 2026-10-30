@@ -30,7 +30,7 @@ DEVICE_STATE_OPTIONS = sorted({slugify(state) for state in DEVICE_STATE.values()
 _reported_device_states: set[str] = set()
 
 
-@dataclass
+@dataclass(frozen=True, kw_only=True)
 class ElroSensorDescription(SensorEntityDescription):
     """Class that holds sensor specific sensor info."""
 
@@ -89,7 +89,7 @@ async def async_setup_entry(
 
 
 class ElroConnectsSensor(ElroConnectsEntity, SensorEntity):
-    """Elro Connects Fire Alarm Entity."""
+    """Elro Connects sensor entity."""
 
     entity_description: ElroSensorDescription
 
@@ -98,10 +98,11 @@ class ElroConnectsSensor(ElroConnectsEntity, SensorEntity):
         """Return the state of the sensor."""
         raw_value = self.data[self.entity_description.key]
         if max_value := self.entity_description.maximum_value:
-            value = ranged_value_to_percentage((1, max_value), raw_value)
-            return value if raw_value <= max_value else None
-        value = slugify(raw_value)
-        if value not in DEVICE_STATE_OPTIONS:
+            if raw_value > max_value:
+                return None
+            return ranged_value_to_percentage((1, max_value), raw_value)
+        state = slugify(raw_value)
+        if state not in DEVICE_STATE_OPTIONS:
             if raw_value not in _reported_device_states:
                 _reported_device_states.add(raw_value)
                 _LOGGER.warning(
@@ -111,4 +112,4 @@ class ElroConnectsSensor(ElroConnectsEntity, SensorEntity):
                     self.entity_id,
                 )
             return None
-        return value
+        return state

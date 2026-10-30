@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass
 import logging
+from typing import Any
 
 from elro.command import SOCKET_OFF, SOCKET_ON, CommandAttributes
 from elro.device import ATTR_DEVICE_VALUE, DEVICE_VALUE_OFF, DEVICE_VALUE_ON, SOCKET
@@ -18,12 +19,12 @@ from .entity import ElroConnectsEntity
 from .helpers import async_set_up_discovery_helper
 
 
-@dataclass
+@dataclass(frozen=True, kw_only=True)
 class ElroSwitchEntityDescription(SwitchEntityDescription):
     """A class that describes elro siren entities."""
 
-    turn_on: CommandAttributes | None = None
-    turn_off: CommandAttributes | None = None
+    turn_on: CommandAttributes
+    turn_off: CommandAttributes
 
 
 _LOGGER = logging.getLogger(__name__)
@@ -68,9 +69,9 @@ class ElroConnectsSwitch(ElroConnectsEntity, SwitchEntity):
         """Return true if the socket is on or none if the value is unknown."""
         if self.data[ATTR_DEVICE_VALUE] not in (DEVICE_VALUE_OFF, DEVICE_VALUE_ON):
             return None
-        return self.data[ATTR_DEVICE_VALUE] == DEVICE_VALUE_ON
+        return bool(self.data[ATTR_DEVICE_VALUE] == DEVICE_VALUE_ON)
 
-    async def async_turn_on(self, **kwargs) -> None:
+    async def async_turn_on(self, **kwargs: Any) -> None:
         """Turn switch on."""
         _LOGGER.debug("Sending turn_on request for entity %s", self.entity_id)
         await self.coordinator.async_command(
@@ -80,7 +81,7 @@ class ElroConnectsSwitch(ElroConnectsEntity, SwitchEntity):
         self.data[ATTR_DEVICE_VALUE] = DEVICE_VALUE_ON
         self.async_write_ha_state()
 
-    async def async_turn_off(self, **kwargs) -> None:
+    async def async_turn_off(self, **kwargs: Any) -> None:
         """Turn switch off."""
         _LOGGER.debug("Sending turn_off request for entity %s", self.entity_id)
         await self.coordinator.async_command(

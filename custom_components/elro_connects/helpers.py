@@ -9,17 +9,18 @@ from homeassistant.helpers.entity import EntityDescription
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import ELRO_CONNECTS_NEW_DEVICE
-from .coordinator import ElroConnectsConfigEntry
+from .coordinator import DeviceData, ElroConnectsConfigEntry
+from .entity import ElroConnectsEntity
 
 
 @callback
 def async_set_up_discovery_helper(
     hass: HomeAssistant,
-    entity_class: type,
+    entity_class: type[ElroConnectsEntity],
     entry: ElroConnectsConfigEntry,
     descriptions: Mapping[str, tuple[EntityDescription, ...]],
     async_add_entities: AddEntitiesCallback,
-):
+) -> None:
     """Help to set up the entities of a platform for new devices.
 
     The descriptions are keyed by device type or by device attribute.
@@ -29,12 +30,12 @@ def async_set_up_discovery_helper(
     current: set[int] = set()
 
     @callback
-    def _async_add_entities():
+    def _async_add_entities() -> None:
         coordinator = entry.runtime_data
-        device_data: dict[int, dict] = coordinator.connector_data
+        device_data: dict[int, DeviceData] = coordinator.connector_data
         if not device_data:
             return
-        new_items = []
+        new_items: list[ElroConnectsEntity] = []
         for device_id, attributes in device_data.items():
             # description
             if device_id in current:

@@ -4,6 +4,7 @@ fnvhash==0.1.0
 freezegun==1.5.5
 lru-dict==1.4.01
 mock-open>=1.4.0
+mypy==2.4.0
 pipdeptree==2.26.1
 pre-commit==4.6.1
 pytest==9.0.3
