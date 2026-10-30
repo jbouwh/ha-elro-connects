@@ -29,19 +29,21 @@ async def async_setup_entry(
     # The K1 connector is the hub the devices are linked to
     device_registry = dr.async_get(hass)
     mac_connection = (dr.CONNECTION_NETWORK_MAC, coordinator.mac_address)
-    if hub := device_registry.async_get_device(identifiers={mac_connection}):
+    if hub := device_registry.async_get_device_by_identifier(
+        mac_connection, entry.entry_id
+    ):
         # Migrate the hub that used the MAC address as identifier
         device_registry.async_update_device(
             hub.id, new_identifiers={coordinator.hub_identifier}
         )
-    device_registry.async_get_or_create(
+    coordinator.hub_device_id = device_registry.async_get_or_create(
         config_entry_id=entry.entry_id,
         identifiers={coordinator.hub_identifier},
         connections={mac_connection},
         manufacturer="Elro",
         model="K1 (SF40GA)",
         name=f"Elro Connects K1 {coordinator.connector_id}",
-    )
+    ).id
 
     entry.async_on_unload(
         hass.bus.async_listen(

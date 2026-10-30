@@ -6,11 +6,8 @@ from typing import Any
 
 from elro.command import SOCKET_OFF, SOCKET_ON, CommandAttributes
 from elro.device import ATTR_DEVICE_VALUE, DEVICE_VALUE_OFF, DEVICE_VALUE_ON, SOCKET
-from homeassistant.components.switch import (
-    SwitchDeviceClass,
-    SwitchEntity,
-    SwitchEntityDescription,
-)
+from homeassistant.components.switch import SwitchEntity, SwitchEntityDescription
+from homeassistant.components.switch.const import SwitchDeviceClass
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 

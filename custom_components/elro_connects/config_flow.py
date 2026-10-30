@@ -23,7 +23,7 @@ from homeassistant.helpers.selector import (
     TextSelectorConfig,
     TextSelectorType,
 )
-import voluptuous as vol
+import probatio
 
 from .const import CONF_CONNECTOR_ID, DEFAULT_PORT, DOMAIN
 
@@ -32,19 +32,19 @@ _LOGGER = logging.getLogger(__name__)
 # Hide the secrets in the forms
 SECRET_SELECTOR = TextSelector(TextSelectorConfig(type=TextSelectorType.PASSWORD))
 
-ELRO_CONNECTS_DATA_SCHEMA = vol.Schema(
+ELRO_CONNECTS_DATA_SCHEMA = probatio.Schema(
     {
-        vol.Required(CONF_HOST): str,
-        vol.Required(CONF_PORT, default=DEFAULT_PORT): cv.port,
-        vol.Optional(CONF_USERNAME): str,
-        vol.Optional(CONF_PASSWORD): SECRET_SELECTOR,
-        vol.Optional(CONF_CONNECTOR_ID): str,
-        vol.Optional(CONF_API_KEY): SECRET_SELECTOR,
+        probatio.Required(CONF_HOST): str,
+        probatio.Required(CONF_PORT, default=DEFAULT_PORT): cv.port,
+        probatio.Optional(CONF_USERNAME): str,
+        probatio.Optional(CONF_PASSWORD): SECRET_SELECTOR,
+        probatio.Optional(CONF_CONNECTOR_ID): str,
+        probatio.Optional(CONF_API_KEY): SECRET_SELECTOR,
     }
 )
 
 # The connector cannot be changed when reconfiguring
-RECONFIGURE_SCHEMA = vol.Schema(
+RECONFIGURE_SCHEMA = probatio.Schema(
     {
         key: (
             TextSelector(TextSelectorConfig(read_only=True))
