@@ -3,12 +3,7 @@
 from dataclasses import dataclass
 import logging
 
-from elro.device import (
-    ATTR_BATTERY_LEVEL,
-    ATTR_DEVICE_STATE,
-    ATTR_SIGNAL,
-    STATES_OFFLINE,
-)
+from elro.device import ATTR_BATTERY_LEVEL, ATTR_DEVICE_STATE, ATTR_SIGNAL
 from homeassistant.components.sensor import (
     SensorDeviceClass,
     SensorEntity,
@@ -89,11 +84,6 @@ class ElroConnectsSensor(ElroConnectsEntity, SensorEntity):
     """Elro Connects Fire Alarm Entity."""
 
     entity_description: ElroSensorDescription
-
-    @property
-    def available(self) -> bool:
-        """Return true if device is on or none if the device is offline."""
-        return bool(self.data) and self.data[ATTR_DEVICE_STATE] not in STATES_OFFLINE
 
     @property
     def native_value(self) -> int | float | None:

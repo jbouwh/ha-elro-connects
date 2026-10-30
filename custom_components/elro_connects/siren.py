@@ -13,7 +13,6 @@ from elro.device import (
     ATTR_DEVICE_STATE,
     STATE_SILENCE,
     STATE_TEST_ALARM,
-    STATES_OFFLINE,
     STATES_ON,
 )
 from homeassistant.components.siren import (
@@ -110,10 +109,8 @@ class ElroConnectsSiren(ElroConnectsEntity, SirenEntity):
     _attr_supported_features = SirenEntityFeature.TURN_ON | SirenEntityFeature.TURN_OFF
 
     @property
-    def is_on(self) -> bool | None:
-        """Return true if device is on or none if the device is offline."""
-        if not self.data or self.data[ATTR_DEVICE_STATE] in STATES_OFFLINE:
-            return None
+    def is_on(self) -> bool:
+        """Return true if the alarm is active."""
         return self.data[ATTR_DEVICE_STATE] in STATES_ON
 
     async def async_turn_on(self, **kwargs) -> None:
