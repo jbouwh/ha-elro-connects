@@ -16,6 +16,14 @@
                     "password": "Senha",
                     "connector_id": "ID do conector",
                     "api_key": "Chave API"
+                },
+                "data_description": {
+                    "host": "O nome do host ou o endereço IP do conector K1 na sua rede local.",
+                    "port": "A porta UDP do conector K1. A porta predefinida 1025 funciona na maioria dos casos.",
+                    "username": "Opcional. A conta da aplicação Elro Connects. Só é utilizada durante a configuração, para obter o ID do conector e a chave API da nuvem.",
+                    "password": "Opcional. A palavra-passe da conta da aplicação Elro Connects.",
+                    "connector_id": "O ID do conector, que começa por ST_. Na aplicação Elro Connects, abra o separador inicial, abra as definições e selecione o conector atual. Não é necessário se iniciar sessão com a sua conta.",
+                    "api_key": "Opcional. Só é necessária se o conector não fornecer a chave localmente. É preenchida automaticamente se iniciar sessão com a sua conta."
                 }
             }
         }
@@ -30,6 +38,14 @@
                     "password": "Senha",
                     "connector_id": "ID do conector",
                     "api_key": "Chave API"
+                },
+                "data_description": {
+                    "host": "O nome do host ou o endereço IP do conector K1 na sua rede local.",
+                    "port": "A porta UDP do conector K1. A porta predefinida 1025 funciona na maioria dos casos.",
+                    "username": "Opcional. A conta da aplicação Elro Connects. Só é utilizada durante a configuração, para obter o ID do conector e a chave API da nuvem.",
+                    "password": "Opcional. A palavra-passe da conta da aplicação Elro Connects.",
+                    "connector_id": "O ID do conector, que começa por ST_. Na aplicação Elro Connects, abra o separador inicial, abra as definições e selecione o conector atual. Não é necessário se iniciar sessão com a sua conta.",
+                    "api_key": "Opcional. Só é necessária se o conector não fornecer a chave localmente. É preenchida automaticamente se iniciar sessão com a sua conta."
                 }
             }
         }
@@ -79,7 +95,7 @@
         },
         "switch": {
             "socket": {
-              "name": "Tomada de parede"
+                "name": "Tomada de parede"
             }
         }
     }

@@ -9,6 +9,14 @@
           "password": "[%key:common::config_flow::data::password%]",
           "connector_id": "Connector ID",
           "api_key": "[%key:common::config_flow::data::api_key%]"
+        },
+        "data_description": {
+          "host": "The hostname or IP address of the K1 connector in your local network.",
+          "port": "The UDP port of the K1 connector. The default port 1025 works in most cases.",
+          "username": "Optional. The account of the Elro Connects app. It is only used during setup, to get the connector ID and API key from the cloud.",
+          "password": "Optional. The password of the Elro Connects app account.",
+          "connector_id": "The ID of the connector, which starts with ST_. In the Elro Connects app, go to the home tab, open the settings and select current connector. Not needed if you log in with your account.",
+          "api_key": "Optional. Only needed if the connector does not provide the key locally. It is filled in automatically if you log in with your account."
         }
       }
     },
@@ -30,6 +38,14 @@
           "password": "[%key:common::config_flow::data::password%]",
           "connector_id": "Connector ID",
           "api_key": "[%key:common::config_flow::data::api_key%]"
+        },
+        "data_description": {
+          "host": "[%key:component::elro_connects::config::step::user::data_description::host%]",
+          "port": "[%key:component::elro_connects::config::step::user::data_description::port%]",
+          "username": "[%key:component::elro_connects::config::step::user::data_description::username%]",
+          "password": "[%key:component::elro_connects::config::step::user::data_description::password%]",
+          "connector_id": "[%key:component::elro_connects::config::step::user::data_description::connector_id%]",
+          "api_key": "[%key:component::elro_connects::config::step::user::data_description::api_key%]"
         }
       }
     }

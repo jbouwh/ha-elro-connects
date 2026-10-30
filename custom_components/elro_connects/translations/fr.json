@@ -16,6 +16,14 @@
                     "password": "Mot de passe",
                     "connector_id": "Connecteur ID",
                     "api_key": "Clé API"
+                },
+                "data_description": {
+                    "host": "Le nom d'hôte ou l'adresse IP du connecteur K1 sur votre réseau local.",
+                    "port": "Le port UDP du connecteur K1. Le port par défaut 1025 convient dans la plupart des cas.",
+                    "username": "Facultatif. Le compte de l'application Elro Connects. Il est utilisé uniquement lors de la configuration, pour récupérer l'ID du connecteur et la clé API depuis le cloud.",
+                    "password": "Facultatif. Le mot de passe du compte de l'application Elro Connects.",
+                    "connector_id": "L'ID du connecteur, qui commence par ST_. Dans l'application Elro Connects, allez dans l'onglet d'accueil, ouvrez les paramètres et sélectionnez le connecteur actuel. Inutile si vous vous connectez avec votre compte.",
+                    "api_key": "Facultatif. Nécessaire uniquement si le connecteur ne fournit pas la clé localement. Elle est remplie automatiquement si vous vous connectez avec votre compte."
                 }
             }
         }
@@ -30,7 +38,15 @@
                     "password": "Mot de passe",
                     "connector_id": "Connecteur ID",
                     "api_key": "Clé API"
-               }
+                },
+                "data_description": {
+                    "host": "Le nom d'hôte ou l'adresse IP du connecteur K1 sur votre réseau local.",
+                    "port": "Le port UDP du connecteur K1. Le port par défaut 1025 convient dans la plupart des cas.",
+                    "username": "Facultatif. Le compte de l'application Elro Connects. Il est utilisé uniquement lors de la configuration, pour récupérer l'ID du connecteur et la clé API depuis le cloud.",
+                    "password": "Facultatif. Le mot de passe du compte de l'application Elro Connects.",
+                    "connector_id": "L'ID du connecteur, qui commence par ST_. Dans l'application Elro Connects, allez dans l'onglet d'accueil, ouvrez les paramètres et sélectionnez le connecteur actuel. Inutile si vous vous connectez avec votre compte.",
+                    "api_key": "Facultatif. Nécessaire uniquement si le connecteur ne fournit pas la clé localement. Elle est remplie automatiquement si vous vous connectez avec votre compte."
+                }
             }
         }
     },
@@ -79,7 +95,7 @@
         },
         "switch": {
             "socket": {
-              "name": "La prise électrique"
+                "name": "La prise électrique"
             }
         }
     }

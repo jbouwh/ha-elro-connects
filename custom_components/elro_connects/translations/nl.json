@@ -16,6 +16,14 @@
                     "password": "Wachtwoord",
                     "connector_id": "Connector ID",
                     "api_key": "API key"
+                },
+                "data_description": {
+                    "host": "De hostnaam of het IP-adres van de K1-connector in je lokale netwerk.",
+                    "port": "De UDP-poort van de K1-connector. De standaardpoort 1025 werkt in de meeste gevallen.",
+                    "username": "Optioneel. Het account van de Elro Connects-app. Wordt alleen tijdens de installatie gebruikt om het connector-ID en de API key uit de cloud op te halen.",
+                    "password": "Optioneel. Het wachtwoord van het account van de Elro Connects-app.",
+                    "connector_id": "Het ID van de connector, dat begint met ST_. Ga in de Elro Connects-app naar het tabblad home, open de instellingen en kies huidige connector. Niet nodig als je inlogt met je account.",
+                    "api_key": "Optioneel. Alleen nodig als de connector de sleutel niet lokaal geeft. Wordt automatisch ingevuld als je inlogt met je account."
                 }
             }
         }
@@ -30,6 +38,14 @@
                     "password": "Wachtwoord",
                     "connector_id": "Connector ID",
                     "api_key": "API key"
+                },
+                "data_description": {
+                    "host": "De hostnaam of het IP-adres van de K1-connector in je lokale netwerk.",
+                    "port": "De UDP-poort van de K1-connector. De standaardpoort 1025 werkt in de meeste gevallen.",
+                    "username": "Optioneel. Het account van de Elro Connects-app. Wordt alleen tijdens de installatie gebruikt om het connector-ID en de API key uit de cloud op te halen.",
+                    "password": "Optioneel. Het wachtwoord van het account van de Elro Connects-app.",
+                    "connector_id": "Het ID van de connector, dat begint met ST_. Ga in de Elro Connects-app naar het tabblad home, open de instellingen en kies huidige connector. Niet nodig als je inlogt met je account.",
+                    "api_key": "Optioneel. Alleen nodig als de connector de sleutel niet lokaal geeft. Wordt automatisch ingevuld als je inlogt met je account."
                 }
             }
         }

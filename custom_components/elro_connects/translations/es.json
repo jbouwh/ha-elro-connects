@@ -16,6 +16,14 @@
                     "password": "Clave",
                     "connector_id": "Connector ID",
                     "api_key": "Clave API"
+                },
+                "data_description": {
+                    "host": "El nombre de host o la dirección IP del conector K1 en tu red local.",
+                    "port": "El puerto UDP del conector K1. El puerto predeterminado 1025 funciona en la mayoría de los casos.",
+                    "username": "Opcional. La cuenta de la app Elro Connects. Solo se usa durante la configuración para obtener el ID del conector y la clave API de la nube.",
+                    "password": "Opcional. La contraseña de la cuenta de la app Elro Connects.",
+                    "connector_id": "El ID del conector, que empieza por ST_. En la app Elro Connects, ve a la pestaña de inicio, abre los ajustes y selecciona el conector actual. No es necesario si inicias sesión con tu cuenta.",
+                    "api_key": "Opcional. Solo es necesaria si el conector no proporciona la clave localmente. Se rellena automáticamente si inicias sesión con tu cuenta."
                 }
             }
         }
@@ -30,6 +38,14 @@
                     "password": "Clave",
                     "connector_id": "Connector ID",
                     "api_key": "Clave API"
+                },
+                "data_description": {
+                    "host": "El nombre de host o la dirección IP del conector K1 en tu red local.",
+                    "port": "El puerto UDP del conector K1. El puerto predeterminado 1025 funciona en la mayoría de los casos.",
+                    "username": "Opcional. La cuenta de la app Elro Connects. Solo se usa durante la configuración para obtener el ID del conector y la clave API de la nube.",
+                    "password": "Opcional. La contraseña de la cuenta de la app Elro Connects.",
+                    "connector_id": "El ID del conector, que empieza por ST_. En la app Elro Connects, ve a la pestaña de inicio, abre los ajustes y selecciona el conector actual. No es necesario si inicias sesión con tu cuenta.",
+                    "api_key": "Opcional. Solo es necesaria si el conector no proporciona la clave localmente. Se rellena automáticamente si inicias sesión con tu cuenta."
                 }
             }
         }
@@ -79,7 +95,7 @@
         },
         "switch": {
             "socket": {
-              "name": "Toma de pared"
+                "name": "Toma de pared"
             }
         }
     }
