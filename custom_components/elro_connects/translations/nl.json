@@ -30,7 +30,7 @@
                     "password": "Wachtwoord",
                     "connector_id": "Connector ID",
                     "api_key": "API key"
-               }
+                }
             }
         }
     },
@@ -79,8 +79,13 @@
         },
         "switch": {
             "socket": {
-              "name": "Stopcontact"
+                "name": "Stopcontact"
             }
+        }
+    },
+    "exceptions": {
+        "command_failed": {
+            "message": "Kan het commando niet naar de K1-connector sturen: {error}"
         }
     }
 }

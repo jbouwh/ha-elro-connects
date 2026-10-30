@@ -2,6 +2,7 @@
 
 from unittest.mock import AsyncMock
 
+from elro.api import K1
 from elro.command import Command
 from homeassistant.components import switch
 from homeassistant.config_entries import ConfigEntry
@@ -13,6 +14,7 @@ from homeassistant.const import (
     STATE_ON,
 )
 from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import HomeAssistantError
 from homeassistant.setup import async_setup_component
 import pytest
 
@@ -114,3 +116,29 @@ async def test_socket_testing(
         == "01000000"
     )
     assert mock_k1_connector["result"].call_args[1] == {"device_ID": 7}
+
+
+@pytest.mark.parametrize("service", [SERVICE_TURN_ON, SERVICE_TURN_OFF])
+async def test_switch_command_fails(
+    hass: HomeAssistant,
+    mock_k1_connector: dict[AsyncMock],
+    mock_entry: ConfigEntry,
+    service: str,
+) -> None:
+    """Test a failing command raises a translated error and keeps the state."""
+    entity_id = "switch.wall_switch_off_socket"
+    mock_k1_connector["result"].return_value = MOCK_DEVICE_STATUS_DATA
+    assert await async_setup_component(hass, DOMAIN, {})
+    await hass.async_block_till_done()
+    state = hass.states.get(entity_id).state
+
+    mock_k1_connector["result"].side_effect = K1.K1ConnectionError("timeout")
+    with pytest.raises(HomeAssistantError) as exc_info:
+        await hass.services.async_call(
+            switch.DOMAIN, service, {ATTR_ENTITY_ID: entity_id}, blocking=True
+        )
+    assert exc_info.value.translation_key == "command_failed"
+    assert (
+        str(exc_info.value) == "Could not send the command to the K1 connector: timeout"
+    )
+    assert hass.states.get(entity_id).state == state

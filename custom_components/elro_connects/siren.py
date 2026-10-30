@@ -38,6 +38,8 @@ class ElroSirenEntityDescription(SirenEntityDescription):
 
 _LOGGER = logging.getLogger(__name__)
 
+PARALLEL_UPDATES = 1
+
 SIREN_DEVICE_TYPES = {
     ALARM_CO: (
         ElroSirenEntityDescription(

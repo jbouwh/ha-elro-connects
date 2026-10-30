@@ -28,6 +28,8 @@ class ElroSwitchEntityDescription(SwitchEntityDescription):
 
 _LOGGER = logging.getLogger(__name__)
 
+PARALLEL_UPDATES = 1
+
 SWITCH_DEVICE_TYPES = {
     SOCKET: (
         ElroSwitchEntityDescription(

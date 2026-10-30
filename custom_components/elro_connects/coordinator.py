@@ -18,6 +18,7 @@ from elro.utils import update_state_data
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_API_KEY, CONF_HOST, CONF_PORT
 from homeassistant.core import Event, HomeAssistant
+from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.device_registry import format_mac
 from homeassistant.helpers.dispatcher import async_dispatcher_send
@@ -150,7 +151,14 @@ class ElroConnectsCoordinator(DataUpdateCoordinator[dict[int, dict]]):
     ) -> dict[int, dict[str, Any]] | None:
         """Execute a synchronized command through the K1 connector."""
         async with self._api_lock:
-            return await self.api.async_process_command(command, **argv)
+            try:
+                return await self.api.async_process_command(command, **argv)
+            except K1.K1ConnectionError as err:
+                raise HomeAssistantError(
+                    translation_domain=DOMAIN,
+                    translation_key="command_failed",
+                    translation_placeholders={"error": str(err)},
+                ) from err
 
     async def async_disconnect(self) -> None:
         """Disconnect from the K1 connector."""
