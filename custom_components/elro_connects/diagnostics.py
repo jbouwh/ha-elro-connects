@@ -14,8 +14,7 @@ TO_REDACT = {CONF_API_KEY, CONF_PASSWORD, CONF_USERNAME}
 
 def _mask_connector_id(data: dict[str, Any]) -> dict[str, Any]:
     """Mask the device specific part of the MAC address in the connector ID."""
-    if not (connector_id := data.get(CONF_CONNECTOR_ID)):
-        return data
+    connector_id: str = data[CONF_CONNECTOR_ID]
     # The connector ID is ST_ followed by the MAC address, keep the vendor part
     return {**data, CONF_CONNECTOR_ID: connector_id[:9] + "*" * len(connector_id[9:])}
 
@@ -26,10 +25,7 @@ async def async_get_config_entry_diagnostics(
     """Return diagnostics for a config entry."""
     coordinator = entry.runtime_data
     return {
-        "entry": {
-            "data": _mask_connector_id(async_redact_data(entry.data, TO_REDACT)),
-            "options": _mask_connector_id(async_redact_data(entry.options, TO_REDACT)),
-        },
+        "entry": _mask_connector_id(async_redact_data(entry.data, TO_REDACT)),
         "coordinator": {
             "last_update_success": coordinator.last_update_success,
             "last_exception": repr(coordinator.last_exception),
