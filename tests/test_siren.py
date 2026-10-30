@@ -13,9 +13,11 @@ from homeassistant.const import (
     STATE_OFF,
     STATE_ON,
     STATE_UNAVAILABLE,
+    EntityCategory,
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
+from homeassistant.helpers import entity_registry as er
 from homeassistant.setup import async_setup_component
 import pytest
 
@@ -51,6 +53,7 @@ from .test_common import MOCK_DEVICE_STATUS_DATA
 )
 async def test_setup_integration_with_siren_platform(
     hass: HomeAssistant,
+    entity_registry: er.EntityRegistry,
     mock_k1_connector: dict[AsyncMock],
     mock_entry: ConfigEntry,
     entity_id: str,
@@ -68,6 +71,11 @@ async def test_setup_integration_with_siren_platform(
 
     assert entity.state == state
     assert attributes["friendly_name"] == name
+    # The siren is a tool to test and silence the alarm
+    assert (
+        entity_registry.async_get(entity_id).entity_category
+        is EntityCategory.DIAGNOSTIC
+    )
 
 
 async def test_alarm_testing(

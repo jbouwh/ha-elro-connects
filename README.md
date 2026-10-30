@@ -9,7 +9,7 @@
 [![Community Forum][forum-shield]][forum]
 
 # Elro Connects K1
-The Elro Connects integration will allow users to integrate their Elro Connects fire, heat, CO, gas, water, or smoke alarms and door/window sensors into Home Assistant. Alarms are represented as binary sensors, to use them in automations, and as siren entities. The alarms can be tested (and silenced) through the siren turn on (and turn off) services. The integration discovers entities (automatically) through an Elro Connects K1 connector plug. The entity names assigned in the Elro Connects app will be synced with Home Assistant.
+The Elro Connects integration will allow users to integrate their Elro Connects fire, heat, CO, gas, water, or smoke alarms and door/window sensors into Home Assistant. Each alarm is represented by a binary sensor, the main entity of the device, to use in automations. A diagnostic siren entity can be used to test (turn on) and silence (turn off) the alarm. The integration discovers entities (automatically) through an Elro Connects K1 connector plug. The entity names assigned in the Elro Connects app will be synced with Home Assistant.
 
 > There is also a K2 connector available, but this K2 connector will not work with this software.
 
@@ -20,9 +20,9 @@ The integration is not tested with the Siterwell branded devices, but some user 
 
 Platform | Description
 -- | --
-`binary_sensor` | Adds an alarm sensor for each alarm (device class `carbon_monoxide`, `gas`, `heat`, `moisture` or `smoke`) and an `opening` sensor for each door/window sensor. Each of these devices also gets a `problem` and a low `battery` diagnostic sensor, which are disabled by default.
+`binary_sensor` | Adds an alarm sensor for each alarm (device class `carbon_monoxide`, `gas`, `heat`, `moisture` or `smoke`) and an `opening` sensor for each door/window sensor. This is the main entity of the device and is named after the device. Each of these devices also gets a `problem` and a low `battery` diagnostic sensor, which are disabled by default.
 `sensor` | Adds a `device state` sensor for each device, and a `battery level` and a `signal` (disabled by default) diagnostic sensor.
-`siren` | Represents Elro Connects alarms as a siren. Turn the siren `ON` to test it. Turn it `OFF` to silence the (test) alarm.
+`siren` | A diagnostic entity to test the alarm. Turn the siren `ON` to test it. Turn it `OFF` to silence the (test) alarm.
 
 The `device_state` sensor can have of the following states:
 - `fault`
@@ -51,7 +51,7 @@ automation:
   - alias: "Smoke alarm"
     triggers:
       - trigger: state
-        entity_id: binary_sensor.beganegrond_smoke
+        entity_id: binary_sensor.beganegrond
         to: "on"
     actions:
       - action: notify.notify
