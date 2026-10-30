@@ -22,6 +22,8 @@ from .helpers import async_set_up_discovery_helper
 
 _LOGGER = logging.getLogger(__name__)
 
+PARALLEL_UPDATES = 0
+
 
 @dataclass
 class ElroSensorDescription(SensorEntityDescription):

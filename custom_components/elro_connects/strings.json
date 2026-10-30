@@ -82,5 +82,10 @@
         "name": "Socket"
       }
     }
+  },
+  "exceptions": {
+    "command_failed": {
+      "message": "Could not send the command to the K1 connector: {error}"
+    }
   }
 }
