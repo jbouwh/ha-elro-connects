@@ -9,7 +9,6 @@ from homeassistant.config_entries import ConfigEntry, ConfigEntryState
 from homeassistant.const import STATE_OFF, STATE_ON
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import device_registry as dr
-from homeassistant.helpers.device_registry import format_mac
 from homeassistant.setup import async_setup_component
 from homeassistant.util import dt
 import pytest
@@ -178,9 +177,8 @@ async def test_remove_device_from_config_entry(
     assert not await async_remove_config_entry_device(hass, mock_entry, device_entry)
 
     # Test removing the the K1 connector device will not work
-    mac_address = format_mac(connector_id[3:])
     device_entry = device_registry.async_get_device(
-        identifiers={(dr.CONNECTION_NETWORK_MAC, mac_address)}
+        identifiers={(DOMAIN, connector_id)}
     )
     assert device_entry
     assert not await async_remove_config_entry_device(hass, mock_entry, device_entry)
@@ -281,7 +279,7 @@ async def test_update_device_name(
 
     # update the K1 connector name
     device_entry = device_registry.async_get_device(
-        identifiers={(dr.CONNECTION_NETWORK_MAC, f"{format_mac(connector_id[3:])}")}
+        identifiers={(DOMAIN, connector_id)}
     )
     assert device_entry
     mock_k1_connector["result"].reset_mock()
@@ -291,3 +289,52 @@ async def test_update_device_name(
     await hass.async_block_till_done()
 
     assert mock_k1_connector["result"].call_count == 0
+
+
+async def test_hub_device(
+    hass: HomeAssistant,
+    device_registry: dr.DeviceRegistry,
+    mock_k1_connector: dict[AsyncMock],
+    mock_entry: ConfigEntry,
+) -> None:
+    """Test the K1 hub is set up once and the devices are linked to it."""
+    assert await async_setup_component(hass, DOMAIN, {})
+    await hass.async_block_till_done()
+    # The hub is created, even when the connector has no devices
+    hub = device_registry.async_get_device(identifiers={(DOMAIN, "ST_deadbeef0000")})
+    assert hub is not None
+    assert hub.connections == {(dr.CONNECTION_NETWORK_MAC, "de:ad:be:ef:00:00")}
+    assert hub.model == "K1 (SF40GA)"
+    assert hub.name == "Elro Connects K1 ST_deadbeef0000"
+
+    mock_k1_connector["result"].return_value = MOCK_DEVICE_STATUS_DATA
+    await mock_entry.runtime_data.async_refresh()
+    await hass.async_block_till_done()
+    devices = dr.async_entries_for_config_entry(device_registry, mock_entry.entry_id)
+    sub_devices = [device for device in devices if device.id != hub.id]
+    assert sub_devices
+    assert all(device.via_device_id == hub.id for device in sub_devices)
+
+
+async def test_migrate_hub_device(
+    hass: HomeAssistant,
+    device_registry: dr.DeviceRegistry,
+    mock_k1_connector: dict[AsyncMock],
+    mock_entry: ConfigEntry,
+) -> None:
+    """Test the hub with the MAC address as identifier is migrated."""
+    old_hub = device_registry.async_get_or_create(
+        config_entry_id=mock_entry.entry_id,
+        identifiers={(dr.CONNECTION_NETWORK_MAC, "de:ad:be:ef:00:00")},
+        name="Elro Connects K1 ST_deadbeef0000",
+    )
+    assert await async_setup_component(hass, DOMAIN, {})
+    await hass.async_block_till_done()
+
+    hub = device_registry.async_get(old_hub.id)
+    assert hub.identifiers == {(DOMAIN, "ST_deadbeef0000")}
+    assert hub.connections == {(dr.CONNECTION_NETWORK_MAC, "de:ad:be:ef:00:00")}
+    assert (
+        len(dr.async_entries_for_config_entry(device_registry, mock_entry.entry_id))
+        == 1
+    )

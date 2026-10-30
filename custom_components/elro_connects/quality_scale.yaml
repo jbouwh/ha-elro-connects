@@ -46,11 +46,7 @@ rules:
   test-coverage: done
 
   # Gold
-  devices:
-    status: todo
-    comment: |
-      Create the K1 hub device once during setup, using a domain identifier
-      and the MAC address as a connection.
+  devices: done
   diagnostics: todo
   discovery-update-info:
     status: todo

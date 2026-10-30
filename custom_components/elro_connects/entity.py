@@ -12,8 +12,7 @@ from elro.device import (
 )
 from homeassistant.const import ATTR_NAME
 from homeassistant.core import callback
-from homeassistant.helpers import device_registry as dr
-from homeassistant.helpers.device_registry import DeviceInfo, format_mac
+from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity import EntityDescription
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
@@ -68,19 +67,6 @@ class ElroConnectsEntity(CoordinatorEntity[ElroConnectsCoordinator]):
     @property
     def device_info(self) -> DeviceInfo:
         """Return info for device registry."""
-        # connector
-        device_registry = dr.async_get(self.hass)
-        mac_address = format_mac(self._connector_id[3:])
-        k1_device = device_registry.async_get_or_create(
-            model="K1 (SF40GA)",
-            config_entry_id=self.coordinator.config_entry.entry_id,
-            identifiers={
-                (dr.CONNECTION_NETWORK_MAC, mac_address),
-            },
-            manufacturer="Elro",
-            name=f"Elro Connects K1 {self._connector_id}",
-        )
-        # sub device
         device_type = self.data[ATTR_DEVICE_TYPE]
         return DeviceInfo(
             identifiers={(DOMAIN, f"{self._connector_id}_{self._device_id}")},
@@ -88,5 +74,5 @@ class ElroConnectsEntity(CoordinatorEntity[ElroConnectsCoordinator]):
             model=DEVICE_MODELS.get(device_type, device_type),
             name=self.data.get(ATTR_NAME, None),
             # Link to K1 connector
-            via_device_id=k1_device.id,
+            via_device=self.coordinator.hub_identifier,
         )
