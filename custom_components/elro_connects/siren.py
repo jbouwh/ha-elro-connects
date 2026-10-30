@@ -45,7 +45,6 @@ SIREN_DEVICE_TYPES = {
         ElroSirenEntityDescription(
             key=ALARM_CO,
             translation_key="alarm_co",
-            icon="mdi:molecule-co",
             test_alarm=TEST_ALARM_ALT,
             silence_alarm=SILENCE_ALARM,
         ),
@@ -54,7 +53,6 @@ SIREN_DEVICE_TYPES = {
         ElroSirenEntityDescription(
             key=ALARM_FIRE,
             translation_key="alarm_fire",
-            icon="mdi:fire-alert",
             test_alarm=TEST_ALARM,
             silence_alarm=SILENCE_ALARM,
         ),
@@ -63,7 +61,6 @@ SIREN_DEVICE_TYPES = {
         ElroSirenEntityDescription(
             key=ALARM_HEAT,
             translation_key="alarm_heat",
-            icon="mdi:fire-alert",
             test_alarm=TEST_ALARM_ALT,
             silence_alarm=SILENCE_ALARM,
         ),
@@ -72,7 +69,6 @@ SIREN_DEVICE_TYPES = {
         ElroSirenEntityDescription(
             key=ALARM_SMOKE,
             translation_key="alarm_smoke",
-            icon="mdi:smoke",
             test_alarm=TEST_ALARM,
             silence_alarm=SILENCE_ALARM,
         ),
@@ -81,7 +77,6 @@ SIREN_DEVICE_TYPES = {
         ElroSirenEntityDescription(
             key=ALARM_WATER,
             translation_key="alarm_water",
-            icon="mdi:water-alert",
             test_alarm=TEST_ALARM_ALT,
             silence_alarm=SILENCE_ALARM,
         ),

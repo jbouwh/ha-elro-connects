@@ -25,31 +25,27 @@ from .test_common import MOCK_DEVICE_STATUS_DATA
 
 
 @pytest.mark.parametrize(
-    ("entity_id", "name", "state", "icon"),
+    ("entity_id", "name", "state"),
     [
         (
             "siren.beganegrond_fire_alarm",
             "Beganegrond Fire Alarm",
             STATE_OFF,
-            "mdi:fire-alert",
         ),
         (
             "siren.eerste_etage_fire_alarm",
             "Eerste etage Fire Alarm",
             STATE_ON,
-            "mdi:fire-alert",
         ),
         (
             "siren.zolder_fire_alarm",
             "Zolder Fire Alarm",
             STATE_OFF,
-            "mdi:fire-alert",
         ),
         (
             "siren.corner_carbon_monoxide_alarm",
             "Corner Carbon Monoxide Alarm",
             STATE_UNAVAILABLE,
-            "mdi:molecule-co",
         ),
     ],
 )
@@ -60,7 +56,6 @@ async def test_setup_integration_with_siren_platform(
     entity_id: str,
     name: str,
     state: str,
-    icon: str,
 ) -> None:
     """Test we can setup the integration with the siren platform."""
     mock_k1_connector["result"].return_value = MOCK_DEVICE_STATUS_DATA
@@ -73,7 +68,6 @@ async def test_setup_integration_with_siren_platform(
 
     assert entity.state == state
     assert attributes["friendly_name"] == name
-    assert attributes["icon"] == icon
 
 
 async def test_alarm_testing(
