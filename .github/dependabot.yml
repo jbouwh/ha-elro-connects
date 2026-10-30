@@ -1,0 +1,35 @@
+# Dependabot version updates
+# https://docs.github.com/en/code-security/dependabot/working-with-dependabot/dependabot-options-reference
+version: 2
+updates:
+  - package-ecosystem: pip
+    directory: /
+    schedule:
+      interval: weekly
+    # Only use versions that are at least two weeks old
+    cooldown:
+      default-days: 14
+    groups:
+      # pytest-homeassistant-custom-component pins an exact Home Assistant version
+      home-assistant:
+        patterns:
+          - homeassistant
+          - pytest-homeassistant-custom-component
+    ignore:
+      # Home Assistant pins setuptools below 82 in its package constraints
+      - dependency-name: setuptools
+        versions: [">=82"]
+      # Bumped by hand, together with the requirement in manifest.json
+      - dependency-name: lib-elro-connects
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 14
+  - package-ecosystem: devcontainers
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 14
