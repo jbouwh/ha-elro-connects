@@ -95,5 +95,13 @@
                 "name": "Tomada de parede"
             }
         }
+    },
+    "exceptions": {
+        "command_failed": {
+            "message": "Não foi possível enviar o comando para o conector K1: {error}"
+        },
+        "update_failed": {
+            "message": "Não foi possível obter os estados dos dispositivos do conector K1: {error}"
+        }
     }
 }

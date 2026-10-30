@@ -95,5 +95,13 @@
                 "name": "La prise électrique"
             }
         }
+    },
+    "exceptions": {
+        "command_failed": {
+            "message": "Impossible d'envoyer la commande au connecteur K1 : {error}"
+        },
+        "update_failed": {
+            "message": "Impossible de récupérer l'état des appareils depuis le connecteur K1 : {error}"
+        }
     }
 }

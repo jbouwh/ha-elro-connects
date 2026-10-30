@@ -95,5 +95,13 @@
                 "name": "Wandsteckdose"
             }
         }
+    },
+    "exceptions": {
+        "command_failed": {
+            "message": "Der Befehl konnte nicht an den K1-Konnektor gesendet werden: {error}"
+        },
+        "update_failed": {
+            "message": "Die Gerätestatus konnten nicht vom K1-Konnektor abgerufen werden: {error}"
+        }
     }
 }

@@ -84,7 +84,11 @@ class ElroConnectsCoordinator(DataUpdateCoordinator[dict[int, dict]]):
                     coordinator_update[device_id] = device_data
 
         except K1.K1ConnectionError as err:
-            raise UpdateFailed(err) from err
+            raise UpdateFailed(
+                translation_domain=DOMAIN,
+                translation_key="update_failed",
+                translation_placeholders={"error": str(err)},
+            ) from err
 
         if new_devices:
             async_dispatcher_send(
