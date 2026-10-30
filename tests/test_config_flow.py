@@ -17,6 +17,7 @@ from homeassistant.const import (
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
 import homeassistant.helpers.config_validation as cv
 from homeassistant.setup import async_setup_component
 import pytest
@@ -456,3 +457,27 @@ def test_exception_translations(language: str) -> None:
         placeholders = re.findall(r"{\w+}", exception["message"])
         translated = translations["exceptions"][key]["message"]
         assert re.findall(r"{\w+}", translated) == placeholders
+
+
+async def test_cloud_login_uses_shared_websession(
+    hass: HomeAssistant, mock_k1_api: dict[AsyncMock]
+) -> None:
+    """Test the cloud login uses the shared aiohttp session of Home Assistant."""
+    result = await hass.config_entries.flow.async_init(
+        DOMAIN, context={"source": config_entries.SOURCE_USER}
+    )
+    with patch(
+        "custom_components.elro_connects.config_flow.ElroConnectsSession"
+    ) as mock_session:
+        mock_session.return_value.async_login = AsyncMock()
+        mock_session.return_value.async_get_connectors = AsyncMock(return_value=[])
+        await hass.config_entries.flow.async_configure(
+            result["flow_id"],
+            user_input={
+                CONF_HOST: "1.1.1.1",
+                CONF_PORT: 1025,
+                CONF_USERNAME: MOCK_USER,
+                CONF_PASSWORD: MOCK_PASSWORD,
+            },
+        )
+    mock_session.assert_called_once_with(async_get_clientsession(hass))

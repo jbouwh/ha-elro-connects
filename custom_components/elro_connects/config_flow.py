@@ -16,6 +16,7 @@ from homeassistant.const import (
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
 import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.selector import (
     TextSelector,
@@ -90,7 +91,7 @@ async def async_validate_input(
     # get cloud info if username and password are given
     if info.get(CONF_USERNAME) and info.get(CONF_PASSWORD):
         try:
-            session = ElroConnectsSession()
+            session = ElroConnectsSession(async_get_clientsession(hass))
             await session.async_login(info[CONF_USERNAME], info[CONF_PASSWORD])
             connectors = await session.async_get_connectors()
         except Exception as exp:  # pylint: disable=broad-except
