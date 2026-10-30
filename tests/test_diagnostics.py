@@ -24,7 +24,7 @@ async def test_diagnostics(
     mock_entry: ConfigEntry,
     snapshot: SnapshotAssertion,
 ) -> None:
-    """Test the config entry diagnostics with the secrets redacted."""
+    """Test the config entry diagnostics with the secrets and MAC address masked."""
     hass.config_entries.async_update_entry(
         mock_entry,
         data={
@@ -40,5 +40,5 @@ async def test_diagnostics(
 
     diagnostics = await get_diagnostics_for_config_entry(hass, hass_client, mock_entry)
     assert diagnostics == snapshot
-    for secret in ("secret-key", "user@example.com", "secret-password"):
+    for secret in ("secret-key", "user@example.com", "secret-password", "ef0000"):
         assert secret not in str(diagnostics)

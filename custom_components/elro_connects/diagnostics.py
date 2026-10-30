@@ -6,9 +6,18 @@ from homeassistant.components.diagnostics import async_redact_data
 from homeassistant.const import CONF_API_KEY, CONF_PASSWORD, CONF_USERNAME
 from homeassistant.core import HomeAssistant
 
+from .const import CONF_CONNECTOR_ID
 from .coordinator import ElroConnectsConfigEntry
 
 TO_REDACT = {CONF_API_KEY, CONF_PASSWORD, CONF_USERNAME}
+
+
+def _mask_connector_id(data: dict[str, Any]) -> dict[str, Any]:
+    """Mask the device specific part of the MAC address in the connector ID."""
+    if not (connector_id := data.get(CONF_CONNECTOR_ID)):
+        return data
+    # The connector ID is ST_ followed by the MAC address, keep the vendor part
+    return {**data, CONF_CONNECTOR_ID: connector_id[:9] + "*" * len(connector_id[9:])}
 
 
 async def async_get_config_entry_diagnostics(
@@ -18,8 +27,8 @@ async def async_get_config_entry_diagnostics(
     coordinator = entry.runtime_data
     return {
         "entry": {
-            "data": async_redact_data(entry.data, TO_REDACT),
-            "options": async_redact_data(entry.options, TO_REDACT),
+            "data": _mask_connector_id(async_redact_data(entry.data, TO_REDACT)),
+            "options": _mask_connector_id(async_redact_data(entry.options, TO_REDACT)),
         },
         "coordinator": {
             "last_update_success": coordinator.last_update_success,

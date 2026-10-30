@@ -255,7 +255,7 @@
     'entry': dict({
       'data': dict({
         'api_key': '**REDACTED**',
-        'connector_id': 'ST_deadbeef0000',
+        'connector_id': 'ST_deadbe******',
         'host': '1.1.1.1',
         'password': '**REDACTED**',
         'port': 1025,
