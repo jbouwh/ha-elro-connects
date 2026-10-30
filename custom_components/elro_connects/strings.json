@@ -18,26 +18,15 @@
           "connector_id": "The ID of the connector, which starts with ST_. In the Elro Connects app, go to the home tab, open the settings and select current connector. Not needed if you log in with your account.",
           "api_key": "Optional. Only needed if the connector does not provide the key locally. It is filled in automatically if you log in with your account."
         }
-      }
-    },
-    "error": {
-      "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
-      "unknown": "[%key:common::config_flow::error::unknown%]"
-    },
-    "abort": {
-      "already_configured": "[%key:common::config_flow::abort::already_configured_device%]"
-    }
-  },
-  "options": {
-    "step": {
-      "init": {
+      },
+      "reconfigure": {
         "data": {
-          "host": "[%key:common::config_flow::data::host%]",
-          "port": "[%key:common::config_flow::data::port%]",
-          "username": "[%key:common::config_flow::data::username%]",
-          "password": "[%key:common::config_flow::data::password%]",
-          "connector_id": "Connector ID",
-          "api_key": "[%key:common::config_flow::data::api_key%]"
+          "host": "[%key:component::elro_connects::config::step::user::data::host%]",
+          "port": "[%key:component::elro_connects::config::step::user::data::port%]",
+          "username": "[%key:component::elro_connects::config::step::user::data::username%]",
+          "password": "[%key:component::elro_connects::config::step::user::data::password%]",
+          "connector_id": "[%key:component::elro_connects::config::step::user::data::connector_id%]",
+          "api_key": "[%key:component::elro_connects::config::step::user::data::api_key%]"
         },
         "data_description": {
           "host": "[%key:component::elro_connects::config::step::user::data_description::host%]",
@@ -48,6 +37,15 @@
           "api_key": "[%key:component::elro_connects::config::step::user::data_description::api_key%]"
         }
       }
+    },
+    "error": {
+      "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
+      "unknown": "[%key:common::config_flow::error::unknown%]"
+    },
+    "abort": {
+      "already_configured": "[%key:common::config_flow::abort::already_configured_device%]",
+      "reconfigure_successful": "[%key:common::config_flow::abort::reconfigure_successful%]",
+      "unique_id_mismatch": "The connector ID does not match the configured connector. Add a new entry to set up another connector."
     }
   },
   "entity": {

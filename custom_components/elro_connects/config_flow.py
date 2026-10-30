@@ -6,7 +6,7 @@ from typing import Any
 from elro.api import K1
 from elro.auth import ElroConnectsConnector, ElroConnectsSession
 from homeassistant import config_entries
-from homeassistant.config_entries import ConfigEntry
+from homeassistant.config_entries import ConfigFlowResult
 from homeassistant.const import (
     CONF_API_KEY,
     CONF_HOST,
@@ -14,8 +14,7 @@ from homeassistant.const import (
     CONF_PORT,
     CONF_USERNAME,
 )
-from homeassistant.core import HomeAssistant, callback
-from homeassistant.data_entry_flow import FlowResult
+from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
 import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.selector import (
@@ -111,16 +110,11 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Elro Connects."""
 
     VERSION = 1
-
-    @staticmethod
-    @callback
-    def async_get_options_flow(config_entry):
-        """Handle configuring options."""
-        return OptionsFlowHandler(config_entry)
+    MINOR_VERSION = 2
 
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
-    ) -> FlowResult:
+    ) -> ConfigFlowResult:
         """Handle the initial step."""
         if user_input is None:
             return self.async_show_form(
@@ -145,63 +139,31 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             step_id="user", data_schema=ELRO_CONNECTS_DATA_SCHEMA, errors=errors
         )
 
-
-class OptionsFlowHandler(config_entries.OptionsFlow):
-    """Manage the options."""
-
-    def __init__(self, config_entry: ConfigEntry) -> None:
-        """Initialize options flow."""
-        self._config_entry = config_entry
-
-    async def async_step_init(
+    async def async_step_reconfigure(
         self, user_input: dict[str, Any] | None = None
-    ) -> FlowResult:
-        """Manage configuration options."""
+    ) -> ConfigFlowResult:
+        """Handle reconfiguration of the connector."""
+        entry = self._get_reconfigure_entry()
         errors = {}
-        entry_data = self.config_entry.data
         if user_input is not None:
-            changed_input = {}
-            changed_input.update(user_input)
             try:
-                info = await async_validate_input(self.hass, changed_input)
+                info = await async_validate_input(self.hass, user_input)
             except CannotConnect:
                 errors["base"] = "cannot_connect"
             except Exception:  # pylint: disable=broad-except
                 _LOGGER.exception("Unexpected exception")
                 errors["base"] = "unknown"
             else:
-                self.hass.config_entries.async_update_entry(
-                    self.config_entry, data=info
-                )
-                return self.async_create_entry(title="", data=changed_input)
+                await self.async_set_unique_id(info[CONF_CONNECTOR_ID])
+                self._abort_if_unique_id_mismatch()
+                return self.async_update_reload_and_abort(entry, data=info)
 
         return self.async_show_form(
-            step_id="init",
-            errors=errors,
-            data_schema=vol.Schema(
-                {
-                    vol.Required(CONF_HOST, default=entry_data.get(CONF_HOST)): str,
-                    vol.Required(CONF_PORT, default=entry_data.get(CONF_PORT)): cv.port,
-                    vol.Optional(
-                        CONF_USERNAME,
-                        description={"suggested_value": entry_data.get(CONF_USERNAME)},
-                    ): str,
-                    vol.Optional(
-                        CONF_PASSWORD,
-                        description={"suggested_value": entry_data.get(CONF_PASSWORD)},
-                    ): SECRET_SELECTOR,
-                    vol.Optional(
-                        CONF_CONNECTOR_ID,
-                        description={
-                            "suggested_value": entry_data.get(CONF_CONNECTOR_ID)
-                        },
-                    ): str,
-                    vol.Optional(
-                        CONF_API_KEY,
-                        description={"suggested_value": entry_data.get(CONF_API_KEY)},
-                    ): SECRET_SELECTOR,
-                }
+            step_id="reconfigure",
+            data_schema=self.add_suggested_values_to_schema(
+                ELRO_CONNECTS_DATA_SCHEMA, user_input or entry.data
             ),
+            errors=errors,
         )
 
 
