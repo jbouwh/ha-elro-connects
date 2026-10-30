@@ -52,12 +52,14 @@ PROBLEM = ElroBinarySensorEntityDescription(
     key="problem",
     device_class=BinarySensorDeviceClass.PROBLEM,
     entity_category=EntityCategory.DIAGNOSTIC,
+    entity_registry_enabled_default=False,
     on_states=(STATE_FAULT,),
 )
 LOW_BATTERY = ElroBinarySensorEntityDescription(
     key="low_battery",
     device_class=BinarySensorDeviceClass.BATTERY,
     entity_category=EntityCategory.DIAGNOSTIC,
+    entity_registry_enabled_default=False,
     on_states=(STATE_LOW_BATTERY,),
 )
 

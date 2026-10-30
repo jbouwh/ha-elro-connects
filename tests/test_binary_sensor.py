@@ -23,6 +23,7 @@ from custom_components.elro_connects.const import DOMAIN
 from .test_common import MOCK_DEVICE_STATUS_DATA
 
 
+@pytest.mark.usefixtures("entity_registry_enabled_by_default")
 @pytest.mark.parametrize(
     ("entity_id", "name", "state", "device_class"),
     [
@@ -78,19 +79,25 @@ async def test_diagnostic_entities(
     mock_k1_connector: dict[AsyncMock],
     mock_entry: ConfigEntry,
 ) -> None:
-    """Test the problem and battery sensors are diagnostic entities."""
+    """Test the problem and battery sensors are disabled diagnostic entities."""
     mock_k1_connector["result"].return_value = MOCK_DEVICE_STATUS_DATA
     assert await async_setup_component(hass, DOMAIN, {})
     await hass.async_block_till_done()
 
-    for entity_id, category in (
-        ("binary_sensor.beganegrond_smoke", None),
-        ("binary_sensor.beganegrond_problem", EntityCategory.DIAGNOSTIC),
-        ("binary_sensor.beganegrond_battery", EntityCategory.DIAGNOSTIC),
+    entry = entity_registry.async_get("binary_sensor.beganegrond_smoke")
+    assert entry.entity_category is None
+    assert entry.disabled_by is None
+    for entity_id in (
+        "binary_sensor.beganegrond_problem",
+        "binary_sensor.beganegrond_battery",
     ):
-        assert entity_registry.async_get(entity_id).entity_category == category
+        entry = entity_registry.async_get(entity_id)
+        assert entry.entity_category is EntityCategory.DIAGNOSTIC
+        assert entry.disabled_by is er.RegistryEntryDisabler.INTEGRATION
+        assert hass.states.get(entity_id) is None
 
 
+@pytest.mark.usefixtures("entity_registry_enabled_by_default")
 @pytest.mark.parametrize(
     ("device_id", "device_state", "expected"),
     [

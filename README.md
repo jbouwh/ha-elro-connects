@@ -20,7 +20,7 @@ The integration is not tested with the Siterwell branded devices, but some user 
 
 Platform | Description
 -- | --
-`binary_sensor` | Adds an alarm sensor for each alarm (device class `carbon_monoxide`, `gas`, `heat`, `moisture` or `smoke`) and an `opening` sensor for each door/window sensor. Each of these devices also gets a `problem` and a low `battery` diagnostic sensor.
+`binary_sensor` | Adds an alarm sensor for each alarm (device class `carbon_monoxide`, `gas`, `heat`, `moisture` or `smoke`) and an `opening` sensor for each door/window sensor. Each of these devices also gets a `problem` and a low `battery` diagnostic sensor, which are disabled by default.
 `sensor` | Adds a `device state` sensor, a `battery level` sensor and a `signal` sensor (disabled by default) for each device.
 `siren` | Represents Elro Connects alarms as a siren. Turn the siren `ON` to test it. Turn it `OFF` to silence the (test) alarm.
 

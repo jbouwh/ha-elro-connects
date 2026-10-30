@@ -1,6 +1,7 @@
 """Fixtures for testing the Elro Connects integration."""
 
-from unittest.mock import AsyncMock, patch
+from collections.abc import Generator
+from unittest.mock import AsyncMock, PropertyMock, patch
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_HOST, CONF_PORT
@@ -15,6 +16,17 @@ from custom_components.elro_connects.const import CONF_CONNECTOR_ID, DOMAIN
 def auto_enable_custom_integrations(enable_custom_integrations):
     """Enable custom integration mocking."""
     return
+
+
+@pytest.fixture
+def entity_registry_enabled_by_default() -> Generator[None]:
+    """Enable the entities that are disabled by default."""
+    with patch(
+        "homeassistant.helpers.entity.Entity.entity_registry_enabled_default",
+        return_value=True,
+        new_callable=PropertyMock,
+    ):
+        yield
 
 
 @pytest.fixture
