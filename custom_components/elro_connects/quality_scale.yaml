@@ -62,12 +62,8 @@ rules:
   docs-troubleshooting: todo
   docs-use-cases: todo
   dynamic-devices: done
-  entity-category:
-    status: todo
-    comment: The signal sensor should be a diagnostic entity.
-  entity-device-class:
-    status: todo
-    comment: The signal sensor uses the power factor device class.
+  entity-category: done
+  entity-device-class: done
   entity-disabled-by-default: done
   entity-translations: done
   exception-translations: todo

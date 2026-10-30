@@ -62,19 +62,19 @@
         },
         "siren": {
             "alarm_co": {
-                "name": "Koolmonoxidealarm"
+                "name": "Testalarm"
             },
             "alarm_fire": {
-                "name": "Brandalarm"
+                "name": "Testalarm"
             },
             "alarm_heat": {
-                "name": "Hittealarm"
+                "name": "Testalarm"
             },
             "alarm_smoke": {
-                "name": "Rookalarm"
+                "name": "Testalarm"
             },
             "alarm_water": {
-                "name": "Wateralarm"
+                "name": "Testalarm"
             }
         },
         "switch": {

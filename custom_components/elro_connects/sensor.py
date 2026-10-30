@@ -3,14 +3,14 @@
 from dataclasses import dataclass
 import logging
 
-from elro.device import ATTR_BATTERY_LEVEL, ATTR_DEVICE_STATE, ATTR_SIGNAL
+from elro.device import ATTR_BATTERY_LEVEL, ATTR_DEVICE_STATE, ATTR_SIGNAL, DEVICE_STATE
 from homeassistant.components.sensor import (
     SensorDeviceClass,
     SensorEntity,
     SensorEntityDescription,
     SensorStateClass,
 )
-from homeassistant.const import UnitOfRatio
+from homeassistant.const import EntityCategory, UnitOfRatio
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.util import slugify
@@ -24,10 +24,15 @@ _LOGGER = logging.getLogger(__name__)
 
 PARALLEL_UPDATES = 0
 
+DEVICE_STATE_OPTIONS = sorted({slugify(state) for state in DEVICE_STATE.values()})
+
+# Unknown device states that were already logged
+_reported_device_states: set[str] = set()
+
 
 @dataclass
 class ElroSensorDescription(SensorEntityDescription):
-    """Class that holds senspr specific sensor info."""
+    """Class that holds sensor specific sensor info."""
 
     maximum_value: int | None = None
 
@@ -38,6 +43,7 @@ SENSOR_TYPES = {
             key=ATTR_BATTERY_LEVEL,
             translation_key="battery",
             device_class=SensorDeviceClass.BATTERY,
+            entity_category=EntityCategory.DIAGNOSTIC,
             state_class=SensorStateClass.MEASUREMENT,
             native_unit_of_measurement=UnitOfRatio.PERCENTAGE,
             maximum_value=100,
@@ -47,7 +53,7 @@ SENSOR_TYPES = {
         ElroSensorDescription(
             key=ATTR_SIGNAL,
             translation_key="signal",
-            device_class=SensorDeviceClass.POWER_FACTOR,
+            entity_category=EntityCategory.DIAGNOSTIC,
             state_class=SensorStateClass.MEASUREMENT,
             native_unit_of_measurement=UnitOfRatio.PERCENTAGE,
             maximum_value=4,
@@ -59,6 +65,8 @@ SENSOR_TYPES = {
             key=ATTR_DEVICE_STATE,
             translation_key="device_state",
             device_class=SensorDeviceClass.ENUM,
+            entity_category=EntityCategory.DIAGNOSTIC,
+            options=DEVICE_STATE_OPTIONS,
             maximum_value=None,
         ),
     ),
@@ -86,11 +94,21 @@ class ElroConnectsSensor(ElroConnectsEntity, SensorEntity):
     entity_description: ElroSensorDescription
 
     @property
-    def native_value(self) -> int | float | None:
+    def native_value(self) -> int | float | str | None:
         """Return the state of the sensor."""
         raw_value = self.data[self.entity_description.key]
         if max_value := self.entity_description.maximum_value:
             value = ranged_value_to_percentage((1, max_value), raw_value)
-        else:
-            value = slugify(raw_value)
-        return value if max_value is None or raw_value <= max_value else None
+            return value if raw_value <= max_value else None
+        value = slugify(raw_value)
+        if value not in DEVICE_STATE_OPTIONS:
+            if raw_value not in _reported_device_states:
+                _reported_device_states.add(raw_value)
+                _LOGGER.warning(
+                    "Unknown device state %s reported by %s, please open an issue at "
+                    "https://github.com/jbouwh/lib-elro-connects/issues",
+                    raw_value,
+                    self.entity_id,
+                )
+            return None
+        return value

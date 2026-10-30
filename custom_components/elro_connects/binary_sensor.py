@@ -69,8 +69,9 @@ def _alarm(
 ) -> tuple[ElroBinarySensorEntityDescription, ...]:
     """Return the descriptions for an alarm device."""
     return (
+        # The alarm is the main feature of the device, so it uses the device name
         ElroBinarySensorEntityDescription(
-            key="alarm", device_class=device_class, on_states=ALARM_STATES
+            key="alarm", name=None, device_class=device_class, on_states=ALARM_STATES
         ),
         PROBLEM,
         LOW_BATTERY,
@@ -87,6 +88,7 @@ BINARY_SENSOR_DEVICE_TYPES = {
     DOOR_WINDOW_SENSOR: (
         ElroBinarySensorEntityDescription(
             key="opening",
+            name=None,
             device_class=BinarySensorDeviceClass.OPENING,
             # The sensor reports ALARM when it is opened
             on_states=(STATE_OPEN, STATE_ALARM),

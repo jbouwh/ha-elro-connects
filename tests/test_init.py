@@ -101,9 +101,9 @@ async def test_configure_platforms_dynamically(
     mock_k1_connector["result"].return_value = initial_status_data
     assert await async_setup_component(hass, DOMAIN, {})
     await hass.async_block_till_done()
-    assert hass.states.get("siren.beganegrond_fire_alarm") is not None
-    assert hass.states.get("siren.eerste_etage_fire_alarm") is not None
-    assert hass.states.get("siren.zolder_fire_alarm") is None
+    assert hass.states.get("siren.beganegrond_test_alarm") is not None
+    assert hass.states.get("siren.eerste_etage_test_alarm") is not None
+    assert hass.states.get("siren.zolder_test_alarm") is None
     assert hass.states.get("switch.wall_switch_off_socket") is not None
     assert hass.states.get("switch.wall_switch_on_socket") is not None
 
@@ -114,9 +114,9 @@ async def test_configure_platforms_dynamically(
     # await coordinator.async_request_refresh()
     await hass.async_block_till_done()
 
-    assert hass.states.get("siren.beganegrond_fire_alarm") is not None
-    assert hass.states.get("siren.eerste_etage_fire_alarm") is not None
-    assert hass.states.get("siren.zolder_fire_alarm") is not None
+    assert hass.states.get("siren.beganegrond_test_alarm") is not None
+    assert hass.states.get("siren.eerste_etage_test_alarm") is not None
+    assert hass.states.get("siren.zolder_test_alarm") is not None
     assert hass.states.get("switch.wall_switch_off_socket") is not None
     assert hass.states.get("switch.wall_switch_on_socket") is not None
 
@@ -128,9 +128,9 @@ async def test_configure_platforms_dynamically(
     async_fire_time_changed(hass, time)
     await hass.async_block_till_done()
 
-    assert hass.states.get("siren.beganegrond_fire_alarm").state == "off"
-    assert hass.states.get("siren.eerste_etage_fire_alarm") is not None
-    assert hass.states.get("siren.zolder_fire_alarm") is not None
+    assert hass.states.get("siren.beganegrond_test_alarm").state == "off"
+    assert hass.states.get("siren.eerste_etage_test_alarm") is not None
+    assert hass.states.get("siren.zolder_test_alarm") is not None
     assert hass.states.get("switch.wall_switch_off_socket").state == STATE_OFF
     assert hass.states.get("switch.wall_switch_on_socket").state == STATE_ON
 
@@ -196,20 +196,20 @@ async def test_unloading_config_entry(
     mock_k1_connector["result"].return_value = initial_status_data
     assert await async_setup_component(hass, DOMAIN, {})
     await hass.async_block_till_done(wait_background_tasks=True)
-    assert hass.states.get("siren.beganegrond_fire_alarm") is not None
-    assert hass.states.get("siren.eerste_etage_fire_alarm") is not None
-    assert hass.states.get("siren.zolder_fire_alarm") is not None
-    assert hass.states.get("siren.beganegrond_fire_alarm").state == "off"
-    assert hass.states.get("siren.eerste_etage_fire_alarm").state == "on"
-    assert hass.states.get("siren.zolder_fire_alarm").state == "off"
+    assert hass.states.get("siren.beganegrond_test_alarm") is not None
+    assert hass.states.get("siren.eerste_etage_test_alarm") is not None
+    assert hass.states.get("siren.zolder_test_alarm") is not None
+    assert hass.states.get("siren.beganegrond_test_alarm").state == "off"
+    assert hass.states.get("siren.eerste_etage_test_alarm").state == "on"
+    assert hass.states.get("siren.zolder_test_alarm").state == "off"
     # Test unload
     assert await hass.config_entries.async_unload(mock_entry.entry_id)
     config_entry_state = mock_entry.state
     assert config_entry_state is ConfigEntryState.NOT_LOADED
     await hass.async_block_till_done(wait_background_tasks=True)
-    assert hass.states.get("siren.beganegrond_fire_alarm").state == "unavailable"
-    assert hass.states.get("siren.eerste_etage_fire_alarm").state == "unavailable"
-    assert hass.states.get("siren.zolder_fire_alarm").state == "unavailable"
+    assert hass.states.get("siren.beganegrond_test_alarm").state == "unavailable"
+    assert hass.states.get("siren.eerste_etage_test_alarm").state == "unavailable"
+    assert hass.states.get("siren.zolder_test_alarm").state == "unavailable"
     mock_k1_connector["disconnect"].assert_awaited_once()
 
     # The device registry listener is removed, name changes are not synced anymore

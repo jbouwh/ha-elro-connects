@@ -13,9 +13,11 @@ from homeassistant.const import (
     STATE_OFF,
     STATE_ON,
     STATE_UNAVAILABLE,
+    EntityCategory,
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
+from homeassistant.helpers import entity_registry as er
 from homeassistant.setup import async_setup_component
 import pytest
 
@@ -28,29 +30,30 @@ from .test_common import MOCK_DEVICE_STATUS_DATA
     ("entity_id", "name", "state"),
     [
         (
-            "siren.beganegrond_fire_alarm",
-            "Beganegrond Fire Alarm",
+            "siren.beganegrond_test_alarm",
+            "Beganegrond Test alarm",
             STATE_OFF,
         ),
         (
-            "siren.eerste_etage_fire_alarm",
-            "Eerste etage Fire Alarm",
+            "siren.eerste_etage_test_alarm",
+            "Eerste etage Test alarm",
             STATE_ON,
         ),
         (
-            "siren.zolder_fire_alarm",
-            "Zolder Fire Alarm",
+            "siren.zolder_test_alarm",
+            "Zolder Test alarm",
             STATE_OFF,
         ),
         (
-            "siren.corner_carbon_monoxide_alarm",
-            "Corner Carbon Monoxide Alarm",
+            "siren.corner_test_alarm",
+            "Corner Test alarm",
             STATE_UNAVAILABLE,
         ),
     ],
 )
 async def test_setup_integration_with_siren_platform(
     hass: HomeAssistant,
+    entity_registry: er.EntityRegistry,
     mock_k1_connector: dict[AsyncMock],
     mock_entry: ConfigEntry,
     entity_id: str,
@@ -68,6 +71,11 @@ async def test_setup_integration_with_siren_platform(
 
     assert entity.state == state
     assert attributes["friendly_name"] == name
+    # The siren is a tool to test and silence the alarm
+    assert (
+        entity_registry.async_get(entity_id).entity_category
+        is EntityCategory.DIAGNOSTIC
+    )
 
 
 async def test_alarm_testing(
@@ -76,7 +84,7 @@ async def test_alarm_testing(
     mock_entry: ConfigEntry,
 ) -> None:
     """Test we can start a test alarm and silence it."""
-    entity_id = "siren.beganegrond_fire_alarm"
+    entity_id = "siren.beganegrond_test_alarm"
     mock_k1_connector["result"].return_value = MOCK_DEVICE_STATUS_DATA
     assert await async_setup_component(hass, DOMAIN, {})
     await hass.async_block_till_done()
@@ -133,7 +141,7 @@ async def test_siren_command_fails(
     service: str,
 ) -> None:
     """Test a failing command raises a translated error and keeps the state."""
-    entity_id = "siren.beganegrond_fire_alarm"
+    entity_id = "siren.beganegrond_test_alarm"
     mock_k1_connector["result"].return_value = MOCK_DEVICE_STATUS_DATA
     assert await async_setup_component(hass, DOMAIN, {})
     await hass.async_block_till_done()

@@ -27,17 +27,17 @@ from .test_common import MOCK_DEVICE_STATUS_DATA
 @pytest.mark.parametrize(
     ("entity_id", "name", "state", "device_class"),
     [
-        ("binary_sensor.beganegrond_smoke", "Beganegrond Smoke", STATE_OFF, "smoke"),
-        ("binary_sensor.eerste_etage_smoke", "Eerste etage Smoke", STATE_ON, "smoke"),
-        ("binary_sensor.zolder_smoke", "Zolder Smoke", STATE_UNKNOWN, "smoke"),
+        ("binary_sensor.beganegrond", "Beganegrond", STATE_OFF, "smoke"),
+        ("binary_sensor.eerste_etage", "Eerste etage", STATE_ON, "smoke"),
+        ("binary_sensor.zolder", "Zolder", STATE_UNKNOWN, "smoke"),
         (
-            "binary_sensor.corner_carbon_monoxide",
-            "Corner Carbon monoxide",
+            "binary_sensor.corner",
+            "Corner",
             STATE_UNAVAILABLE,
             "carbon_monoxide",
         ),
-        ("binary_sensor.voordeur_opening", "Voordeur Opening", STATE_ON, "opening"),
-        ("binary_sensor.raam_opening", "Raam Opening", STATE_OFF, "opening"),
+        ("binary_sensor.voordeur", "Voordeur", STATE_ON, "opening"),
+        ("binary_sensor.raam", "Raam", STATE_OFF, "opening"),
         (
             "binary_sensor.beganegrond_problem",
             "Beganegrond Problem",
@@ -84,7 +84,7 @@ async def test_diagnostic_entities(
     assert await async_setup_component(hass, DOMAIN, {})
     await hass.async_block_till_done()
 
-    entry = entity_registry.async_get("binary_sensor.beganegrond_smoke")
+    entry = entity_registry.async_get("binary_sensor.beganegrond")
     assert entry.entity_category is None
     assert entry.disabled_by is None
     for entity_id in (
@@ -137,10 +137,9 @@ async def test_binary_sensor_states(
     await mock_entry.runtime_data.async_refresh()
     await hass.async_block_till_done()
 
-    name = {1: "beganegrond", 10: "raam"}[device_id]
-    main = {1: "smoke", 10: "opening"}[device_id]
+    entity_id = {1: "binary_sensor.beganegrond", 10: "binary_sensor.raam"}[device_id]
     states = tuple(
-        hass.states.get(f"binary_sensor.{name}_{key}").state
-        for key in (main, "problem", "battery")
+        hass.states.get(entity_id).state
+        for entity_id in (entity_id, f"{entity_id}_problem", f"{entity_id}_battery")
     )
     assert states == expected

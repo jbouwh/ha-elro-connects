@@ -62,19 +62,19 @@
         },
         "siren": {
             "alarm_co": {
-                "name": "Alarma de monxido de carbono"
+                "name": "Alarma de prueba"
             },
             "alarm_fire": {
-                "name": "Alarma de incendios"
+                "name": "Alarma de prueba"
             },
             "alarm_heat": {
-                "name": "Alarma de calor"
+                "name": "Alarma de prueba"
             },
             "alarm_smoke": {
-                "name": "Alarma de humo"
+                "name": "Alarma de prueba"
             },
             "alarm_water": {
-                "name": "Alarma de agua"
+                "name": "Alarma de prueba"
             }
         },
         "switch": {

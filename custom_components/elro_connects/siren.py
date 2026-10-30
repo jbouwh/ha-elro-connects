@@ -20,6 +20,7 @@ from homeassistant.components.siren import (
     SirenEntityDescription,
     SirenEntityFeature,
 )
+from homeassistant.const import EntityCategory
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
@@ -45,6 +46,7 @@ SIREN_DEVICE_TYPES = {
         ElroSirenEntityDescription(
             key=ALARM_CO,
             translation_key="alarm_co",
+            entity_category=EntityCategory.DIAGNOSTIC,
             test_alarm=TEST_ALARM_ALT,
             silence_alarm=SILENCE_ALARM,
         ),
@@ -53,6 +55,7 @@ SIREN_DEVICE_TYPES = {
         ElroSirenEntityDescription(
             key=ALARM_FIRE,
             translation_key="alarm_fire",
+            entity_category=EntityCategory.DIAGNOSTIC,
             test_alarm=TEST_ALARM,
             silence_alarm=SILENCE_ALARM,
         ),
@@ -61,6 +64,7 @@ SIREN_DEVICE_TYPES = {
         ElroSirenEntityDescription(
             key=ALARM_HEAT,
             translation_key="alarm_heat",
+            entity_category=EntityCategory.DIAGNOSTIC,
             test_alarm=TEST_ALARM_ALT,
             silence_alarm=SILENCE_ALARM,
         ),
@@ -69,6 +73,7 @@ SIREN_DEVICE_TYPES = {
         ElroSirenEntityDescription(
             key=ALARM_SMOKE,
             translation_key="alarm_smoke",
+            entity_category=EntityCategory.DIAGNOSTIC,
             test_alarm=TEST_ALARM,
             silence_alarm=SILENCE_ALARM,
         ),
@@ -77,6 +82,7 @@ SIREN_DEVICE_TYPES = {
         ElroSirenEntityDescription(
             key=ALARM_WATER,
             translation_key="alarm_water",
+            entity_category=EntityCategory.DIAGNOSTIC,
             test_alarm=TEST_ALARM_ALT,
             silence_alarm=SILENCE_ALARM,
         ),
