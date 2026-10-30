@@ -4,14 +4,7 @@ from dataclasses import dataclass
 import logging
 
 from elro.command import SOCKET_OFF, SOCKET_ON, CommandAttributes
-from elro.device import (
-    ATTR_DEVICE_STATE,
-    ATTR_DEVICE_VALUE,
-    DEVICE_VALUE_OFF,
-    DEVICE_VALUE_ON,
-    SOCKET,
-    STATES_OFFLINE,
-)
+from elro.device import ATTR_DEVICE_VALUE, DEVICE_VALUE_OFF, DEVICE_VALUE_ON, SOCKET
 from homeassistant.components.switch import (
     SwitchDeviceClass,
     SwitchEntity,
@@ -70,9 +63,7 @@ class ElroConnectsSwitch(ElroConnectsEntity, SwitchEntity):
 
     @property
     def is_on(self) -> bool | None:
-        """Return true if device is on or none if the device is offline."""
-        if not self.data or self.data[ATTR_DEVICE_STATE] in STATES_OFFLINE:
-            return None
+        """Return true if the socket is on or none if the value is unknown."""
         if self.data[ATTR_DEVICE_VALUE] not in (DEVICE_VALUE_OFF, DEVICE_VALUE_ON):
             return None
         return self.data[ATTR_DEVICE_VALUE] == DEVICE_VALUE_ON

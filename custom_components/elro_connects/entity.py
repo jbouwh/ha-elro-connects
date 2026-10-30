@@ -6,7 +6,9 @@ from elro.device import (
     ALARM_HEAT,
     ALARM_SMOKE,
     ALARM_WATER,
+    ATTR_DEVICE_STATE,
     ATTR_DEVICE_TYPE,
+    STATES_OFFLINE,
 )
 from homeassistant.const import ATTR_NAME
 from homeassistant.core import callback
@@ -47,6 +49,15 @@ class ElroConnectsEntity(CoordinatorEntity[ElroConnectsCoordinator]):
         self._device_id = device_id
         self._attr_unique_id = f"{self._connector_id}-{device_id}-{description.key}"
         self.entity_description = description
+
+    @property
+    def available(self) -> bool:
+        """Return if the connector can be reached and the device is online."""
+        return (
+            super().available
+            and bool(self.data)
+            and self.data[ATTR_DEVICE_STATE] not in STATES_OFFLINE
+        )
 
     @callback
     def _handle_coordinator_update(self) -> None:

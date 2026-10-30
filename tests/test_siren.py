@@ -11,7 +11,7 @@ from homeassistant.const import (
     SERVICE_TURN_ON,
     STATE_OFF,
     STATE_ON,
-    STATE_UNKNOWN,
+    STATE_UNAVAILABLE,
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.setup import async_setup_component
@@ -46,7 +46,7 @@ from .test_common import MOCK_DEVICE_STATUS_DATA
         (
             "siren.corner_carbon_monoxide_alarm",
             "Corner Carbon Monoxide Alarm",
-            STATE_UNKNOWN,
+            STATE_UNAVAILABLE,
             "mdi:molecule-co",
         ),
     ],
