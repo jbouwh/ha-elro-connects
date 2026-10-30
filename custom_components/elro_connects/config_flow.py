@@ -18,20 +18,28 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.exceptions import HomeAssistantError
 import homeassistant.helpers.config_validation as cv
+from homeassistant.helpers.selector import (
+    TextSelector,
+    TextSelectorConfig,
+    TextSelectorType,
+)
 import voluptuous as vol
 
 from .const import CONF_CONNECTOR_ID, DEFAULT_PORT, DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
+# Hide the secrets in the forms
+SECRET_SELECTOR = TextSelector(TextSelectorConfig(type=TextSelectorType.PASSWORD))
+
 ELRO_CONNECTS_DATA_SCHEMA = vol.Schema(
     {
         vol.Required(CONF_HOST): str,
         vol.Required(CONF_PORT, default=DEFAULT_PORT): cv.port,
         vol.Optional(CONF_USERNAME): str,
-        vol.Optional(CONF_PASSWORD): str,
+        vol.Optional(CONF_PASSWORD): SECRET_SELECTOR,
         vol.Optional(CONF_CONNECTOR_ID): str,
-        vol.Optional(CONF_API_KEY): str,
+        vol.Optional(CONF_API_KEY): SECRET_SELECTOR,
     }
 )
 
@@ -181,7 +189,7 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                     vol.Optional(
                         CONF_PASSWORD,
                         description={"suggested_value": entry_data.get(CONF_PASSWORD)},
-                    ): str,
+                    ): SECRET_SELECTOR,
                     vol.Optional(
                         CONF_CONNECTOR_ID,
                         description={
@@ -191,7 +199,7 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                     vol.Optional(
                         CONF_API_KEY,
                         description={"suggested_value": entry_data.get(CONF_API_KEY)},
-                    ): str,
+                    ): SECRET_SELECTOR,
                 }
             ),
         )
