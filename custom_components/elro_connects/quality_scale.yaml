@@ -45,11 +45,14 @@ rules:
   devices: done
   diagnostics: done
   discovery-update-info:
-    status: todo
-    comment: Depends on discovery.
+    status: exempt
+    comment: The integration does not support discovery.
   discovery:
-    status: todo
-    comment: Investigate whether the K1 connector can be discovered via DHCP.
+    status: exempt
+    comment: |
+      The K1 connector only announces itself with the generic Espressif DHCP
+      hostname (ESP-xxxxxx) and an Espressif MAC address, which are shared by
+      many other devices. It cannot be discovered reliably.
   docs-data-update: done
   docs-examples: done
   docs-known-limitations: done
