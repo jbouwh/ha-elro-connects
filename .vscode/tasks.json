@@ -1,0 +1,31 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Install Home Assistant dependencies",
+      "detail": "Create config/ and install the runtime dependencies of Home Assistant and the integration.",
+      "type": "shell",
+      "command": "script/ha_setup",
+      "problemMatcher": []
+    },
+    {
+      "label": "Run Home Assistant",
+      "detail": "Start Home Assistant with the config/ directory on http://localhost:8123.",
+      "type": "shell",
+      "command": "hass -c config --debug",
+      "dependsOn": "Install Home Assistant dependencies",
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "Pytest",
+      "type": "shell",
+      "command": "pytest tests --cov",
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "problemMatcher": []
+    }
+  ]
+}

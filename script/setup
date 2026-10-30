@@ -29,6 +29,7 @@ fi
 source $VIRTUAL_ENV/bin/activate
 
 /bin/bash script/bootstrap
+/bin/sh script/ha_setup
 
 pre-commit install
 

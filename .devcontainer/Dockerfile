@@ -10,6 +10,19 @@ RUN \
     && pipx uninstall mypy \
     && pipx uninstall pylint
 
+# System libraries needed to run Home Assistant with default_config
+RUN \
+    apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        ffmpeg \
+        libpcap-dev \
+        libturbojpeg0 \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Add go2rtc binary, use the version recommended by the go2rtc integration
+COPY --from=ghcr.io/alexxit/go2rtc:1.9.14 /usr/local/bin/go2rtc /bin/go2rtc
+
 # Install uv
 RUN pip3 install uv
 
