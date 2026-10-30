@@ -10,7 +10,12 @@ from homeassistant.helpers.device_registry import (
 
 from .coordinator import ElroConnectsConfigEntry, ElroConnectsCoordinator
 
-_PLATFORMS: list[Platform] = [Platform.SENSOR, Platform.SIREN, Platform.SWITCH]
+_PLATFORMS: list[Platform] = [
+    Platform.BINARY_SENSOR,
+    Platform.SENSOR,
+    Platform.SIREN,
+    Platform.SWITCH,
+]
 
 
 async def async_setup_entry(

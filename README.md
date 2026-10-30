@@ -9,7 +9,7 @@
 [![Community Forum][forum-shield]][forum]
 
 # Elro Connects K1
-The Elro Connects integration will allow users to integrate their Elro Connects fire, heat, CO, water, or smoke alarms as a siren entity into Home Assistant. The alarms can be tested (and silenced) through the siren turn on (and turn off) services. The integration discovers entities (automatically) through an Elro Connects K1 connector plug. The entity names assigned in the Elro Connects app will be synced with Home Assistant.
+The Elro Connects integration will allow users to integrate their Elro Connects fire, heat, CO, gas, water, or smoke alarms and door/window sensors into Home Assistant. Alarms are represented as binary sensors, to use them in automations, and as siren entities. The alarms can be tested (and silenced) through the siren turn on (and turn off) services. The integration discovers entities (automatically) through an Elro Connects K1 connector plug. The entity names assigned in the Elro Connects app will be synced with Home Assistant.
 
 > There is also a K2 connector available, but this K2 connector will not work with this software.
 
@@ -20,6 +20,7 @@ The integration is not tested with the Siterwell branded devices, but some user 
 
 Platform | Description
 -- | --
+`binary_sensor` | Adds an alarm sensor for each alarm (device class `carbon_monoxide`, `gas`, `heat`, `moisture` or `smoke`) and an `opening` sensor for each door/window sensor. Each of these devices also gets a `problem` and a low `battery` diagnostic sensor.
 `sensor` | Adds a `device state` sensor, a `battery level` sensor and a `signal` sensor (disabled by default) for each device.
 `siren` | Represents Elro Connects alarms as a siren. Turn the siren `ON` to test it. Turn it `OFF` to silence the (test) alarm.
 
@@ -40,6 +41,23 @@ The `device_state` sensor can have of the following states:
 Note that the sensors are polled about every 15 seconds. So it might take some time before an alarm state will be propagated. If an unknown state is found that is not supported yet, the hexadecimal code will be assigned as state. Please open an issue [here](https://github.com/jbouwh/lib-elro-connects/issues/new) if a new state needs to be supported.
 
 If the name of the device is changed in HA, it is also updated in the Elro Connects app. Note the name has a 15 character length limit.
+
+The alarm binary sensor is `on` when the device reports `alarm`, `fire_alarm` or `temperature_alarm`. A test alarm does not turn it on, so testing an alarm does not trigger your alarm automations. The `problem` sensor is `on` when the device reports `fault`, and the `battery` sensor is `on` when the device reports `low_battery`. Note that a device reports one state at a time. The door/window `opening` sensor is `on` when the door or window is open, and `unknown` while the sensor reports another state, such as `low_battery`.
+
+Example automation that sends a notification when a smoke alarm goes off:
+
+```yaml
+automation:
+  - alias: "Smoke alarm"
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.beganegrond_smoke
+        to: "on"
+    actions:
+      - action: notify.notify
+        data:
+          message: "Smoke detected: {{ trigger.to_state.name }}"
+```
 
 The `siren` platform (for enabling a test alarm) was tested and is supported for Fire, Heat, CO and Water alarms.
 
@@ -77,6 +95,7 @@ custom_components/elro_connects/translations/en.json
 custom_components/elro_connects/translations/nl.json
 custom_components/elro_connects/__init__.py
 custom_components/elro_connects/api.py
+custom_components/elro_connects/binary_sensor.py
 custom_components/elro_connects/sensor.py
 custom_components/elro_connects/siren.py
 custom_components/elro_connects/config_flow.py

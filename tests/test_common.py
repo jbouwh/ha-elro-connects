@@ -94,6 +94,36 @@ MOCK_DEVICE_STATUS_DATA = {
         "device_value_data": 1,
         "name": "Wall switch on",
     },
+    9: {
+        "device_type": "DOOR_WINDOW_SENSOR",
+        "signal": 4,
+        "battery": 94,
+        "device_state": "OPEN",
+        "device_status_data": {
+            "cmdId": 19,
+            "device_ID": 9,
+            "device_name": "0101",
+            "device_status": "045E66FF",
+        },
+        "device_value": "0xff",
+        "device_value_data": 255,
+        "name": "Voordeur",
+    },
+    10: {
+        "device_type": "DOOR_WINDOW_SENSOR",
+        "signal": 3,
+        "battery": 21,
+        "device_state": "CLOSED",
+        "device_status_data": {
+            "cmdId": 19,
+            "device_ID": 10,
+            "device_name": "0101",
+            "device_status": "0315AAFF",
+        },
+        "device_value": "0xff",
+        "device_value_data": 255,
+        "name": "Raam",
+    },
 }
 
 
