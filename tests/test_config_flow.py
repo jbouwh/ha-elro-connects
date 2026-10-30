@@ -333,7 +333,14 @@ async def test_update_options_cannot_connect_handling(
 
 
 @pytest.mark.parametrize(
-    "translations", ["strings.json", "translations/en.json", "translations/nl.json"]
+    "translations",
+    [
+        "strings.json",
+        *(
+            f"translations/{language}.json"
+            for language in ("de", "en", "es", "fr", "nl", "pt", "uk")
+        ),
+    ],
 )
 def test_data_descriptions(translations: str) -> None:
     """Test every field of the config and options flow has a description."""
