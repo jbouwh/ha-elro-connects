@@ -16,8 +16,10 @@ from homeassistant.const import (
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType
+import homeassistant.helpers.config_validation as cv
 from homeassistant.setup import async_setup_component
 import pytest
+import voluptuous_serialize
 
 from custom_components.elro_connects.config_flow import ELRO_CONNECTS_DATA_SCHEMA
 from custom_components.elro_connects.const import CONF_CONNECTOR_ID, DOMAIN
@@ -351,3 +353,26 @@ def test_data_descriptions(translations: str) -> None:
         step_strings = strings[section]["step"][step]
         assert set(step_strings["data"]) == fields
         assert set(step_strings["data_description"]) == fields
+
+
+async def test_secret_fields_hidden(
+    hass: HomeAssistant, mock_k1_connector: dict[AsyncMock], mock_entry: ConfigEntry
+) -> None:
+    """Test the password and API key fields are hidden in both forms."""
+    assert await async_setup_component(hass, DOMAIN, {})
+    await hass.async_block_till_done()
+    user_form = await hass.config_entries.flow.async_init(
+        DOMAIN, context={"source": config_entries.SOURCE_USER}
+    )
+    options_form = await hass.config_entries.options.async_init(mock_entry.entry_id)
+
+    for form in (user_form, options_form):
+        schema = {
+            field["name"]: field
+            for field in voluptuous_serialize.convert(
+                form["data_schema"], custom_serializer=cv.custom_serializer
+            )
+        }
+        for field in (CONF_PASSWORD, CONF_API_KEY):
+            assert schema[field]["selector"]["text"]["type"] == "password"
+        assert "selector" not in schema[CONF_HOST]
