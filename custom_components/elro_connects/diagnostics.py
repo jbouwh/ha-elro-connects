@@ -1,0 +1,32 @@
+"""Diagnostics support for Elro Connects."""
+
+from typing import Any
+
+from homeassistant.components.diagnostics import async_redact_data
+from homeassistant.const import CONF_API_KEY, CONF_PASSWORD, CONF_USERNAME
+from homeassistant.core import HomeAssistant
+
+from .coordinator import ElroConnectsConfigEntry
+
+TO_REDACT = {CONF_API_KEY, CONF_PASSWORD, CONF_USERNAME}
+
+
+async def async_get_config_entry_diagnostics(
+    hass: HomeAssistant, entry: ElroConnectsConfigEntry
+) -> dict[str, Any]:
+    """Return diagnostics for a config entry."""
+    coordinator = entry.runtime_data
+    return {
+        "entry": {
+            "data": async_redact_data(entry.data, TO_REDACT),
+            "options": async_redact_data(entry.options, TO_REDACT),
+        },
+        "coordinator": {
+            "last_update_success": coordinator.last_update_success,
+            "last_exception": repr(coordinator.last_exception),
+        },
+        # The raw device data as reported by the connector
+        "connector_data": coordinator.connector_data,
+        # The device data used by the entities
+        "data": coordinator.data,
+    }
