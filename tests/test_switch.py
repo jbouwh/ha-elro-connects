@@ -1,5 +1,6 @@
 """Test the Elro Connects switch platform."""
 
+import copy
 from unittest.mock import AsyncMock
 
 from elro.api import K1
@@ -12,6 +13,7 @@ from homeassistant.const import (
     SERVICE_TURN_ON,
     STATE_OFF,
     STATE_ON,
+    STATE_UNKNOWN,
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
@@ -40,7 +42,7 @@ from .test_common import MOCK_DEVICE_STATUS_DATA
         ),
     ],
 )
-async def test_setup_integration_with_siren_platform(
+async def test_setup_integration_with_switch_platform(
     hass: HomeAssistant,
     mock_k1_connector: dict[AsyncMock],
     mock_entry: ConfigEntry,
@@ -49,7 +51,7 @@ async def test_setup_integration_with_siren_platform(
     state: str,
     device_class: str,
 ) -> None:
-    """Test we can setup the integration with the siren platform."""
+    """Test we can setup the integration with the switch platform."""
     mock_k1_connector["result"].return_value = MOCK_DEVICE_STATUS_DATA
     await hass.config_entries.async_setup(mock_entry.entry_id)
     await hass.async_block_till_done()
@@ -142,3 +144,18 @@ async def test_switch_command_fails(
         str(exc_info.value) == "Could not send the command to the K1 connector: timeout"
     )
     assert hass.states.get(entity_id).state == state
+
+
+async def test_socket_unknown_value(
+    hass: HomeAssistant,
+    mock_k1_connector: dict[AsyncMock],
+    mock_entry: ConfigEntry,
+) -> None:
+    """Test the socket state is unknown if the device value is not on or off."""
+    status_data = copy.deepcopy(MOCK_DEVICE_STATUS_DATA)
+    status_data[8]["device_value"] = "0xff"
+    mock_k1_connector["result"].return_value = status_data
+    assert await async_setup_component(hass, DOMAIN, {})
+    await hass.async_block_till_done()
+
+    assert hass.states.get("switch.wall_switch_on_socket").state == STATE_UNKNOWN

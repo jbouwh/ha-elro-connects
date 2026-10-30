@@ -107,7 +107,7 @@ log_date_format = "%Y-%m-%d %H:%M:%S"
 source = ["custom_components"]
 
 [tool.coverage.report]
-fail_under = 99
+fail_under = 100
 show_missing = true
 
 [tool.mypy]
