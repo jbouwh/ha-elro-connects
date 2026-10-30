@@ -32,8 +32,11 @@ MAX_RETRIES = 3
 
 type ElroConnectsConfigEntry = ConfigEntry[ElroConnectsCoordinator]
 
+# The attributes of a device as reported by the connector
+type DeviceData = dict[str, Any]
 
-class ElroConnectsCoordinator(DataUpdateCoordinator[dict[int, dict]]):
+
+class ElroConnectsCoordinator(DataUpdateCoordinator[dict[int, DeviceData]]):
     """Communicate with the Elro Connects K1 adapter and update the coordinator."""
 
     config_entry: ElroConnectsConfigEntry
@@ -47,7 +50,7 @@ class ElroConnectsCoordinator(DataUpdateCoordinator[dict[int, dict]]):
             name=entry.data[CONF_CONNECTOR_ID],
             update_interval=timedelta(seconds=DEFAULT_INTERVAL),
         )
-        self._connector_data: dict[int, dict] = {}
+        self._connector_data: dict[int, DeviceData] = {}
         self._api_lock = asyncio.Lock()
         self._connector_id: str = entry.data[CONF_CONNECTOR_ID]
         self.hub_identifier = (DOMAIN, self._connector_id)
@@ -60,10 +63,10 @@ class ElroConnectsCoordinator(DataUpdateCoordinator[dict[int, dict]]):
             entry.data.get(CONF_API_KEY),
         )
 
-    async def _async_update_data(self) -> dict[int, dict]:
+    async def _async_update_data(self) -> dict[int, DeviceData]:
         """Update coordinator data via API."""
         # get state from coordinator cash in case the current state is unknown
-        coordinator_update: dict[int, dict] = copy.deepcopy(self.data or {})
+        coordinator_update: dict[int, DeviceData] = copy.deepcopy(self.data or {})
         new_devices = False
         try:
             await self._async_fetch_connector_data()
@@ -96,7 +99,9 @@ class ElroConnectsCoordinator(DataUpdateCoordinator[dict[int, dict]]):
             )
         return coordinator_update
 
-    async def async_device_updated(self, event: Event) -> None:
+    async def async_device_updated(
+        self, event: Event[dr.EventDeviceRegistryUpdatedData]
+    ) -> None:
         """Propagate name changes though the connector."""
         if (
             event.data["action"] != "update"
@@ -106,7 +111,8 @@ class ElroConnectsCoordinator(DataUpdateCoordinator[dict[int, dict]]):
             return
 
         device_registry = dr.async_get(self.hass)
-        device_entry = device_registry.async_get(event.data["device_id"])
+        if (device_entry := device_registry.async_get(event.data["device_id"])) is None:
+            return
         device_unique_id: str = device_entry.identifiers.copy().pop()[1]
         if (
             self.hub_identifier in device_entry.identifiers
@@ -120,24 +126,21 @@ class ElroConnectsCoordinator(DataUpdateCoordinator[dict[int, dict]]):
             # the device is not in the connector data hence we cannot update it
             return
 
-        if device_entry.name != device_entry.name_by_user:
-            await self.async_command(
-                SET_DEVICE_NAME,
-                device_ID=device_id,
-                device_name=(
-                    device_entry.name_by_user[:15]
-                    if len(device_entry.name_by_user) > 15
-                    else device_entry.name_by_user
-                ),
-            )
+        if (name := device_entry.name_by_user) is None or name == device_entry.name:
+            # The name was reset or not changed
+            return
+        # The connector supports names up to 15 characters
+        await self.async_command(
+            SET_DEVICE_NAME, device_ID=device_id, device_name=name[:15]
+        )
 
     async def _async_fetch_connector_data(self) -> None:
         """Fetch new update from the K1 connector."""
 
         try:
             async with self._api_lock:
-                new_data: dict[int, dict] = await self.api.async_process_command(
-                    GET_ALL_EQUIPMENT_STATUS
+                new_data = (
+                    await self.api.async_process_command(GET_ALL_EQUIPMENT_STATUS) or {}
                 )
                 update_names = await self.api.async_process_command(GET_DEVICE_NAMES)
                 update_state_data(new_data, update_names)
@@ -146,13 +149,13 @@ class ElroConnectsCoordinator(DataUpdateCoordinator[dict[int, dict]]):
         except K1.K1ConnectionError as err:
             self._retry_count += 1
             if not self._connector_data or self._retry_count >= MAX_RETRIES:
-                raise K1.K1ConnectionError(err) from err
+                raise K1.K1ConnectionError(str(err)) from err
 
     async def async_command(
         self,
         command: CommandAttributes,
         **argv: int | str,
-    ) -> dict[int, dict[str, Any]] | None:
+    ) -> dict[int, DeviceData] | None:
         """Execute a synchronized command through the K1 connector."""
         async with self._api_lock:
             try:
@@ -170,7 +173,7 @@ class ElroConnectsCoordinator(DataUpdateCoordinator[dict[int, dict]]):
             await self.api.async_disconnect()
 
     @property
-    def connector_data(self) -> dict[int, dict]:
+    def connector_data(self) -> dict[int, DeviceData]:
         """Return the synced state."""
         return self._connector_data
 

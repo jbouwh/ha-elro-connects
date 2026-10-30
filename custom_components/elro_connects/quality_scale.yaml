@@ -84,4 +84,4 @@ rules:
   inject-websession:
     status: todo
     comment: The library creates its own aiohttp session for the cloud login.
-  strict-typing: todo
+  strict-typing: done

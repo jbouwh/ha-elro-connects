@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass
 import logging
+from typing import Any
 
 from elro.command import SILENCE_ALARM, TEST_ALARM, TEST_ALARM_ALT, CommandAttributes
 from elro.device import (
@@ -15,11 +16,8 @@ from elro.device import (
     STATE_TEST_ALARM,
     STATES_ON,
 )
-from homeassistant.components.siren import (
-    SirenEntity,
-    SirenEntityDescription,
-    SirenEntityFeature,
-)
+from homeassistant.components.siren import SirenEntity, SirenEntityDescription
+from homeassistant.components.siren.const import SirenEntityFeature
 from homeassistant.const import EntityCategory
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -29,12 +27,12 @@ from .entity import ElroConnectsEntity
 from .helpers import async_set_up_discovery_helper
 
 
-@dataclass
+@dataclass(frozen=True, kw_only=True)
 class ElroSirenEntityDescription(SirenEntityDescription):
     """A class that describes elro siren entities."""
 
-    test_alarm: CommandAttributes | None = None
-    silence_alarm: CommandAttributes | None = None
+    test_alarm: CommandAttributes
+    silence_alarm: CommandAttributes
 
 
 _LOGGER = logging.getLogger(__name__)
@@ -116,7 +114,7 @@ class ElroConnectsSiren(ElroConnectsEntity, SirenEntity):
         """Return true if the alarm is active."""
         return self.data[ATTR_DEVICE_STATE] in STATES_ON
 
-    async def async_turn_on(self, **kwargs) -> None:
+    async def async_turn_on(self, **kwargs: Any) -> None:
         """Send a test alarm request."""
         _LOGGER.debug("Sending test alarm request for entity %s", self.entity_id)
         await self.coordinator.async_command(
@@ -126,7 +124,7 @@ class ElroConnectsSiren(ElroConnectsEntity, SirenEntity):
         self.data[ATTR_DEVICE_STATE] = STATE_TEST_ALARM
         self.async_write_ha_state()
 
-    async def async_turn_off(self, **kwargs) -> None:
+    async def async_turn_off(self, **kwargs: Any) -> None:
         """Send a silence alarm request."""
         _LOGGER.debug("Sending silence alarm request for entity %s", self.entity_id)
         await self.coordinator.async_command(
