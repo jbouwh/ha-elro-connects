@@ -1,7 +1,5 @@
 """The Elro Connects sensor platform."""
 
-from __future__ import annotations
-
 from dataclasses import dataclass
 import logging
 
@@ -17,14 +15,14 @@ from homeassistant.components.sensor import (
     SensorEntityDescription,
     SensorStateClass,
 )
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import UnitOfRatio
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.util import slugify
 from homeassistant.util.percentage import ranged_value_to_percentage
 
-from .device import ElroConnectsEntity, ElroConnectsK1
+from .coordinator import ElroConnectsConfigEntry
+from .entity import ElroConnectsEntity
 from .helpers import async_set_up_discovery_helper
 
 _LOGGER = logging.getLogger(__name__)
@@ -68,7 +66,7 @@ SENSOR_TYPES = {
 
 async def async_setup_entry(
     hass: HomeAssistant,
-    config_entry: ConfigEntry,
+    config_entry: ElroConnectsConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up the sensor platform."""
@@ -87,24 +85,7 @@ async def async_setup_entry(
 class ElroConnectsSensor(ElroConnectsEntity, SensorEntity):
     """Elro Connects Fire Alarm Entity."""
 
-    def __init__(
-        self,
-        elro_connects_api: ElroConnectsK1,
-        entry: ConfigEntry,
-        device_id: int,
-        description: ElroSensorDescription,
-    ) -> None:
-        """Initialize a Fire Alarm Entity."""
-        self._device_id = device_id
-        self._elro_connects_api = elro_connects_api
-        self.entity_description: ElroSensorDescription = description
-        ElroConnectsEntity.__init__(
-            self,
-            elro_connects_api,
-            entry,
-            device_id,
-            description,
-        )
+    entity_description: ElroSensorDescription
 
     @property
     def available(self) -> bool:

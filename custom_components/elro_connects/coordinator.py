@@ -1,6 +1,4 @@
-"""Elro Connects K1 device communication."""
-
-from __future__ import annotations
+"""Elro Connects K1 data update coordinator."""
 
 import asyncio
 import copy
@@ -15,79 +13,44 @@ from elro.command import (
     SET_DEVICE_NAME,
     CommandAttributes,
 )
-from elro.device import (
-    ALARM_CO,
-    ALARM_FIRE,
-    ALARM_HEAT,
-    ALARM_SMOKE,
-    ALARM_WATER,
-    ATTR_DEVICE_STATE,
-    ATTR_DEVICE_TYPE,
-    STATE_UNKNOWN,
-)
+from elro.device import ATTR_DEVICE_STATE, STATE_UNKNOWN
 from elro.utils import update_state_data
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import ATTR_NAME, CONF_API_KEY, CONF_HOST, CONF_PORT
-from homeassistant.core import Event, HomeAssistant, callback
+from homeassistant.const import CONF_API_KEY, CONF_HOST, CONF_PORT
+from homeassistant.core import Event, HomeAssistant
 from homeassistant.helpers import device_registry as dr
-from homeassistant.helpers.device_registry import (
-    EVENT_DEVICE_REGISTRY_UPDATED,
-    format_mac,
-)
+from homeassistant.helpers.device_registry import format_mac
 from homeassistant.helpers.dispatcher import async_dispatcher_send
-from homeassistant.helpers.entity import DeviceInfo, EntityDescription
-from homeassistant.helpers.update_coordinator import (
-    CoordinatorEntity,
-    DataUpdateCoordinator,
-    UpdateFailed,
-)
+from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
-from .const import CONF_CONNECTOR_ID, DEFAULT_INTERVAL, DOMAIN, ELRO_CONNECTS_NEW_DEVICE
+from .const import CONF_CONNECTOR_ID, DEFAULT_INTERVAL, ELRO_CONNECTS_NEW_DEVICE
+
+_LOGGER = logging.getLogger(__name__)
 
 MAX_RETRIES = 3
 
-DEVICE_MODELS = {
-    ALARM_CO: "CO alarm",
-    ALARM_FIRE: "Fire alarm",
-    ALARM_HEAT: "Heat alarm",
-    ALARM_SMOKE: "Smoke alarm",
-    ALARM_WATER: "Water alarm",
-}
+type ElroConnectsConfigEntry = ConfigEntry[ElroConnectsCoordinator]
 
 
-class ElroConnectsK1(DataUpdateCoordinator, K1):
+class ElroConnectsCoordinator(DataUpdateCoordinator[dict[int, dict]]):
     """Communicate with the Elro Connects K1 adapter and update the coordinator."""
 
-    def __init__(
-        self,
-        hass: HomeAssistant,
-        logger: logging.Logger,
-        entry: ConfigEntry,
-    ) -> None:
+    config_entry: ElroConnectsConfigEntry
+
+    def __init__(self, hass: HomeAssistant, entry: ElroConnectsConfigEntry) -> None:
         """Initialize the K1 connector."""
-        self.hass = hass
-        self._entry = entry
-        self._logger = logger
-
-        self._connector_data: dict[int, dict] = {}
-        self._api_lock = asyncio.Lock()
-        self._connector_id = entry.data[CONF_CONNECTOR_ID]
-        self._retry_count = 0
-
-        self._device_registry_updated = hass.bus.async_listen(
-            EVENT_DEVICE_REGISTRY_UPDATED, self._async_device_updated
-        )
-
-        DataUpdateCoordinator.__init__(
-            self,
+        super().__init__(
             hass,
-            logger,
-            name=self._connector_id,
-            update_method=self._async_update_data,
+            _LOGGER,
+            config_entry=entry,
+            name=entry.data[CONF_CONNECTOR_ID],
             update_interval=timedelta(seconds=DEFAULT_INTERVAL),
         )
-        K1.__init__(
-            self,
+        self._connector_data: dict[int, dict] = {}
+        self._api_lock = asyncio.Lock()
+        self._connector_id: str = entry.data[CONF_CONNECTOR_ID]
+        self._retry_count = 0
+        self.api = K1(
             entry.data[CONF_HOST],
             entry.data[CONF_CONNECTOR_ID],
             entry.data[CONF_PORT],
@@ -122,11 +85,11 @@ class ElroConnectsK1(DataUpdateCoordinator, K1):
 
         if new_devices:
             async_dispatcher_send(
-                self.hass, ELRO_CONNECTS_NEW_DEVICE.format(self._entry.entry_id)
+                self.hass, ELRO_CONNECTS_NEW_DEVICE.format(self.config_entry.entry_id)
             )
         return coordinator_update
 
-    async def _async_device_updated(self, event: Event) -> None:
+    async def async_device_updated(self, event: Event) -> None:
         """Propagate name changes though the connector."""
         if (
             event.data["action"] != "update"
@@ -141,7 +104,7 @@ class ElroConnectsK1(DataUpdateCoordinator, K1):
         mac_address = format_mac(self.connector_id[3:])
         if (
             (dr.CONNECTION_NETWORK_MAC, mac_address) in device_entry.identifiers
-            or self._entry.entry_id not in device_entry.config_entries
+            or self.config_entry.entry_id not in device_entry.config_entries
         ):
             # Not a valid device name or not a related entry
             return
@@ -167,12 +130,10 @@ class ElroConnectsK1(DataUpdateCoordinator, K1):
 
         try:
             async with self._api_lock:
-                new_data: dict[int, dict] = {}
-                update_status = await self.async_process_command(
+                new_data: dict[int, dict] = await self.api.async_process_command(
                     GET_ALL_EQUIPMENT_STATUS
                 )
-                new_data = update_status
-                update_names = await self.async_process_command(GET_DEVICE_NAMES)
+                update_names = await self.api.async_process_command(GET_DEVICE_NAMES)
                 update_state_data(new_data, update_names)
                 self._retry_count = 0
                 self._connector_data = new_data
@@ -188,18 +149,12 @@ class ElroConnectsK1(DataUpdateCoordinator, K1):
     ) -> dict[int, dict[str, Any]] | None:
         """Execute a synchronized command through the K1 connector."""
         async with self._api_lock:
-            return await self.async_process_command(command, **argv)
+            return await self.api.async_process_command(command, **argv)
 
-    async def async_update_settings(
-        self, hass: HomeAssistant, entry: ConfigEntry
-    ) -> None:
-        """Process updated settings."""
+    async def async_disconnect(self) -> None:
+        """Disconnect from the K1 connector."""
         async with self._api_lock:
-            await self.async_configure(
-                entry.data[CONF_HOST],
-                entry.data[CONF_PORT],
-                entry.data.get(CONF_API_KEY),
-            )
+            await self.api.async_disconnect()
 
     @property
     def connector_data(self) -> dict[int, dict]:
@@ -210,61 +165,3 @@ class ElroConnectsK1(DataUpdateCoordinator, K1):
     def connector_id(self) -> str:
         """Return the K1 connector ID."""
         return self._connector_id
-
-
-class ElroConnectsEntity(CoordinatorEntity):
-    """Defines a base entity for Elro Connects devices."""
-
-    _attr_has_entity_name = True
-
-    def __init__(
-        self,
-        elro_connects_api: ElroConnectsK1,
-        entry: ConfigEntry,
-        device_id: int,
-        description: EntityDescription,
-    ) -> None:
-        """Initialize the Elro connects entity."""
-        super().__init__(elro_connects_api)
-
-        self.data: dict = elro_connects_api.connector_data[device_id]
-
-        self._connector_id = elro_connects_api.connector_id
-        self._device_id = device_id
-        self._entry = entry
-        self._attr_device_class = description.device_class
-        self._attr_icon = description.icon
-        self._attr_unique_id = f"{self._connector_id}-{device_id}-{description.key}"
-        self.entity_description = description
-
-    @callback
-    def _handle_coordinator_update(self):
-        """Fetch state from the device."""
-        self.data = self.coordinator.data[self._device_id]
-        self.async_write_ha_state()
-
-    @property
-    def device_info(self) -> DeviceInfo:
-        """Return info for device registry."""
-        # connector
-        device_registry = dr.async_get(self.hass)
-        mac_address = format_mac(self._connector_id[3:])
-        k1_device = device_registry.async_get_or_create(
-            model="K1 (SF40GA)",
-            config_entry_id=self._entry.entry_id,
-            identifiers={
-                (dr.CONNECTION_NETWORK_MAC, mac_address),
-            },
-            manufacturer="Elro",
-            name=f"Elro Connects K1 {self._connector_id}",
-        )
-        # sub device
-        device_type = self.data[ATTR_DEVICE_TYPE]
-        return DeviceInfo(
-            identifiers={(DOMAIN, f"{self._connector_id}_{self._device_id}")},
-            manufacturer="Elro",
-            model=DEVICE_MODELS.get(device_type, device_type),
-            name=self.data.get(ATTR_NAME, None),
-            # Link to K1 connector
-            via_device_id=k1_device.id,
-        )

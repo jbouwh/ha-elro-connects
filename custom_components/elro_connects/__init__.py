@@ -1,63 +1,64 @@
 """The Elro Connects integration."""
 
-from __future__ import annotations
-
-import logging
-
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.device_registry import DeviceEntry, format_mac
+from homeassistant.helpers.device_registry import (
+    EVENT_DEVICE_REGISTRY_UPDATED,
+    DeviceEntry,
+    format_mac,
+)
 
-from .const import DOMAIN
-from .device import ElroConnectsK1
-
-_LOGGER = logging.getLogger(__name__)
+from .coordinator import ElroConnectsConfigEntry, ElroConnectsCoordinator
 
 _PLATFORMS: list[Platform] = [Platform.SENSOR, Platform.SIREN, Platform.SWITCH]
 
 
-async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+async def async_setup_entry(
+    hass: HomeAssistant, entry: ElroConnectsConfigEntry
+) -> bool:
     """Set up Elro Connects from a config entry."""
-
-    elro_connects_api = ElroConnectsK1(hass, _LOGGER, entry)
-
-    hass.data.setdefault(DOMAIN, {})
-    hass.data[DOMAIN][entry.entry_id] = elro_connects_api
-
-    await elro_connects_api.async_config_entry_first_refresh()
-    await hass.config_entries.async_forward_entry_setups(entry, _PLATFORMS)
+    coordinator = ElroConnectsCoordinator(hass, entry)
+    await coordinator.async_config_entry_first_refresh()
+    entry.runtime_data = coordinator
 
     entry.async_on_unload(
-        entry.add_update_listener(elro_connects_api.async_update_settings)
+        hass.bus.async_listen(
+            EVENT_DEVICE_REGISTRY_UPDATED, coordinator.async_device_updated
+        )
     )
+    await hass.config_entries.async_forward_entry_setups(entry, _PLATFORMS)
+    entry.async_on_unload(entry.add_update_listener(_async_update_listener))
 
     return True
 
 
-async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+async def _async_update_listener(
+    hass: HomeAssistant, entry: ElroConnectsConfigEntry
+) -> None:
+    """Reload the entry when the settings are updated."""
+    await hass.config_entries.async_reload(entry.entry_id)
+
+
+async def async_unload_entry(
+    hass: HomeAssistant, entry: ElroConnectsConfigEntry
+) -> bool:
     """Unload a config entry."""
-    elro_connects_api: ElroConnectsK1 = hass.data[DOMAIN][entry.entry_id]
     if unload_ok := await hass.config_entries.async_unload_platforms(entry, _PLATFORMS):
-        await elro_connects_api.async_disconnect()
-        hass.data[DOMAIN].pop(entry.entry_id)
+        await entry.runtime_data.async_disconnect()
 
     return unload_ok
 
 
 async def async_remove_config_entry_device(
-    hass: HomeAssistant, entry: ConfigEntry, device_entry: DeviceEntry
+    hass: HomeAssistant, entry: ElroConnectsConfigEntry, device_entry: DeviceEntry
 ) -> bool:
     """Allow manual removal of a device if not in use."""
-    elro_connects_api: ElroConnectsK1 = hass.data[DOMAIN][entry.entry_id]
+    coordinator = entry.runtime_data
     device_unique_id: str = device_entry.identifiers.copy().pop()[1]
-    mac_address = format_mac(elro_connects_api.connector_id[3:])
+    mac_address = format_mac(coordinator.connector_id[3:])
     if mac_address == device_unique_id:
         return False
-    device_id_str = device_unique_id[len(elro_connects_api.connector_id) + 1 :]
+    device_id_str = device_unique_id[len(coordinator.connector_id) + 1 :]
     device_id = int(device_id_str)
     # Do not remove if the device_id is in the connector_data
-    return not (
-        elro_connects_api.connector_data
-        and device_id in elro_connects_api.connector_data
-    )
+    return not (coordinator.connector_data and device_id in coordinator.connector_data)

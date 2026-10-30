@@ -1,7 +1,5 @@
 """The Elro Connects siren platform."""
 
-from __future__ import annotations
-
 from dataclasses import dataclass
 import logging
 
@@ -23,11 +21,11 @@ from homeassistant.components.siren import (
     SirenEntityDescription,
     SirenEntityFeature,
 )
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .device import ElroConnectsEntity, ElroConnectsK1
+from .coordinator import ElroConnectsConfigEntry
+from .entity import ElroConnectsEntity
 from .helpers import async_set_up_discovery_helper
 
 
@@ -82,7 +80,7 @@ SIREN_DEVICE_TYPES = {
 
 async def async_setup_entry(
     hass: HomeAssistant,
-    config_entry: ConfigEntry,
+    config_entry: ElroConnectsConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up the sensor platform."""
@@ -101,27 +99,8 @@ async def async_setup_entry(
 class ElroConnectsSiren(ElroConnectsEntity, SirenEntity):
     """Elro Connects Fire Alarm Entity."""
 
-    def __init__(
-        self,
-        elro_connects_api: ElroConnectsK1,
-        entry: ConfigEntry,
-        device_id: int,
-        description: ElroSirenEntityDescription,
-    ) -> None:
-        """Initialize a Fire Alarm Entity."""
-        self._device_id = device_id
-        self._elro_connects_api = elro_connects_api
-        self._description = description
-        self._attr_supported_features = (
-            SirenEntityFeature.TURN_ON | SirenEntityFeature.TURN_OFF
-        )
-        ElroConnectsEntity.__init__(
-            self,
-            elro_connects_api,
-            entry,
-            device_id,
-            description,
-        )
+    entity_description: ElroSirenEntityDescription
+    _attr_supported_features = SirenEntityFeature.TURN_ON | SirenEntityFeature.TURN_OFF
 
     @property
     def is_on(self) -> bool | None:
@@ -133,8 +112,8 @@ class ElroConnectsSiren(ElroConnectsEntity, SirenEntity):
     async def async_turn_on(self, **kwargs) -> None:
         """Send a test alarm request."""
         _LOGGER.debug("Sending test alarm request for entity %s", self.entity_id)
-        await self._elro_connects_api.async_command(
-            self._description.test_alarm, device_ID=self._device_id
+        await self.coordinator.async_command(
+            self.entity_description.test_alarm, device_ID=self._device_id
         )
 
         self.data[ATTR_DEVICE_STATE] = STATE_TEST_ALARM
@@ -143,8 +122,8 @@ class ElroConnectsSiren(ElroConnectsEntity, SirenEntity):
     async def async_turn_off(self, **kwargs) -> None:
         """Send a silence alarm request."""
         _LOGGER.debug("Sending silence alarm request for entity %s", self.entity_id)
-        await self._elro_connects_api.async_command(
-            self._description.silence_alarm, device_ID=self._device_id
+        await self.coordinator.async_command(
+            self.entity_description.silence_alarm, device_ID=self._device_id
         )
 
         self.data[ATTR_DEVICE_STATE] = STATE_SILENCE
