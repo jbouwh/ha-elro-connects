@@ -137,7 +137,8 @@ class ElroConnectsCoordinator(DataUpdateCoordinator[dict[int, dict]]):
                 update_state_data(new_data, update_names)
                 self._retry_count = 0
                 self._connector_data = new_data
-        except K1.K1ConnectionError as err:
+        # The K1 library does not wrap socket errors, e.g. a failing DNS lookup
+        except (K1.K1ConnectionError, OSError) as err:
             self._retry_count += 1
             if not self._connector_data or self._retry_count >= MAX_RETRIES:
                 raise K1.K1ConnectionError(err) from err

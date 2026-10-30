@@ -2,6 +2,7 @@
 
 import copy
 from datetime import timedelta
+import socket
 from unittest.mock import AsyncMock
 
 from elro.api import K1
@@ -45,20 +46,33 @@ async def test_setup_integration_no_data(
     await hass.async_block_till_done()
 
 
+@pytest.mark.parametrize(
+    ("side_effect", "message"),
+    [
+        (K1.K1ConnectionError, "K1 connection error"),
+        (
+            socket.gaierror(-2, "Name or service not known"),
+            "[Errno -2] Name or service not known",
+        ),
+    ],
+)
 async def test_setup_integration_update_fail(
     hass: HomeAssistant,
-    caplog,
+    caplog: pytest.LogCaptureFixture,
     mock_k1_connector: dict[AsyncMock],
     mock_entry: ConfigEntry,
+    side_effect: Exception,
+    message: str,
 ) -> None:
     """Test if an update can fail with warnings."""
-    mock_k1_connector["result"].side_effect = K1.K1ConnectionError
+    mock_k1_connector["result"].side_effect = side_effect
     assert await async_setup_component(hass, DOMAIN, {})
     await hass.async_block_till_done()
+    assert mock_entry.state is ConfigEntryState.SETUP_RETRY
     assert (
-        "elro_connects integration not ready yet: K1 connection error; Retrying"
-        in caplog.text
+        f"elro_connects integration not ready yet: {message}; Retrying" in caplog.text
     )
+    assert "Unexpected error" not in caplog.text
 
 
 async def test_setup_integration_exception(
