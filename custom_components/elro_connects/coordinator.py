@@ -54,6 +54,8 @@ class ElroConnectsCoordinator(DataUpdateCoordinator[dict[int, DeviceData]]):
         self._api_lock = asyncio.Lock()
         self._connector_id: str = entry.data[CONF_CONNECTOR_ID]
         self.hub_identifier = (DOMAIN, self._connector_id)
+        # The device registry ID of the K1 hub, set when the entry is set up
+        self.hub_device_id: str = ""
         self.mac_address = format_mac(self._connector_id[3:])
         self._retry_count = 0
         self.api = K1(

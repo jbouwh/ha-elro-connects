@@ -78,5 +78,5 @@ class ElroConnectsEntity(CoordinatorEntity[ElroConnectsCoordinator]):
             model=DEVICE_MODELS.get(device_type, device_type),
             name=self.data.get(ATTR_NAME, None),
             # Link to K1 connector
-            via_device=self.coordinator.hub_identifier,
+            via_device_id=self.coordinator.hub_device_id,
         )

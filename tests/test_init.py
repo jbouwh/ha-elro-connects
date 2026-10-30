@@ -166,22 +166,22 @@ async def test_remove_device_from_config_entry(
     connector_id = mock_entry.runtime_data.connector_id
     device_registry = dr.async_get(hass)
     # Test removing the device for siren 4 will work
-    device_entry = device_registry.async_get_device(
-        identifiers={(DOMAIN, f"{connector_id}_4")}
+    device_entry = device_registry.async_get_device_by_identifier(
+        (DOMAIN, f"{connector_id}_4"), mock_entry.entry_id
     )
     assert device_entry
     assert await async_remove_config_entry_device(hass, mock_entry, device_entry)
 
     # Test removing the device for siren 2 will not work because it is in use
-    device_entry = device_registry.async_get_device(
-        identifiers={(DOMAIN, f"{connector_id}_2")}
+    device_entry = device_registry.async_get_device_by_identifier(
+        (DOMAIN, f"{connector_id}_2"), mock_entry.entry_id
     )
     assert device_entry
     assert not await async_remove_config_entry_device(hass, mock_entry, device_entry)
 
     # Test removing the the K1 connector device will not work
-    device_entry = device_registry.async_get_device(
-        identifiers={(DOMAIN, connector_id)}
+    device_entry = device_registry.async_get_device_by_identifier(
+        (DOMAIN, connector_id), mock_entry.entry_id
     )
     assert device_entry
     assert not await async_remove_config_entry_device(hass, mock_entry, device_entry)
@@ -217,8 +217,8 @@ async def test_unloading_config_entry(
 
     # The device registry listener is removed, name changes are not synced anymore
     device_registry = dr.async_get(hass)
-    device_entry = device_registry.async_get_device(
-        identifiers={(DOMAIN, "ST_deadbeef0000_4")}
+    device_entry = device_registry.async_get_device_by_identifier(
+        (DOMAIN, "ST_deadbeef0000_4"), mock_entry.entry_id
     )
     assert device_entry
     mock_k1_connector["result"].reset_mock()
@@ -245,8 +245,8 @@ async def test_update_device_name(
     connector_id = mock_entry.runtime_data.connector_id
     device_registry = dr.async_get(hass)
     # Test updating the device name for siren 4 will work
-    device_entry = device_registry.async_get_device(
-        identifiers={(DOMAIN, f"{connector_id}_4")}
+    device_entry = device_registry.async_get_device_by_identifier(
+        (DOMAIN, f"{connector_id}_4"), mock_entry.entry_id
     )
     assert device_entry
 
@@ -281,8 +281,8 @@ async def test_update_device_name(
     assert mock_k1_connector["result"].call_count == 0
 
     # update the K1 connector name
-    device_entry = device_registry.async_get_device(
-        identifiers={(DOMAIN, connector_id)}
+    device_entry = device_registry.async_get_device_by_identifier(
+        (DOMAIN, connector_id), mock_entry.entry_id
     )
     assert device_entry
     mock_k1_connector["result"].reset_mock()
@@ -304,7 +304,9 @@ async def test_hub_device(
     assert await async_setup_component(hass, DOMAIN, {})
     await hass.async_block_till_done()
     # The hub is created, even when the connector has no devices
-    hub = device_registry.async_get_device(identifiers={(DOMAIN, "ST_deadbeef0000")})
+    hub = device_registry.async_get_device_by_identifier(
+        (DOMAIN, "ST_deadbeef0000"), mock_entry.entry_id
+    )
     assert hub is not None
     assert hub.connections == {(dr.CONNECTION_NETWORK_MAC, "de:ad:be:ef:00:00")}
     assert hub.model == "K1 (SF40GA)"
@@ -385,8 +387,8 @@ async def test_update_device_name_ignored(
     mock_k1_connector["result"].return_value = MOCK_DEVICE_STATUS_DATA
     assert await async_setup_component(hass, DOMAIN, {})
     await hass.async_block_till_done()
-    device_entry = device_registry.async_get_device(
-        identifiers={(DOMAIN, "ST_deadbeef0000_4")}
+    device_entry = device_registry.async_get_device_by_identifier(
+        (DOMAIN, "ST_deadbeef0000_4"), mock_entry.entry_id
     )
     assert device_entry
     device_registry.async_update_device(device_entry.id, name_by_user="New name")

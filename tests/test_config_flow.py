@@ -3,6 +3,7 @@
 import json
 from pathlib import Path
 import re
+from typing import Any
 from unittest.mock import AsyncMock, patch
 
 from elro.api import K1
@@ -16,12 +17,11 @@ from homeassistant.const import (
     CONF_USERNAME,
 )
 from homeassistant.core import HomeAssistant
-from homeassistant.data_entry_flow import FlowResultType
+from homeassistant.data_entry_flow import FlowResult, FlowResultType
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-import homeassistant.helpers.config_validation as cv
+from homeassistant.helpers.selector import TextSelector, TextSelectorType
 from homeassistant.setup import async_setup_component
 import pytest
-import voluptuous_serialize
 
 from custom_components.elro_connects.config_flow import ELRO_CONNECTS_DATA_SCHEMA
 from custom_components.elro_connects.const import CONF_CONNECTOR_ID, DOMAIN
@@ -32,6 +32,11 @@ from .test_common import (
     MOCK_PASSWORD,
     MOCK_USER,
 )
+
+
+def _validators(form: FlowResult) -> dict[str, Any]:
+    """Return the validators of the form fields, by field name."""
+    return {str(key): value for key, value in form["data_schema"].schema.items()}
 
 
 async def test_form(hass: HomeAssistant, mock_k1_api: dict[AsyncMock]) -> None:
@@ -377,15 +382,11 @@ async def test_secret_fields_hidden(
     reconfigure_form = await mock_entry.start_reconfigure_flow(hass)
 
     for form in (user_form, reconfigure_form):
-        schema = {
-            field["name"]: field
-            for field in voluptuous_serialize.convert(
-                form["data_schema"], custom_serializer=cv.custom_serializer
-            )
-        }
+        validators = _validators(form)
         for field in (CONF_PASSWORD, CONF_API_KEY):
-            assert schema[field]["selector"]["text"]["type"] == "password"
-        assert "selector" not in schema[CONF_HOST]
+            assert isinstance(validators[field], TextSelector)
+            assert validators[field].config["type"] == TextSelectorType.PASSWORD
+        assert not isinstance(validators[CONF_HOST], TextSelector)
 
 
 async def test_reconfigure_form_suggests_current_data(
@@ -416,15 +417,10 @@ async def test_reconfigure_connector_id_read_only(
     await hass.async_block_till_done()
 
     result = await mock_entry.start_reconfigure_flow(hass)
-    fields = voluptuous_serialize.convert(
-        result["data_schema"], custom_serializer=cv.custom_serializer
-    )
+    validators = _validators(result)
     # The form has the same fields in the same order as the user step
-    assert [field["name"] for field in fields] == [
-        str(key) for key in ELRO_CONNECTS_DATA_SCHEMA.schema
-    ]
-    connector_id = next(f for f in fields if f["name"] == CONF_CONNECTOR_ID)
-    assert connector_id["selector"]["text"]["read_only"] is True
+    assert list(validators) == [str(key) for key in ELRO_CONNECTS_DATA_SCHEMA.schema]
+    assert validators[CONF_CONNECTOR_ID].config["read_only"] is True
 
     with patch(
         "custom_components.elro_connects.async_setup_entry",
