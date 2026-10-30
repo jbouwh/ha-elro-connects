@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# Links the Claude Code memory and plans to the repository, so they survive a rebuild.
+set -e
+
+cd "$(dirname "$0")/.."
+
+REPO_DIR="$(pwd)"
+PROJECT_DIR="$HOME/.claude/projects/$(echo "$REPO_DIR" | sed 's#[/.]#-#g')"
+
+link_dir() {
+  local target="$1" link="$2"
+  mkdir -p "$target" "$(dirname "$link")"
+  if [ -d "$link" ] && [ ! -L "$link" ]; then
+    # Keep anything Claude Code already wrote before the link existed
+    cp -rn "$link"/. "$target"/
+    rm -rf "$link"
+  fi
+  ln -sfn "$target" "$link"
+}
+
+# Restore a one-time migration of the home directory state into the new volumes
+MIGRATE_DIR="$REPO_DIR/.claude/migrate"
+if [ -d "$MIGRATE_DIR" ]; then
+  echo "Restoring Claude Code session history from $MIGRATE_DIR..."
+  mkdir -p "$HOME/.claude"
+  cp -an "$MIGRATE_DIR/claude/." "$HOME/.claude/"
+  rm -rf "$MIGRATE_DIR"
+fi
+
+link_dir "$REPO_DIR/.claude/memory" "$PROJECT_DIR/memory"
+link_dir "$REPO_DIR/.claude/plans" "$HOME/.claude/plans"

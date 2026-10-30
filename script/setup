@@ -29,6 +29,8 @@ fi
 source $VIRTUAL_ENV/bin/activate
 
 /bin/bash script/bootstrap
+/bin/sh script/ha_setup
+/bin/bash script/claude_setup
 
 pre-commit install
 

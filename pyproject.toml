@@ -76,6 +76,9 @@ combine-as-imports = true
 split-on-trailing-comma = false
 
 [tool.ruff.lint.per-file-ignores]
+"script/*" = [
+    "INP001", # scripts are not part of a package
+]
 "tests/**" = [
     "D", # docstrings are not required in tests
     "INP001", # tests/elro_connects has no __init__.py

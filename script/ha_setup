@@ -1,0 +1,23 @@
+#!/bin/sh
+# Prepare the dev container to run Home Assistant with the integration.
+# Stop on errors
+set -e
+
+cd "$(dirname "$0")/.."
+
+# Create a Home Assistant configuration directory if it does not exist
+if [ ! -f config/configuration.yaml ]; then
+    echo "Creating Home Assistant configuration in config/..."
+    mkdir -p config
+    cp .devcontainer/configuration.yaml config/configuration.yaml
+fi
+if [ ! -e config/custom_components ]; then
+    ln -s ../custom_components config/custom_components
+fi
+
+echo "Installing Home Assistant runtime dependencies..."
+CONSTRAINTS=$(python -c 'import homeassistant, pathlib; print(pathlib.Path(homeassistant.__file__).parent / "package_constraints.txt")')
+REQUIREMENTS=$(mktemp)
+trap 'rm -f "$REQUIREMENTS"' EXIT
+python script/ha_requirements.py default_config elro_connects > "$REQUIREMENTS"
+uv pip install --constraint "$CONSTRAINTS" --requirement "$REQUIREMENTS"
