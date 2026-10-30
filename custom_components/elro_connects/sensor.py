@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import logging
 from dataclasses import dataclass
+import logging
 
 from elro.device import (
     ATTR_BATTERY_LEVEL,
@@ -109,7 +109,7 @@ class ElroConnectsSensor(ElroConnectsEntity, SensorEntity):
     @property
     def available(self) -> bool:
         """Return true if device is on or none if the device is offline."""
-        return bool(self.data) and not (self.data[ATTR_DEVICE_STATE] in STATES_OFFLINE)
+        return bool(self.data) and self.data[ATTR_DEVICE_STATE] not in STATES_OFFLINE
 
     @property
     def native_value(self) -> int | float | None:

@@ -2,7 +2,6 @@
 
 from unittest.mock import AsyncMock, patch
 
-import pytest
 from elro.api import K1
 from homeassistant import config_entries
 from homeassistant.config_entries import ConfigEntry
@@ -16,6 +15,7 @@ from homeassistant.const import (
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType
 from homeassistant.setup import async_setup_component
+import pytest
 
 from custom_components.elro_connects.const import CONF_CONNECTOR_ID, DOMAIN
 
@@ -140,7 +140,7 @@ async def test_form_with_cloud_error(
 
 
 @pytest.mark.parametrize(
-    "side_effect, error",
+    ("side_effect", "error"),
     [
         (K1.K1ConnectionError, "cannot_connect"),
         (Exception("Some unhandled error"), "unknown"),

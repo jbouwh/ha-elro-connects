@@ -1,0 +1,100 @@
+rules:
+  # Bronze
+  action-setup:
+    status: exempt
+    comment: The integration does not register custom actions.
+  appropriate-polling: done
+  brands: todo
+  common-modules:
+    status: todo
+    comment: Move the coordinator and base entity from device.py to coordinator.py and entity.py.
+  config-flow-test-coverage: done
+  config-flow:
+    status: todo
+    comment: Add data_description for the config flow fields.
+  dependency-transparency: done
+  docs-actions:
+    status: exempt
+    comment: The integration does not register custom actions.
+  docs-high-level-description: done
+  docs-installation-instructions: done
+  docs-removal-instructions: todo
+  entity-event-setup:
+    status: exempt
+    comment: Entities do not subscribe to events.
+  entity-unique-id: done
+  has-entity-name: done
+  runtime-data: todo
+  test-before-configure: done
+  test-before-setup: done
+  unique-config-entry: done
+
+  # Silver
+  action-exceptions:
+    status: todo
+    comment: Siren and switch commands should raise HomeAssistantError on connection errors.
+  config-entry-unloading:
+    status: todo
+    comment: The device registry listener is not removed when the entry is unloaded.
+  docs-configuration-parameters: todo
+  docs-installation-parameters: done
+  entity-unavailable:
+    status: todo
+    comment: The sensor availability does not take the coordinator availability into account.
+  integration-owner: done
+  log-when-unavailable: done
+  parallel-updates: todo
+  reauthentication-flow:
+    status: exempt
+    comment: |
+      The connection is local. Cloud credentials are only used once during setup
+      to obtain the connector ID and API key.
+  test-coverage: done
+
+  # Gold
+  devices:
+    status: todo
+    comment: |
+      Create the K1 hub device once during setup, using a domain identifier
+      and the MAC address as a connection.
+  diagnostics: todo
+  discovery-update-info:
+    status: todo
+    comment: Depends on discovery.
+  discovery:
+    status: todo
+    comment: Investigate whether the K1 connector can be discovered via DHCP.
+  docs-data-update: done
+  docs-examples: todo
+  docs-known-limitations: done
+  docs-supported-devices: done
+  docs-supported-functions:
+    status: todo
+    comment: The switch platform is not documented in the README.
+  docs-troubleshooting: todo
+  docs-use-cases: todo
+  dynamic-devices: done
+  entity-category:
+    status: todo
+    comment: The signal sensor should be a diagnostic entity.
+  entity-device-class:
+    status: todo
+    comment: The signal sensor uses the power factor device class.
+  entity-disabled-by-default: done
+  entity-translations: done
+  exception-translations: todo
+  icon-translations: todo
+  reconfiguration-flow: todo
+  repair-issues:
+    status: exempt
+    comment: There are no repairable issues.
+  stale-devices:
+    status: todo
+    comment: Devices that are no longer reported by the connector should be removed automatically.
+
+  # Platinum
+  async-dependency: done
+  inject-websession:
+    status: todo
+    comment: The library creates its own aiohttp session for the cloud login.
+  strict-typing: todo

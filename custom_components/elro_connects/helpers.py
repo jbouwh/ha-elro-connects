@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from elro.device import ATTR_DEVICE_TYPE
-
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect

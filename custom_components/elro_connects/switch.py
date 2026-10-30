@@ -14,7 +14,6 @@ from elro.device import (
     SOCKET,
     STATES_OFFLINE,
 )
-
 from homeassistant.components.switch import (
     SwitchDeviceClass,
     SwitchEntity,

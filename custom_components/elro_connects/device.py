@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import asyncio
 import copy
-import logging
 from datetime import timedelta
+import logging
 from typing import Any
 
 from elro.api import K1
@@ -149,7 +149,7 @@ class ElroConnectsK1(DataUpdateCoordinator, K1):
         device_id = int(device_id_str)
         if not self.connector_data or device_id not in self.connector_data:
             # the device is not in the connector data hence we cannot update it
-            return False
+            return
 
         if device_entry.name != device_entry.name_by_user:
             await self.async_command(
@@ -260,7 +260,7 @@ class ElroConnectsEntity(CoordinatorEntity):
         )
         # sub device
         device_type = self.data[ATTR_DEVICE_TYPE]
-        device_info = DeviceInfo(
+        return DeviceInfo(
             identifiers={(DOMAIN, f"{self._connector_id}_{self._device_id}")},
             manufacturer="Elro",
             model=DEVICE_MODELS.get(device_type, device_type),
@@ -268,4 +268,3 @@ class ElroConnectsEntity(CoordinatorEntity):
             # Link to K1 connector
             via_device_id=k1_device.id,
         )
-        return device_info

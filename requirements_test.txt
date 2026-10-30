@@ -2,14 +2,11 @@ aioresponses>=0.7.9
 coverage==7.15.2
 fnvhash==0.1.0
 freezegun==1.5.5
-isort>=6.0.1
 lru-dict==1.4.01
 mock-open>=1.4.0
 pipdeptree==2.26.1
 pre-commit==4.6.1
 pytest==9.0.3
-pylint==4.0.6
-pylint-per-file-ignores==3.2.1
 pytest-aiohttp==1.1.1
 pytest-asyncio>=0.23.6
 pytest-cov==7.1.0
@@ -23,7 +20,6 @@ pytest-sugar>=0.9.6
 pytest-timeout==2.4.0
 pytest-unordered>=0.6.0
 pytest-xdist==3.8.0
-pytest-xdist>=3.6.1
 requests_mock==1.12.1
 respx==0.23.1
 ruff==0.16.0
