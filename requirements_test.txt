@@ -1,6 +1,6 @@
 aioresponses>=0.7.9
 coverage==7.15.2
-fnvhash==0.1.0
+fnvhash==0.2.1
 freezegun==1.5.5
 lru-dict==1.4.01
 mock-open>=1.4.0
