@@ -40,40 +40,50 @@ class ElroSirenEntityDescription(SirenEntityDescription):
 _LOGGER = logging.getLogger(__name__)
 
 SIREN_DEVICE_TYPES = {
-    ALARM_CO: ElroSirenEntityDescription(
-        key=ALARM_CO,
-        translation_key="alarm_co",
-        icon="mdi:molecule-co",
-        test_alarm=TEST_ALARM_ALT,
-        silence_alarm=SILENCE_ALARM,
+    ALARM_CO: (
+        ElroSirenEntityDescription(
+            key=ALARM_CO,
+            translation_key="alarm_co",
+            icon="mdi:molecule-co",
+            test_alarm=TEST_ALARM_ALT,
+            silence_alarm=SILENCE_ALARM,
+        ),
     ),
-    ALARM_FIRE: ElroSirenEntityDescription(
-        key=ALARM_FIRE,
-        translation_key="alarm_fire",
-        icon="mdi:fire-alert",
-        test_alarm=TEST_ALARM,
-        silence_alarm=SILENCE_ALARM,
+    ALARM_FIRE: (
+        ElroSirenEntityDescription(
+            key=ALARM_FIRE,
+            translation_key="alarm_fire",
+            icon="mdi:fire-alert",
+            test_alarm=TEST_ALARM,
+            silence_alarm=SILENCE_ALARM,
+        ),
     ),
-    ALARM_HEAT: ElroSirenEntityDescription(
-        key=ALARM_HEAT,
-        translation_key="alarm_heat",
-        icon="mdi:fire-alert",
-        test_alarm=TEST_ALARM_ALT,
-        silence_alarm=SILENCE_ALARM,
+    ALARM_HEAT: (
+        ElroSirenEntityDescription(
+            key=ALARM_HEAT,
+            translation_key="alarm_heat",
+            icon="mdi:fire-alert",
+            test_alarm=TEST_ALARM_ALT,
+            silence_alarm=SILENCE_ALARM,
+        ),
     ),
-    ALARM_SMOKE: ElroSirenEntityDescription(
-        key=ALARM_SMOKE,
-        translation_key="alarm_smoke",
-        icon="mdi:smoke",
-        test_alarm=TEST_ALARM,
-        silence_alarm=SILENCE_ALARM,
+    ALARM_SMOKE: (
+        ElroSirenEntityDescription(
+            key=ALARM_SMOKE,
+            translation_key="alarm_smoke",
+            icon="mdi:smoke",
+            test_alarm=TEST_ALARM,
+            silence_alarm=SILENCE_ALARM,
+        ),
     ),
-    ALARM_WATER: ElroSirenEntityDescription(
-        key=ALARM_WATER,
-        translation_key="alarm_water",
-        icon="mdi:water-alert",
-        test_alarm=TEST_ALARM_ALT,
-        silence_alarm=SILENCE_ALARM,
+    ALARM_WATER: (
+        ElroSirenEntityDescription(
+            key=ALARM_WATER,
+            translation_key="alarm_water",
+            icon="mdi:water-alert",
+            test_alarm=TEST_ALARM_ALT,
+            silence_alarm=SILENCE_ALARM,
+        ),
     ),
 }
 
@@ -84,13 +94,10 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up the sensor platform."""
-    current: set[int] = set()
-
     async_set_up_discovery_helper(
         hass,
         ElroConnectsSiren,
         config_entry,
-        current,
         SIREN_DEVICE_TYPES,
         async_add_entities,
     )

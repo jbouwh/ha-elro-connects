@@ -1,5 +1,7 @@
 """Helper functions for Elro Connects."""
 
+from collections.abc import Mapping
+
 from elro.device import ATTR_DEVICE_TYPE
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
@@ -15,11 +17,16 @@ def async_set_up_discovery_helper(
     hass: HomeAssistant,
     entity_class: type,
     entry: ElroConnectsConfigEntry,
-    current: set[int],
-    descriptions: dict[str, EntityDescription],
+    descriptions: Mapping[str, tuple[EntityDescription, ...]],
     async_add_entities: AddEntitiesCallback,
 ):
-    """Help to set up an entity."""
+    """Help to set up the entities of a platform for new devices.
+
+    The descriptions are keyed by device type or by device attribute.
+    If the device type matches, all descriptions for that type are added,
+    otherwise the descriptions of each matching attribute are added.
+    """
+    current: set[int] = set()
 
     @callback
     def _async_add_entities():
@@ -39,17 +46,16 @@ def async_set_up_discovery_helper(
             current.add(device_id)
             device_type = attributes[ATTR_DEVICE_TYPE]
             if device_type in descriptions:
-                new_item = entity_class(
-                    coordinator, device_id, descriptions[device_type]
+                new_items.extend(
+                    entity_class(coordinator, device_id, description)
+                    for description in descriptions[device_type]
                 )
-                new_items.append(new_item)
             else:
-                for attribute in attributes:
-                    if attribute in descriptions:
-                        new_item = entity_class(
-                            coordinator, device_id, descriptions[attribute]
-                        )
-                        new_items.append(new_item)
+                new_items.extend(
+                    entity_class(coordinator, device_id, description)
+                    for attribute in attributes
+                    for description in descriptions.get(attribute, ())
+                )
 
         async_add_entities(new_items)
 
