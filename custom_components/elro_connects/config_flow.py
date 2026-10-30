@@ -42,6 +42,18 @@ ELRO_CONNECTS_DATA_SCHEMA = vol.Schema(
     }
 )
 
+# The connector cannot be changed when reconfiguring
+RECONFIGURE_SCHEMA = vol.Schema(
+    {
+        key: (
+            TextSelector(TextSelectorConfig(read_only=True))
+            if key == CONF_CONNECTOR_ID
+            else validator
+        )
+        for key, validator in ELRO_CONNECTS_DATA_SCHEMA.schema.items()
+    }
+)
+
 TITLE = "Elro Connects K1 Connector"
 
 
@@ -146,6 +158,10 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         entry = self._get_reconfigure_entry()
         errors = {}
         if user_input is not None:
+            user_input = {
+                **user_input,
+                CONF_CONNECTOR_ID: entry.data[CONF_CONNECTOR_ID],
+            }
             try:
                 info = await async_validate_input(self.hass, user_input)
             except CannotConnect:
@@ -154,14 +170,12 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 _LOGGER.exception("Unexpected exception")
                 errors["base"] = "unknown"
             else:
-                await self.async_set_unique_id(info[CONF_CONNECTOR_ID])
-                self._abort_if_unique_id_mismatch()
                 return self.async_update_reload_and_abort(entry, data=info)
 
         return self.async_show_form(
             step_id="reconfigure",
             data_schema=self.add_suggested_values_to_schema(
-                ELRO_CONNECTS_DATA_SCHEMA, user_input or entry.data
+                RECONFIGURE_SCHEMA, user_input or entry.data
             ),
             errors=errors,
         )

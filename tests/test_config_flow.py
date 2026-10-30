@@ -406,22 +406,37 @@ async def test_reconfigure_form_suggests_current_data(
     }
 
 
-async def test_reconfigure_other_connector(
+async def test_reconfigure_connector_id_read_only(
     hass: HomeAssistant, mock_k1_api: dict[AsyncMock], mock_entry: ConfigEntry
 ) -> None:
-    """Test reconfiguring with the ID of another connector is aborted."""
+    """Test the connector ID is read only and cannot be changed."""
     assert await async_setup_component(hass, DOMAIN, {})
     await hass.async_block_till_done()
 
     result = await mock_entry.start_reconfigure_flow(hass)
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"],
-        user_input={
-            CONF_HOST: "1.1.1.2",
-            CONF_PORT: 1025,
-            CONF_CONNECTOR_ID: "ST_cafecafe0000",
-        },
+    fields = voluptuous_serialize.convert(
+        result["data_schema"], custom_serializer=cv.custom_serializer
     )
+    # The form has the same fields in the same order as the user step
+    assert [field["name"] for field in fields] == [
+        str(key) for key in ELRO_CONNECTS_DATA_SCHEMA.schema
+    ]
+    connector_id = next(f for f in fields if f["name"] == CONF_CONNECTOR_ID)
+    assert connector_id["selector"]["text"]["read_only"] is True
+
+    with patch(
+        "custom_components.elro_connects.async_setup_entry",
+        return_value=True,
+    ):
+        result = await hass.config_entries.flow.async_configure(
+            result["flow_id"],
+            user_input={
+                CONF_HOST: "1.1.1.2",
+                CONF_PORT: 1025,
+                CONF_CONNECTOR_ID: "ST_cafecafe0000",
+            },
+        )
     assert result["type"] == FlowResultType.ABORT
-    assert result["reason"] == "unique_id_mismatch"
-    assert mock_entry.data[CONF_HOST] == "1.1.1.1"
+    assert result["reason"] == "reconfigure_successful"
+    assert mock_entry.data[CONF_HOST] == "1.1.1.2"
+    assert mock_entry.data[CONF_CONNECTOR_ID] == "ST_deadbeef0000"

@@ -2,8 +2,7 @@
     "config": {
         "abort": {
             "already_configured": "Gerät ist bereits konfiguriert",
-            "reconfigure_successful": "Die Neukonfiguration war erfolgreich",
-            "unique_id_mismatch": "Die Konnektor-ID weicht vom eingerichteten Konnektor ab. Füge einen neuen Eintrag hinzu, um einen anderen Konnektor einzurichten."
+            "reconfigure_successful": "Die Neukonfiguration war erfolgreich"
         },
         "error": {
             "cannot_connect": "Verbindung nicht möglich",

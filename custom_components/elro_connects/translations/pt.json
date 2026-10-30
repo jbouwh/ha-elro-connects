@@ -2,8 +2,7 @@
     "config": {
         "abort": {
             "already_configured": "O dispositivo já está configurado",
-            "reconfigure_successful": "A reconfiguração foi bem-sucedida",
-            "unique_id_mismatch": "O ID do conector não corresponde ao conector configurado. Adicione uma nova entrada para configurar outro conector."
+            "reconfigure_successful": "A reconfiguração foi bem-sucedida"
         },
         "error": {
             "cannot_connect": "Falhou ao conectar",

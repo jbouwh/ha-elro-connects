@@ -2,8 +2,7 @@
     "config": {
         "abort": {
             "already_configured": "Device is already configured",
-            "reconfigure_successful": "Re-configuration was successful",
-            "unique_id_mismatch": "The connector ID does not match the configured connector. Add a new entry to set up another connector."
+            "reconfigure_successful": "Re-configuration was successful"
         },
         "error": {
             "cannot_connect": "Failed to connect",

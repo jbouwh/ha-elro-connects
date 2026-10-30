@@ -2,8 +2,7 @@
     "config": {
         "abort": {
             "already_configured": "Apparaat is al ingesteld",
-            "reconfigure_successful": "Herconfiguratie was succesvol",
-            "unique_id_mismatch": "Het connector-ID wijkt af van de ingestelde connector. Voeg een nieuwe integratie toe om een andere connector in te stellen."
+            "reconfigure_successful": "Herconfiguratie was succesvol"
         },
         "error": {
             "cannot_connect": "Maken van de verbinding mislukt",
