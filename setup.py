@@ -1,12 +1,12 @@
+"""Development and test package for the Elro Connects integration."""
+
 from setuptools import find_packages, setup
 
 requirements = [
     "sqlalchemy",
 ]
 with open("requirements_test.txt", encoding="utf-8") as f:
-    for line in f:
-        if "txt" not in line and "#" not in line:
-            requirements.append(line)
+    requirements.extend(line for line in f if "txt" not in line and "#" not in line)
 
 with open("version", encoding="utf-8") as f:
     __version__ = f.read()

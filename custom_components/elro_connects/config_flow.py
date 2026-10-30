@@ -5,8 +5,6 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-import homeassistant.helpers.config_validation as cv
-import voluptuous as vol
 from elro.api import K1
 from elro.auth import ElroConnectsConnector, ElroConnectsSession
 from homeassistant import config_entries
@@ -21,6 +19,8 @@ from homeassistant.const import (
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.exceptions import HomeAssistantError
+import homeassistant.helpers.config_validation as cv
+import voluptuous as vol
 
 from .const import CONF_CONNECTOR_ID, DEFAULT_PORT, DOMAIN
 

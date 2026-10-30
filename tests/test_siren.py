@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from unittest.mock import AsyncMock
 
-import pytest
 from elro.command import Command
 from homeassistant.components import siren
 from homeassistant.config_entries import ConfigEntry
@@ -18,6 +17,7 @@ from homeassistant.const import (
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.setup import async_setup_component
+import pytest
 
 from custom_components.elro_connects.const import DOMAIN
 
@@ -25,7 +25,7 @@ from .test_common import MOCK_DEVICE_STATUS_DATA
 
 
 @pytest.mark.parametrize(
-    "entity_id,name,state,icon",
+    ("entity_id", "name", "state", "icon"),
     [
         (
             "siren.beganegrond_fire_alarm",

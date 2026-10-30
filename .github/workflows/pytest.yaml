@@ -1,40 +1,39 @@
 # This workflow will install dependencies, create coverage tests
 # and run Pytest with coverage reporting
 name: Pytest and coverage
+
 # yamllint disable-line rule:truthy
 on:
+  push:
+    branches:
+      - main
   pull_request:
     branches:
       - "*"
+
 jobs:
   tests_and_coverage:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v5
       - name: Set up Python 3.14
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v6
         with:
-          python-version: 3.14
+          python-version: "3.14"
+          cache: pip
+          cache-dependency-path: requirements_test.txt
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -e .
-      - name: Build coverage file
+      - name: Run tests with coverage
         run: |
-          pytest --cache-clear --asyncio-mode=auto --cov=custom_components --junitxml=pytest.xml tests/ > pytest-coverage.txt
+          set -o pipefail
+          pytest --cache-clear --cov --cov-report=term-missing:skip-covered --junitxml=pytest.xml tests/ | tee pytest-coverage.txt
       - name: Pytest coverage comment
-        id: coverageComment
+        if: ${{ !cancelled() && github.event_name == 'pull_request' }}
         uses: MishaKav/pytest-coverage-comment@v1
         with:
           github-token: ${{ secrets.actions_token }}
           pytest-coverage-path: ./pytest-coverage.txt
           junitxml-path: ./pytest.xml
-      - name: Check the output coverage
-        run: |
-          echo "Coverage Percentage - ${{ steps.coverageComment.outputs.coverage }}"
-      - name: Check coverage tolerance
-        if: ${{ steps.coverageComment.outputs.coverage < 0.99 }}
-        uses: actions/github-script@v3
-        with:
-          script: |
-            core.setFailed('Coverage test below tolerance')

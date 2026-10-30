@@ -16,7 +16,6 @@
       "extensions": [
         "charliermarsh.ruff",
         "ms-python.python",
-        "ms-python.pylint",
         "ms-python.vscode-pylance",
         "visualstudioexptteam.vscodeintellicode",
         "redhat.vscode-yaml",
@@ -28,7 +27,6 @@
       "settings": {
         "python.experiments.optOutFrom": ["pythonTestAdapter"],
         "python.defaultInterpreterPath": "/home/vscode/.local/ic-venv/bin/python",
-        "python.pythonPath": "/home/vscode/.local/ic-venv/bin/python",
         "python.terminal.activateEnvInCurrentTerminal": true,
         "python.testing.pytestArgs": ["--no-cov"],
         "editor.formatOnPaste": false,
@@ -50,12 +48,7 @@
           "!include_dir_merge_named scalar"
         ],
         "[python]": {
-          "editor.defaultFormatter": null,
-          "editor.formatOnSave": true,
-          "python.formatting.provider": "black",
-          "python.formatting.blackArgs": ["-l 120"],
-          "editor.formatOnType": true,
-          "python.formatting.blackPath": "/usr/local/py-utils/bin/black"
+          "editor.defaultFormatter": "charliermarsh.ruff"
         }
       }
     }

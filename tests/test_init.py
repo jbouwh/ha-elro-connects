@@ -5,11 +5,6 @@ from datetime import timedelta
 from unittest.mock import AsyncMock
 
 from elro.api import K1
-import pytest
-from pytest_homeassistant_custom_component.common import async_fire_time_changed
-
-from custom_components.elro_connects import async_remove_config_entry_device
-from custom_components.elro_connects.const import DOMAIN
 from homeassistant.config_entries import ConfigEntry, ConfigEntryState
 from homeassistant.const import STATE_OFF, STATE_ON
 from homeassistant.core import HomeAssistant
@@ -17,6 +12,11 @@ from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.device_registry import format_mac
 from homeassistant.setup import async_setup_component
 from homeassistant.util import dt
+import pytest
+from pytest_homeassistant_custom_component.common import async_fire_time_changed
+
+from custom_components.elro_connects import async_remove_config_entry_device
+from custom_components.elro_connects.const import DOMAIN
 
 from .test_common import MOCK_DEVICE_STATUS_DATA
 
@@ -67,15 +67,12 @@ async def test_setup_integration_exception(
     mock_k1_connector: dict[AsyncMock],
     mock_entry: ConfigEntry,
 ) -> None:
-    """Test if an unknown backend error throws."""
+    """Test if an unknown backend error is logged and setup is retried."""
     mock_k1_connector["result"].side_effect = Exception
-    with pytest.raises(Exception):
-        assert await async_setup_component(hass, DOMAIN, {})
-        await hass.async_block_till_done()
-        assert (
-            "elro_connects integration not ready yet: K1 connection error; Retrying in background"
-            in caplog.text
-        )
+    assert await async_setup_component(hass, DOMAIN, {})
+    await hass.async_block_till_done()
+    assert mock_entry.state is ConfigEntryState.SETUP_RETRY
+    assert "Unexpected error fetching ST_deadbeef0000 data" in caplog.text
 
 
 async def test_setup_integration_with_data(

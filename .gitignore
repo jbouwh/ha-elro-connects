@@ -104,6 +104,7 @@ virtualization/vagrant/config
 # Visual Studio Code
 .vscode/*
 !.vscode/cSpell.json
+!.vscode/settings.default.json
 !.vscode/extensions.json
 !.vscode/tasks.json
 .env
