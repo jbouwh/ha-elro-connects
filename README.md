@@ -63,6 +63,35 @@ automation:
 
 The `siren` platform (for enabling a test alarm) was tested and is supported for Fire, Heat, CO and Water alarms.
 
+## Use cases
+
+- **Get warned when an alarm goes off.** Trigger an automation on the alarm binary sensor, as in the example above. A critical notification of the Home Assistant Companion app also comes through when the phone is muted.
+- **Make the house safe during a fire or CO alarm.** Turn on the lights to light the escape routes, and stop the ventilation or the heating, so smoke or carbon monoxide is not spread through the house.
+- **Limit water damage.** When a water alarm goes off, close a smart water valve and send a notification.
+- **Use the door and window sensors.** Turn off the heating in a room when a window is open, or use the opening sensors in an alarm panel.
+- **Keep the alarms working.** Enable the `problem` and `battery` diagnostic sensors to get a notification when an alarm has a fault or a low battery. Use the `siren` to test the alarms regularly. A test alarm does not turn on the alarm binary sensor, so it does not trigger your alarm automations.
+
+Example automation that tests an alarm on the first Saturday of the month. Note that the alarm sounds during the test:
+
+```yaml
+automation:
+  - alias: "Monthly alarm test"
+    triggers:
+      - trigger: time
+        at: "11:00:00"
+    conditions:
+      - condition: template
+        value_template: "{{ now().weekday() == 5 and now().day <= 7 }}"
+    actions:
+      - action: siren.turn_on
+        target:
+          entity_id: siren.beganegrond_test_alarm
+      - delay: "00:00:10"
+      - action: siren.turn_off
+        target:
+          entity_id: siren.beganegrond_test_alarm
+```
+
 ## Installation
 
 ### Using HACS
