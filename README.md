@@ -21,7 +21,7 @@ The integration is not tested with the Siterwell branded devices, but some user 
 Platform | Description
 -- | --
 `binary_sensor` | Adds an alarm sensor for each alarm (device class `carbon_monoxide`, `gas`, `heat`, `moisture` or `smoke`) and an `opening` sensor for each door/window sensor. Each of these devices also gets a `problem` and a low `battery` diagnostic sensor, which are disabled by default.
-`sensor` | Adds a `device state` sensor, a `battery level` sensor and a `signal` sensor (disabled by default) for each device.
+`sensor` | Adds a `device state` sensor for each device, and a `battery level` and a `signal` (disabled by default) diagnostic sensor.
 `siren` | Represents Elro Connects alarms as a siren. Turn the siren `ON` to test it. Turn it `OFF` to silence the (test) alarm.
 
 The `device_state` sensor can have of the following states:
@@ -38,7 +38,7 @@ The `device_state` sensor can have of the following states:
 - `low_battery`
 - `temperature_alarm`
 
-Note that the sensors are polled about every 15 seconds. So it might take some time before an alarm state will be propagated. If an unknown state is found that is not supported yet, the hexadecimal code will be assigned as state. Please open an issue [here](https://github.com/jbouwh/lib-elro-connects/issues/new) if a new state needs to be supported.
+Note that the sensors are polled about every 15 seconds. So it might take some time before an alarm state will be propagated. If a device reports a state that is not supported yet, the `device_state` sensor is `unknown` and a warning with the hexadecimal code is logged. Please open an issue [here](https://github.com/jbouwh/lib-elro-connects/issues/new) if a new state needs to be supported.
 
 If the name of the device is changed in HA, it is also updated in the Elro Connects app. Note the name has a 15 character length limit.
 
