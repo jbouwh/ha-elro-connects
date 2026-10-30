@@ -60,7 +60,7 @@ async def async_setup_entry(
 
 
 class ElroConnectsSwitch(ElroConnectsEntity, SwitchEntity):
-    """Elro Connects Fire Alarm Entity."""
+    """Elro Connects socket entity."""
 
     entity_description: ElroSwitchEntityDescription
 
