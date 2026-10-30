@@ -8,6 +8,8 @@ from homeassistant.const import CONF_HOST, CONF_PORT
 from homeassistant.core import HomeAssistant
 import pytest
 from pytest_homeassistant_custom_component.common import MockConfigEntry
+from pytest_homeassistant_custom_component.syrupy import HomeAssistantSnapshotExtension
+from syrupy.assertion import SnapshotAssertion
 
 from custom_components.elro_connects.const import CONF_CONNECTOR_ID, DOMAIN
 
@@ -16,6 +18,18 @@ from custom_components.elro_connects.const import CONF_CONNECTOR_ID, DOMAIN
 def auto_enable_custom_integrations(enable_custom_integrations):
     """Enable custom integration mocking."""
     return
+
+
+@pytest.fixture
+def snapshot(snapshot: SnapshotAssertion) -> SnapshotAssertion:
+    """Return the snapshot assertion with the Home Assistant extension.
+
+    Both syrupy and pytest-homeassistant-custom-component provide a snapshot
+    fixture, and which one is used depends on the order the plugins are
+    loaded. Set the extension here, so the snapshots are always stored in
+    the snapshots directory.
+    """
+    return snapshot.use_extension(HomeAssistantSnapshotExtension)
 
 
 @pytest.fixture
