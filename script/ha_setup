@@ -19,5 +19,5 @@ echo "Installing Home Assistant runtime dependencies..."
 CONSTRAINTS=$(python -c 'import homeassistant, pathlib; print(pathlib.Path(homeassistant.__file__).parent / "package_constraints.txt")')
 REQUIREMENTS=$(mktemp)
 trap 'rm -f "$REQUIREMENTS"' EXIT
-python script/ha_requirements.py default_config elro_connects > "$REQUIREMENTS"
+python script/ha_requirements.py config elro_connects > "$REQUIREMENTS"
 uv pip install --constraint "$CONSTRAINTS" --requirement "$REQUIREMENTS"
