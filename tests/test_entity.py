@@ -14,7 +14,7 @@ from custom_components.elro_connects.coordinator import MAX_RETRIES
 from .test_common import MOCK_DEVICE_STATUS_DATA
 
 ENTITY_IDS = (
-    "siren.beganegrond_fire_alarm",
+    "siren.beganegrond_test_alarm",
     "sensor.beganegrond_battery",
     "sensor.beganegrond_device_state",
     "switch.wall_switch_on_socket",
@@ -32,7 +32,7 @@ async def test_offline_device_unavailable(
     await hass.async_block_till_done()
 
     for entity_id in (
-        "siren.corner_carbon_monoxide_alarm",
+        "siren.corner_test_alarm",
         "sensor.corner_battery",
         "sensor.corner_device_state",
     ):
@@ -58,7 +58,7 @@ async def test_connector_unavailable(
     for _ in range(MAX_RETRIES - 1):
         await coordinator.async_refresh()
         await hass.async_block_till_done()
-        assert hass.states.get("siren.beganegrond_fire_alarm").state == STATE_OFF
+        assert hass.states.get("siren.beganegrond_test_alarm").state == STATE_OFF
 
     await coordinator.async_refresh()
     await hass.async_block_till_done()
@@ -69,6 +69,6 @@ async def test_connector_unavailable(
     mock_k1_connector["result"].side_effect = None
     await coordinator.async_refresh()
     await hass.async_block_till_done()
-    assert hass.states.get("siren.beganegrond_fire_alarm").state == STATE_OFF
+    assert hass.states.get("siren.beganegrond_test_alarm").state == STATE_OFF
     assert hass.states.get("sensor.beganegrond_battery").state == "100"
     assert hass.states.get("switch.wall_switch_on_socket").state == STATE_ON

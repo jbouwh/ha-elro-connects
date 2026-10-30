@@ -62,19 +62,19 @@
     },
     "siren": {
       "alarm_co": {
-        "name": "CO Alarm"
+        "name": "Test alarm"
       },
       "alarm_fire": {
-        "name": "Fire Alarm"
+        "name": "Test alarm"
       },
       "alarm_heat": {
-        "name": "Heat Alarm"
+        "name": "Test alarm"
       },
       "alarm_smoke": {
-        "name": "Smoke Alarm"
+        "name": "Test alarm"
       },
       "alarm_water": {
-        "name": "Water Alarm"
+        "name": "Test alarm"
       }
     },
     "switch": {

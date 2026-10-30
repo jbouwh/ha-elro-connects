@@ -62,19 +62,19 @@
         },
         "siren": {
             "alarm_co": {
-                "name": "Avertisseur de monoxyde de carbone"
+                "name": "Alarme de test"
             },
             "alarm_fire": {
-                "name": "Alarme incendie"
+                "name": "Alarme de test"
             },
             "alarm_heat": {
-                "name": "Alarme de chaleur"
+                "name": "Alarme de test"
             },
             "alarm_smoke": {
-                "name": "Détecteur de fumé"
+                "name": "Alarme de test"
             },
             "alarm_water": {
-                "name": "Alarme d'eau"
+                "name": "Alarme de test"
             }
         },
         "switch": {
