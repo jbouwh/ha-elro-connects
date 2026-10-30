@@ -161,7 +161,7 @@ async def test_remove_device_from_config_entry(
     await hass.async_block_till_done()
     await hass.async_block_till_done()
 
-    connector_id = hass.data[DOMAIN][mock_entry.entry_id].connector_id
+    connector_id = mock_entry.runtime_data.connector_id
     device_registry = dr.async_get(hass)
     # Test removing the device for siren 4 will work
     device_entry = device_registry.async_get_device(
@@ -212,6 +212,20 @@ async def test_unloading_config_entry(
     assert hass.states.get("siren.beganegrond_fire_alarm").state == "unavailable"
     assert hass.states.get("siren.eerste_etage_fire_alarm").state == "unavailable"
     assert hass.states.get("siren.zolder_fire_alarm").state == "unavailable"
+    mock_k1_connector["disconnect"].assert_awaited_once()
+
+    # The device registry listener is removed, name changes are not synced anymore
+    device_registry = dr.async_get(hass)
+    device_entry = device_registry.async_get_device(
+        identifiers={(DOMAIN, "ST_deadbeef0000_4")}
+    )
+    assert device_entry
+    mock_k1_connector["result"].reset_mock()
+    device_registry.async_update_device(
+        device_id=device_entry.id, name_by_user="Some new name"
+    )
+    await hass.async_block_till_done()
+    assert mock_k1_connector["result"].call_count == 0
 
 
 async def test_update_device_name(
@@ -227,7 +241,7 @@ async def test_update_device_name(
     assert await async_setup_component(hass, DOMAIN, {})
     await hass.async_block_till_done()
 
-    connector_id = hass.data[DOMAIN][mock_entry.entry_id].connector_id
+    connector_id = mock_entry.runtime_data.connector_id
     device_registry = dr.async_get(hass)
     # Test updating the device name for siren 4 will work
     device_entry = device_registry.async_get_device(

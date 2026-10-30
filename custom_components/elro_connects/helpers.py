@@ -1,23 +1,20 @@
 """Helper functions for Elro Connects."""
 
-from __future__ import annotations
-
 from elro.device import ATTR_DEVICE_TYPE
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity import EntityDescription
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import DOMAIN, ELRO_CONNECTS_NEW_DEVICE
-from .device import ElroConnectsK1
+from .const import ELRO_CONNECTS_NEW_DEVICE
+from .coordinator import ElroConnectsConfigEntry
 
 
 @callback
 def async_set_up_discovery_helper(
     hass: HomeAssistant,
     entity_class: type,
-    entry: ConfigEntry,
+    entry: ElroConnectsConfigEntry,
     current: set[int],
     descriptions: dict[str, EntityDescription],
     async_add_entities: AddEntitiesCallback,
@@ -26,8 +23,8 @@ def async_set_up_discovery_helper(
 
     @callback
     def _async_add_entities():
-        elro_connects_api: ElroConnectsK1 = hass.data[DOMAIN][entry.entry_id]
-        device_data: dict[int, dict] = elro_connects_api.connector_data
+        coordinator = entry.runtime_data
+        device_data: dict[int, dict] = coordinator.connector_data
         if not device_data:
             return
         new_items = []
@@ -43,20 +40,14 @@ def async_set_up_discovery_helper(
             device_type = attributes[ATTR_DEVICE_TYPE]
             if device_type in descriptions:
                 new_item = entity_class(
-                    elro_connects_api,
-                    entry,
-                    device_id,
-                    descriptions[device_type],
+                    coordinator, device_id, descriptions[device_type]
                 )
                 new_items.append(new_item)
             else:
                 for attribute in attributes:
                     if attribute in descriptions:
                         new_item = entity_class(
-                            elro_connects_api,
-                            entry,
-                            device_id,
-                            descriptions[attribute],
+                            coordinator, device_id, descriptions[attribute]
                         )
                         new_items.append(new_item)
 

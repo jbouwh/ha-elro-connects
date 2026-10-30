@@ -36,19 +36,19 @@ def mock_k1_connector() -> dict[AsyncMock]:
     """Mock the Elro K1 connector class."""
     with (
         patch(
-            "custom_components.elro_connects.device.ElroConnectsK1.async_connect",
+            "elro.api.K1.async_connect",
             AsyncMock(),
         ) as mock_connect,
         patch(
-            "custom_components.elro_connects.device.ElroConnectsK1.async_disconnect",
+            "elro.api.K1.async_disconnect",
             AsyncMock(),
         ) as mock_disconnect,
         patch(
-            "custom_components.elro_connects.device.ElroConnectsK1.async_configure",
+            "elro.api.K1.async_configure",
             AsyncMock(),
         ) as mock_configure,
         patch(
-            "custom_components.elro_connects.device.ElroConnectsK1.async_process_command",
+            "elro.api.K1.async_process_command",
             AsyncMock(return_value={}),
         ) as mock_result,
     ):

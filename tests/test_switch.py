@@ -1,7 +1,5 @@
 """Test the Elro Connects switch platform."""
 
-from __future__ import annotations
-
 from unittest.mock import AsyncMock
 
 from elro.command import Command
