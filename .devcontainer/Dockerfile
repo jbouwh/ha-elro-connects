@@ -29,6 +29,8 @@ RUN pip3 install uv
 WORKDIR /usr/src
 
 USER vscode
+# Create the volume mount points, so the volumes are owned by vscode
+RUN mkdir -p /home/vscode/.claude /home/vscode/.config/gh
 ENV VIRTUAL_ENV="/home/vscode/.local/ic-venv"
 RUN uv venv $VIRTUAL_ENV
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"

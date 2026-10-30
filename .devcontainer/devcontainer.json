@@ -4,12 +4,25 @@
   "postCreateCommand": "/bin/bash script/setup",
   "dockerFile": "./Dockerfile",
   "containerEnv": {
+    // Keep .claude.json in the persistent ~/.claude volume as well
+    "CLAUDE_CONFIG_DIR": "/home/vscode/.claude",
     "PYTHONASYNCIODEBUG": "1"
   },
+  // Keep the Claude Code and GitHub CLI login and history across rebuilds
+  "mounts": [
+    "source=ha-elro-connects-claude,target=/home/vscode/.claude,type=volume",
+    "source=ha-elro-connects-gh,target=/home/vscode/.config/gh,type=volume"
+  ],
   "features": {
     "ghcr.io/devcontainers/features/github-cli:1": {}
   },
-  "appPort": [],
+  "forwardPorts": [8123],
+  "portsAttributes": {
+    "8123": {
+      "label": "Home Assistant",
+      "onAutoForward": "openBrowserOnce"
+    }
+  },
   "runArgs": ["-e", "GIT_EDITOR=code --wait"],
   "customizations": {
     "vscode": {
