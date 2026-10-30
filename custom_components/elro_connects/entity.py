@@ -17,7 +17,7 @@ from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity import EntityDescription
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .const import ALARM_GAS, DOMAIN
+from .const import ALARM_GAS, DOMAIN, TEMPERATURE_SENSOR
 from .coordinator import DeviceData, ElroConnectsCoordinator
 
 DEVICE_MODELS = {
@@ -28,6 +28,7 @@ DEVICE_MODELS = {
     ALARM_WATER: "Water alarm",
     ALARM_GAS: "Gas alarm",
     DOOR_WINDOW_SENSOR: "Door/window sensor",
+    TEMPERATURE_SENSOR: "Temperature sensor",
 }
 
 

@@ -3,14 +3,21 @@
 from dataclasses import dataclass
 import logging
 
-from elro.device import ATTR_BATTERY_LEVEL, ATTR_DEVICE_STATE, ATTR_SIGNAL, DEVICE_STATE
+from elro.device import (
+    ATTR_BATTERY_LEVEL,
+    ATTR_DEVICE_STATE,
+    ATTR_HUMIDITY,
+    ATTR_SIGNAL,
+    ATTR_TEMPERATURE,
+    DEVICE_STATE,
+)
 from homeassistant.components.sensor import (
     SensorDeviceClass,
     SensorEntity,
     SensorEntityDescription,
     SensorStateClass,
 )
-from homeassistant.const import EntityCategory, UnitOfRatio
+from homeassistant.const import EntityCategory, UnitOfRatio, UnitOfTemperature
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.util import slugify
@@ -70,6 +77,23 @@ SENSOR_TYPES = {
             maximum_value=None,
         ),
     ),
+    # Only reported by the temperature sensor
+    ATTR_TEMPERATURE: (
+        ElroSensorDescription(
+            key=ATTR_TEMPERATURE,
+            device_class=SensorDeviceClass.TEMPERATURE,
+            state_class=SensorStateClass.MEASUREMENT,
+            native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+        ),
+    ),
+    ATTR_HUMIDITY: (
+        ElroSensorDescription(
+            key=ATTR_HUMIDITY,
+            device_class=SensorDeviceClass.HUMIDITY,
+            state_class=SensorStateClass.MEASUREMENT,
+            native_unit_of_measurement=UnitOfRatio.PERCENTAGE,
+        ),
+    ),
 }
 
 
@@ -96,20 +120,30 @@ class ElroConnectsSensor(ElroConnectsEntity, SensorEntity):
     @property
     def native_value(self) -> int | float | str | None:
         """Return the state of the sensor."""
-        raw_value = self.data[self.entity_description.key]
-        if max_value := self.entity_description.maximum_value:
-            if raw_value > max_value:
-                return None
-            return ranged_value_to_percentage((1, max_value), raw_value)
-        state = slugify(raw_value)
+        key = self.entity_description.key
+        if self.entity_description.device_class is not SensorDeviceClass.ENUM:
+            # A measurement, such as the battery level or the temperature
+            return self._measurement(self.data.get(key))
+        raw_state: str = self.data[key]
+        state = slugify(raw_state)
         if state not in DEVICE_STATE_OPTIONS:
-            if raw_value not in _reported_device_states:
-                _reported_device_states.add(raw_value)
+            if raw_state not in _reported_device_states:
+                _reported_device_states.add(raw_state)
                 _LOGGER.warning(
                     "Unknown device state %s reported by %s, please open an issue at "
                     "https://github.com/jbouwh/lib-elro-connects/issues",
-                    raw_value,
+                    raw_state,
                     self.entity_id,
                 )
             return None
         return state
+
+    def _measurement(self, raw_value: int | None) -> int | float | None:
+        """Return a measurement, scaled to a percentage if it has a maximum."""
+        if raw_value is None or not (
+            max_value := self.entity_description.maximum_value
+        ):
+            return raw_value
+        if raw_value > max_value:
+            return None
+        return ranged_value_to_percentage((1, max_value), raw_value)

@@ -12,6 +12,6 @@
   "integration_type": "hub",
   "iot_class": "local_polling",
   "issue_tracker": "https://github.com/jbouwh/ha-elro-connects/issues",
-  "requirements": ["lib-elro-connects==0.6.3.0"],
+  "requirements": ["lib-elro-connects==0.6.4.0"],
   "version": "v0.2.7"
 }

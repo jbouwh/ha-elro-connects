@@ -11,8 +11,10 @@ from homeassistant.const import (
     ATTR_DEVICE_CLASS,
     ATTR_UNIT_OF_MEASUREMENT,
     PERCENTAGE,
+    STATE_UNAVAILABLE,
     STATE_UNKNOWN,
     EntityCategory,
+    UnitOfTemperature,
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import entity_registry as er
@@ -121,3 +123,45 @@ async def test_unknown_device_state(
 
     assert hass.states.get("sensor.beganegrond_device_state").state == STATE_UNKNOWN
     assert caplog.text.count("Unknown device state 9C") == 1
+
+
+async def test_temperature_sensor(
+    hass: HomeAssistant,
+    mock_k1_connector: dict[AsyncMock],
+    mock_entry: ConfigEntry,
+) -> None:
+    """Test the temperature and humidity of the temperature sensor."""
+    mock_k1_connector["result"].return_value = MOCK_DEVICE_STATUS_DATA
+    assert await async_setup_component(hass, DOMAIN, {})
+    await hass.async_block_till_done()
+
+    temperature = hass.states.get("sensor.badkamer_temperature")
+    assert temperature.state == "21"
+    assert temperature.attributes[ATTR_DEVICE_CLASS] == "temperature"
+    assert temperature.attributes[ATTR_UNIT_OF_MEASUREMENT] == UnitOfTemperature.CELSIUS
+    humidity = hass.states.get("sensor.badkamer_humidity")
+    assert humidity.state == "55"
+    assert humidity.attributes[ATTR_DEVICE_CLASS] == "humidity"
+    assert humidity.attributes[ATTR_UNIT_OF_MEASUREMENT] == PERCENTAGE
+    # A sensor with an invalid measurement is offline
+    assert hass.states.get("sensor.kelder_device_state").state == STATE_UNAVAILABLE
+
+    # An invalid measurement makes the sensors unavailable
+    status_data = copy.deepcopy(MOCK_DEVICE_STATUS_DATA)
+    status_data[11] = {**status_data[12], "name": "Badkamer"}
+    mock_k1_connector["result"].return_value = status_data
+    await mock_entry.runtime_data.async_refresh()
+    await hass.async_block_till_done()
+    assert hass.states.get("sensor.badkamer_temperature").state == STATE_UNAVAILABLE
+    assert hass.states.get("sensor.badkamer_humidity").state == STATE_UNAVAILABLE
+
+    # A measurement that is missing is unknown
+    status_data[11] = {
+        key: value
+        for key, value in MOCK_DEVICE_STATUS_DATA[11].items()
+        if key != "humidity"
+    }
+    await mock_entry.runtime_data.async_refresh()
+    await hass.async_block_till_done()
+    assert hass.states.get("sensor.badkamer_temperature").state == "21"
+    assert hass.states.get("sensor.badkamer_humidity").state == STATE_UNKNOWN
