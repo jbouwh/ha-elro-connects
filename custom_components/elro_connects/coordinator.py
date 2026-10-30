@@ -23,7 +23,7 @@ from homeassistant.helpers.device_registry import format_mac
 from homeassistant.helpers.dispatcher import async_dispatcher_send
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
-from .const import CONF_CONNECTOR_ID, DEFAULT_INTERVAL, ELRO_CONNECTS_NEW_DEVICE
+from .const import CONF_CONNECTOR_ID, DEFAULT_INTERVAL, DOMAIN, ELRO_CONNECTS_NEW_DEVICE
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -49,6 +49,8 @@ class ElroConnectsCoordinator(DataUpdateCoordinator[dict[int, dict]]):
         self._connector_data: dict[int, dict] = {}
         self._api_lock = asyncio.Lock()
         self._connector_id: str = entry.data[CONF_CONNECTOR_ID]
+        self.hub_identifier = (DOMAIN, self._connector_id)
+        self.mac_address = format_mac(self._connector_id[3:])
         self._retry_count = 0
         self.api = K1(
             entry.data[CONF_HOST],
@@ -101,9 +103,8 @@ class ElroConnectsCoordinator(DataUpdateCoordinator[dict[int, dict]]):
         device_registry = dr.async_get(self.hass)
         device_entry = device_registry.async_get(event.data["device_id"])
         device_unique_id: str = device_entry.identifiers.copy().pop()[1]
-        mac_address = format_mac(self.connector_id[3:])
         if (
-            (dr.CONNECTION_NETWORK_MAC, mac_address) in device_entry.identifiers
+            self.hub_identifier in device_entry.identifiers
             or self.config_entry.entry_id not in device_entry.config_entries
         ):
             # Not a valid device name or not a related entry
