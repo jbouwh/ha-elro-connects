@@ -95,5 +95,13 @@
                 "name": "Toma de pared"
             }
         }
+    },
+    "exceptions": {
+        "command_failed": {
+            "message": "No se pudo enviar el comando al conector K1: {error}"
+        },
+        "update_failed": {
+            "message": "No se pudieron obtener los estados de los dispositivos del conector K1: {error}"
+        }
     }
 }

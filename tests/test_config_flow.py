@@ -2,6 +2,7 @@
 
 import json
 from pathlib import Path
+import re
 from unittest.mock import AsyncMock, patch
 
 from elro.api import K1
@@ -440,3 +441,18 @@ async def test_reconfigure_connector_id_read_only(
     assert result["reason"] == "reconfigure_successful"
     assert mock_entry.data[CONF_HOST] == "1.1.1.2"
     assert mock_entry.data[CONF_CONNECTOR_ID] == "ST_deadbeef0000"
+
+
+@pytest.mark.parametrize("language", ["de", "en", "es", "fr", "nl", "pt", "uk"])
+def test_exception_translations(language: str) -> None:
+    """Test every language translates all exceptions with the same placeholders."""
+    base = Path(__file__).parent.parent / "custom_components" / DOMAIN
+    strings = json.loads((base / "strings.json").read_text(encoding="utf-8"))
+    translations = json.loads(
+        (base / "translations" / f"{language}.json").read_text(encoding="utf-8")
+    )
+    assert set(translations["exceptions"]) == set(strings["exceptions"])
+    for key, exception in strings["exceptions"].items():
+        placeholders = re.findall(r"{\w+}", exception["message"])
+        translated = translations["exceptions"][key]["message"]
+        assert re.findall(r"{\w+}", translated) == placeholders

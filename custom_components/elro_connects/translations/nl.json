@@ -99,6 +99,9 @@
     "exceptions": {
         "command_failed": {
             "message": "Kan het commando niet naar de K1-connector sturen: {error}"
+        },
+        "update_failed": {
+            "message": "Kan de apparaatstatussen niet ophalen van de K1-connector: {error}"
         }
     }
 }

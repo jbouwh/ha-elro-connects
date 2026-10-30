@@ -58,8 +58,8 @@ async def test_setup_integration_update_fail(
     assert await async_setup_component(hass, DOMAIN, {})
     await hass.async_block_till_done()
     assert (
-        "elro_connects integration not ready yet: K1 connection error; Retrying"
-        in caplog.text
+        "elro_connects integration not ready yet: Could not get the device states "
+        "from the K1 connector: K1 connection error; Retrying" in caplog.text
     )
 
 
