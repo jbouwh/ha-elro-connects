@@ -8,6 +8,7 @@ from elro.device import (
     ALARM_WATER,
     ATTR_DEVICE_STATE,
     ATTR_DEVICE_TYPE,
+    DOOR_WINDOW_SENSOR,
     STATES_OFFLINE,
 )
 from homeassistant.const import ATTR_NAME
@@ -16,7 +17,7 @@ from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity import EntityDescription
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .const import DOMAIN
+from .const import ALARM_GAS, DOMAIN
 from .coordinator import ElroConnectsCoordinator
 
 DEVICE_MODELS = {
@@ -25,6 +26,8 @@ DEVICE_MODELS = {
     ALARM_HEAT: "Heat alarm",
     ALARM_SMOKE: "Smoke alarm",
     ALARM_WATER: "Water alarm",
+    ALARM_GAS: "Gas alarm",
+    DOOR_WINDOW_SENSOR: "Door/window sensor",
 }
 
 
