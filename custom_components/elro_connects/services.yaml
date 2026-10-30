@@ -1,5 +1,0 @@
-# Describes the format for available Elro Connects services
-
-reload:
-  name: Reload
-  description: Reload Elro Connects.
