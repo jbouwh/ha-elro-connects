@@ -49,16 +49,19 @@ async def async_setup_entry(
         )
     )
     await hass.config_entries.async_forward_entry_setups(entry, _PLATFORMS)
-    entry.async_on_unload(entry.add_update_listener(_async_update_listener))
 
     return True
 
 
-async def _async_update_listener(
+async def async_migrate_entry(
     hass: HomeAssistant, entry: ElroConnectsConfigEntry
-) -> None:
-    """Reload the entry when the settings are updated."""
-    await hass.config_entries.async_reload(entry.entry_id)
+) -> bool:
+    """Migrate an old config entry."""
+    if entry.minor_version < 2:
+        # The options duplicated the data, the options flow was replaced by a
+        # reconfigure flow
+        hass.config_entries.async_update_entry(entry, options={}, minor_version=2)
+    return True
 
 
 async def async_unload_entry(

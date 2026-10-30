@@ -6,16 +6,19 @@ from unittest.mock import AsyncMock
 
 from elro.api import K1
 from homeassistant.config_entries import ConfigEntry, ConfigEntryState
-from homeassistant.const import STATE_OFF, STATE_ON
+from homeassistant.const import CONF_HOST, CONF_PORT, STATE_OFF, STATE_ON
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import device_registry as dr
 from homeassistant.setup import async_setup_component
 from homeassistant.util import dt
 import pytest
-from pytest_homeassistant_custom_component.common import async_fire_time_changed
+from pytest_homeassistant_custom_component.common import (
+    MockConfigEntry,
+    async_fire_time_changed,
+)
 
 from custom_components.elro_connects import async_remove_config_entry_device
-from custom_components.elro_connects.const import DOMAIN
+from custom_components.elro_connects.const import CONF_CONNECTOR_ID, DOMAIN
 
 from .test_common import MOCK_DEVICE_STATUS_DATA
 
@@ -338,3 +341,35 @@ async def test_migrate_hub_device(
         len(dr.async_entries_for_config_entry(device_registry, mock_entry.entry_id))
         == 1
     )
+
+
+async def test_migrate_options(
+    hass: HomeAssistant, mock_k1_connector: dict[AsyncMock]
+) -> None:
+    """Test the duplicated options of the old options flow are removed."""
+    data = {CONF_HOST: "1.1.1.1", CONF_CONNECTOR_ID: "ST_deadbeef0000", CONF_PORT: 1025}
+    entry = MockConfigEntry(
+        domain=DOMAIN,
+        unique_id="ST_deadbeef0000",
+        minor_version=1,
+        data=data,
+        options=data,
+    )
+    entry.add_to_hass(hass)
+    assert await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+
+    assert entry.state is ConfigEntryState.LOADED
+    assert entry.minor_version == 2
+    assert entry.options == {}
+    assert entry.data == data
+
+
+async def test_migrate_from_future_version(
+    hass: HomeAssistant, mock_k1_connector: dict[AsyncMock]
+) -> None:
+    """Test an entry of a future version is not set up."""
+    entry = MockConfigEntry(domain=DOMAIN, version=2, data={})
+    entry.add_to_hass(hass)
+    assert not await hass.config_entries.async_setup(entry.entry_id)
+    assert entry.state is ConfigEntryState.MIGRATION_ERROR

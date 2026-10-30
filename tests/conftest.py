@@ -77,6 +77,8 @@ def mock_entry(hass: HomeAssistant) -> ConfigEntry:
     """Mock a Elro Connects config entry."""
     entry = MockConfigEntry(
         domain=DOMAIN,
+        unique_id="ST_deadbeef0000",
+        minor_version=2,
         data={
             CONF_HOST: "1.1.1.1",
             CONF_CONNECTOR_ID: "ST_deadbeef0000",

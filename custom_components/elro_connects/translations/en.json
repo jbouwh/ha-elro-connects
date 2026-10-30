@@ -1,7 +1,8 @@
 {
     "config": {
         "abort": {
-            "already_configured": "Device is already configured"
+            "already_configured": "Device is already configured",
+            "reconfigure_successful": "Re-configuration was successful"
         },
         "error": {
             "cannot_connect": "Failed to connect",
@@ -25,12 +26,8 @@
                     "connector_id": "The ID of the connector, which starts with ST_. In the Elro Connects app, go to the home tab, open the settings and select current connector. Not needed if you log in with your account.",
                     "api_key": "Optional. Only needed if the connector does not provide the key locally. It is filled in automatically if you log in with your account."
                 }
-            }
-        }
-    },
-    "options": {
-        "step": {
-            "init": {
+            },
+            "reconfigure": {
                 "data": {
                     "host": "Hostname or IP address",
                     "port": "Port",

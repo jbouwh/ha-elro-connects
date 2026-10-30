@@ -1,7 +1,8 @@
 {
     "config": {
         "abort": {
-            "already_configured": "Apparaat is al ingesteld"
+            "already_configured": "Apparaat is al ingesteld",
+            "reconfigure_successful": "Herconfiguratie was succesvol"
         },
         "error": {
             "cannot_connect": "Maken van de verbinding mislukt",
@@ -25,12 +26,8 @@
                     "connector_id": "Het ID van de connector, dat begint met ST_. Ga in de Elro Connects-app naar het tabblad home, open de instellingen en kies huidige connector. Niet nodig als je inlogt met je account.",
                     "api_key": "Optioneel. Alleen nodig als de connector de sleutel niet lokaal geeft. Wordt automatisch ingevuld als je inlogt met je account."
                 }
-            }
-        }
-    },
-    "options": {
-        "step": {
-            "init": {
+            },
+            "reconfigure": {
                 "data": {
                     "host": "Hostnaam of IP adres",
                     "port": "Poort",
