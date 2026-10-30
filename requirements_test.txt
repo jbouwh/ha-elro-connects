@@ -28,7 +28,7 @@ setuptools==81.0.0
 sqlalchemy==2.0.51
 stdlib-list>=0.7.0
 tomli==2.4.1
-tqdm==4.67.1
+tqdm==4.70.1
 
 homeassistant==2026.8.1
 
