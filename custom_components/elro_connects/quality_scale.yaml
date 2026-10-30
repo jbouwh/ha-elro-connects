@@ -81,7 +81,5 @@ rules:
 
   # Platinum
   async-dependency: done
-  inject-websession:
-    status: todo
-    comment: The library creates its own aiohttp session for the cloud login.
+  inject-websession: done
   strict-typing: done

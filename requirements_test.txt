@@ -34,4 +34,4 @@ homeassistant==2026.8.1
 
 pytest-homeassistant-custom-component==0.13.355
 
-lib-elro-connects==0.6.2.0
+lib-elro-connects==0.6.3.0
