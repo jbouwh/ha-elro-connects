@@ -65,6 +65,7 @@ SENSOR_TYPES = {
             key=ATTR_DEVICE_STATE,
             translation_key="device_state",
             device_class=SensorDeviceClass.ENUM,
+            entity_category=EntityCategory.DIAGNOSTIC,
             options=DEVICE_STATE_OPTIONS,
             maximum_value=None,
         ),

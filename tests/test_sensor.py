@@ -45,8 +45,20 @@ STRINGS = Path(__file__).parent.parent / "custom_components" / DOMAIN / "strings
             PERCENTAGE,
             EntityCategory.DIAGNOSTIC,
         ),
-        ("sensor.beganegrond_device_state", "normal", "enum", None, None),
-        ("sensor.eerste_etage_device_state", "alarm", "enum", None, None),
+        (
+            "sensor.beganegrond_device_state",
+            "normal",
+            "enum",
+            None,
+            EntityCategory.DIAGNOSTIC,
+        ),
+        (
+            "sensor.eerste_etage_device_state",
+            "alarm",
+            "enum",
+            None,
+            EntityCategory.DIAGNOSTIC,
+        ),
     ],
 )
 async def test_sensors(

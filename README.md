@@ -21,7 +21,7 @@ The integration is not tested with the Siterwell branded devices, but some user 
 Platform | Description
 -- | --
 `binary_sensor` | Adds an alarm sensor for each alarm (device class `carbon_monoxide`, `gas`, `heat`, `moisture` or `smoke`) and an `opening` sensor for each door/window sensor. This is the main entity of the device and is named after the device. Each of these devices also gets a `problem` and a low `battery` diagnostic sensor, which are disabled by default.
-`sensor` | Adds a `device state` sensor for each device, and a `battery level` and a `signal` (disabled by default) diagnostic sensor.
+`sensor` | Adds a `device state`, a `battery level` and a `signal` (disabled by default) diagnostic sensor for each device.
 `siren` | A diagnostic entity to test the alarm. Turn the siren `ON` to test it. Turn it `OFF` to silence the (test) alarm.
 
 The `device_state` sensor can have of the following states:
