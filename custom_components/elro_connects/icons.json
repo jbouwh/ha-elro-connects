@@ -1,0 +1,64 @@
+{
+  "entity": {
+    "sensor": {
+      "device_state": {
+        "default": "mdi:state-machine",
+        "state": {
+          "normal": "mdi:check-circle-outline",
+          "alarm": "mdi:alarm-light",
+          "fire_alarm": "mdi:fire-alert",
+          "test_alarm": "mdi:alarm-light-outline",
+          "fault": "mdi:alert-circle-outline",
+          "silence": "mdi:volume-off",
+          "unknown": "mdi:help-circle-outline",
+          "offline": "mdi:lan-disconnect",
+          "open": "mdi:door-open",
+          "closed": "mdi:door-closed",
+          "low_battery": "mdi:battery-alert-variant-outline",
+          "temperature_alarm": "mdi:thermometer-alert"
+        }
+      },
+      "signal": {
+        "default": "mdi:signal",
+        "range": {
+          "0": "mdi:signal-cellular-outline",
+          "25": "mdi:signal-cellular-1",
+          "50": "mdi:signal-cellular-2",
+          "75": "mdi:signal-cellular-3"
+        }
+      }
+    },
+    "siren": {
+      "alarm_co": {
+        "default": "mdi:molecule-co",
+        "state": {
+          "on": "mdi:alarm-light"
+        }
+      },
+      "alarm_fire": {
+        "default": "mdi:smoke-detector-variant",
+        "state": {
+          "on": "mdi:fire-alert"
+        }
+      },
+      "alarm_heat": {
+        "default": "mdi:thermometer",
+        "state": {
+          "on": "mdi:thermometer-alert"
+        }
+      },
+      "alarm_smoke": {
+        "default": "mdi:smoke-detector-variant",
+        "state": {
+          "on": "mdi:smoke-detector-variant-alert"
+        }
+      },
+      "alarm_water": {
+        "default": "mdi:water-check",
+        "state": {
+          "on": "mdi:water-alert"
+        }
+      }
+    }
+  }
+}
