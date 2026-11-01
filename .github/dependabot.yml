@@ -21,6 +21,9 @@ updates:
         versions: [">=82"]
       # Bumped by hand, together with the requirement in manifest.json
       - dependency-name: lib-elro-connects
+      # Use the same versions as Home Assistant core, bumped by hand
+      - dependency-name: mypy
+      - dependency-name: ruff
   - package-ecosystem: github-actions
     directory: /
     schedule:

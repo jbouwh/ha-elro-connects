@@ -1,9 +1,10 @@
 # The test packages, such as pytest and its plugins, are pinned by
 # pytest-homeassistant-custom-component, so they are not pinned here.
-mypy==2.4.0
+# mypy and ruff use the same versions as Home Assistant core.
+mypy==2.3.1
 pre-commit==4.7.0
 pytest-sugar>=1.1.1
-ruff==0.16.0
+ruff==0.16.9
 # Home Assistant pins setuptools below 82 in its package constraints
 setuptools==81.0.0
 
