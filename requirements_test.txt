@@ -3,7 +3,7 @@
 mypy==2.4.0
 pre-commit==4.6.1
 pytest-sugar>=0.9.6
-ruff==0.16.0
+ruff==0.17.1
 # Home Assistant pins setuptools below 82 in its package constraints
 setuptools==81.0.0
 
