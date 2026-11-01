@@ -3,13 +3,13 @@
 # mypy and ruff use the same versions as Home Assistant core.
 mypy==2.3.1
 pre-commit==4.7.0
-pytest-sugar>=0.9.6
+pytest-sugar>=1.1.1
 ruff==0.16.9
 # Home Assistant pins setuptools below 82 in its package constraints
 setuptools==81.0.0
 
-homeassistant==2026.10.1
+homeassistant==2026.10.2
 
-pytest-homeassistant-custom-component==0.13.372
+pytest-homeassistant-custom-component==0.13.373
 
 lib-elro-connects==0.6.4.0
