@@ -2,7 +2,7 @@
 # pytest-homeassistant-custom-component, so they are not pinned here.
 mypy==2.4.0
 pre-commit==4.7.0
-pytest-sugar>=0.9.6
+pytest-sugar>=1.1.1
 ruff==0.16.0
 # Home Assistant pins setuptools below 82 in its package constraints
 setuptools==81.0.0
