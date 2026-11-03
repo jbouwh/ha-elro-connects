@@ -88,6 +88,76 @@ async def test_setup_integration_with_data(
     await hass.async_block_till_done()
 
 
+async def test_setup_integration_with_existing_device(
+    hass: HomeAssistant,
+    mock_k1_connector: dict[AsyncMock],
+    mock_entry: ConfigEntry,
+) -> None:
+    """Test we can setup the integration when device already exists (e.g., after upgrade)."""
+    # Pre-create the device in the registry with the hub identifier
+    # This simulates the state after a previous successful setup
+    device_registry = dr.async_get(hass)
+    connector_id = mock_entry.data[CONF_CONNECTOR_ID]
+    hub_identifier = (DOMAIN, connector_id)
+    mac_connection = (dr.CONNECTION_NETWORK_MAC, "aa:bb:cc:dd:ee:ff")
+
+    device_registry.async_get_or_create(
+        config_entry_id=mock_entry.entry_id,
+        identifiers={hub_identifier},
+        connections={mac_connection},
+        manufacturer="Elro",
+        model="K1 (SF40GA)",
+        name=f"Elro Connects K1 {connector_id}",
+    )
+
+    # Now setup the integration, it should not raise DeviceIdentifierCollisionError
+    mock_k1_connector["result"].return_value = MOCK_DEVICE_STATUS_DATA
+    assert await async_setup_component(hass, DOMAIN, {})
+    await hass.async_block_till_done()
+
+    # Verify the device still exists
+    device_entry = device_registry.async_get_device_by_identifier(
+        hub_identifier, mock_entry.entry_id
+    )
+    assert device_entry is not None
+
+
+async def test_setup_integration_migrate_mac_identifier(
+    hass: HomeAssistant,
+    mock_k1_connector: dict[AsyncMock],
+    mock_entry: ConfigEntry,
+) -> None:
+    """Test we can migrate from MAC address identifier to hub identifier."""
+    # Pre-create the device in the registry with the old MAC address identifier
+    # This simulates the state before the upgrade to Home Assistant 2026.10
+    device_registry = dr.async_get(hass)
+    connector_id = mock_entry.data[CONF_CONNECTOR_ID]
+    hub_identifier = (DOMAIN, connector_id)
+    mac_connection = (dr.CONNECTION_NETWORK_MAC, "aa:bb:cc:dd:ee:ff")
+
+    # Create device with only MAC address identifier (old setup)
+    device_registry.async_get_or_create(
+        config_entry_id=mock_entry.entry_id,
+        identifiers={mac_connection},
+        connections={mac_connection},
+        manufacturer="Elro",
+        model="K1 (SF40GA)",
+        name=f"Elro Connects K1 {connector_id}",
+    )
+
+    # Now setup the integration, it should migrate to hub_identifier
+    mock_k1_connector["result"].return_value = MOCK_DEVICE_STATUS_DATA
+    assert await async_setup_component(hass, DOMAIN, {})
+    await hass.async_block_till_done()
+
+    # Verify the device has the new hub_identifier
+    device_entry = device_registry.async_get_device_by_identifier(
+        hub_identifier, mock_entry.entry_id
+    )
+    assert device_entry is not None
+    assert hub_identifier in device_entry.identifiers
+
+
 async def test_configure_platforms_dynamically(
     hass: HomeAssistant,
     mock_k1_connector: dict[AsyncMock],
