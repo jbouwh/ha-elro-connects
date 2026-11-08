@@ -8,8 +8,8 @@ ruff==0.16.9
 # Home Assistant pins setuptools below 82 in its package constraints
 setuptools==81.0.0
 
-homeassistant==2026.10.2
+homeassistant==2026.10.4
 
-pytest-homeassistant-custom-component==0.13.373
+pytest-homeassistant-custom-component==0.13.375
 
 lib-elro-connects==0.6.4.0
